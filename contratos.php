@@ -55,7 +55,34 @@
             <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
             <li class="nav-item"><a class="nav-link active" href="contratos.php">Contratos</a></li>
             <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
+
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+            <li class="nav-item user-profile-menu">
+              <button class="user-toggle" aria-expanded="false">
+                <i class="fas fa-user-circle"></i>
+                <span>Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                <i class="fas fa-chevron-down small"></i>
+              </button>
+              <div class="user-dropdown">
+                <div class="user-info">
+                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                  <?php if(isset($_SESSION['usuario_correo'])): ?>
+                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
+                  <?php endif; ?>
+                </div>
+                <a href="config/logout.php" class="logout-btn">
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+              </div>
+            </li>
+            <?php else: ?>
+            <li class="nav-item ms-lg-2">
+              <button class="btn-cta-2" onclick="openModal()">
+                Registrarse / Iniciar Sesión
+              </button>
+            </li>
+            <?php endif; ?>
           </ul>
         </div>
 
@@ -418,6 +445,72 @@
 
     search.addEventListener('input', applyFilters);
   </script>
+  <!-- Registration/Login Modal -->
+  <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
+    <div class="register-content">
+      <button class="register-close" id="registerClose" aria-label="Cerrar">&times;</button>
+      
+      <!-- Registration Form Container -->
+      <div id="registerFormContainer">
+        <div class="register-header">
+          <h2 id="registerTitle">Regístrate para recibir información</h2>
+          <p>Completa tus datos para acceder a nuestro catálogo completo</p>
+        </div>
+        <form action="config/register.php" method="POST">
+              <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
+              </div>
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Número Telefónico</label>
+                <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Registrarse</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('login')">¿Ya tienes cuenta? Iniciar Sesión</button>
+        </div>
+        <div class="register-footer">
+          <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
+        </div>
+      </div>
+
+      <!-- Login Form Container (Initially Hidden) -->
+      <div id="loginFormContainer" style="display: none;">
+        <div class="register-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Bienvenido de nuevo</p>
+        </div>
+        <form action="config/login.php" method="POST">
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Iniciar Sesión</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('register')">¿No tienes cuenta? Registrarse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script>
     window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
   </script>
