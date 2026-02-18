@@ -536,6 +536,7 @@
             z-index: 100;
             transition: transform 0.3s ease;
             animation: pulse 2s infinite;
+            text-decoration: none;
         }
         
         .whatsapp-button:hover {

@@ -812,6 +812,7 @@ footer>.container {
   z-index: 1000;
   transition: all .3s ease;
   animation: pulse-green 2s infinite;
+  text-decoration: none;
 }
 
 @keyframes pulse-green {
