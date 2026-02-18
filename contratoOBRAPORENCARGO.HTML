@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contrato de Obra por Encargo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="contrato.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<button class="pdf-btn no-print" onclick="downloadPDF()">Descargar PDF</button>
+
+<div class="document" id="contract">
+
+  <p>
+    Contrato de obra por encargo (work for hire) que celebran, por una parte,
+    <input class="inline long" placeholder="NOMBRE DEL CLIENTE" />,
+    con rfc
+    <input class="inline medium" placeholder="RFC DEL CLIENTE" />,
+    a quien en lo sucesivo se le denominará “el cliente”, representado en este acto por
+    <input class="inline long" placeholder="NOMBRE DEL REPRESENTANTE" />,
+    con rfc
+    <input class="inline medium" placeholder="RFC DEL REPRESENTANTE" />;
+    y por la otra parte,
+    <input class="inline long" placeholder="NOMBRE DEL DISEÑADOR" />,
+    con rfc
+    <input class="inline medium" placeholder="RFC DEL DISEÑADOR" />,
+    a quien en lo sucesivo se le denominará “el diseñador”, al tenor de las siguientes:
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">D E C L A R A C I O N E S</div>
+
+  <br><br>
+
+  <p><strong>I.- Declara EL CLIENTE:</strong></p>
+
+  <p>
+    a) Que cuenta con la capacidad legal para celebrar el presente contrato.
+  </p>
+
+  <p>
+    b) Que tiene interés en contratar los servicios profesionales de diseño descritos en este documento.
+  </p>
+
+  <p>
+    c) Que señala como domicilio el ubicado en
+    <input class="inline long" placeholder="DOMICILIO DEL CLIENTE" />.
+  </p>
+
+  <br>
+
+  <p><strong>II.- Declara EL DISEÑADOR:</strong></p>
+
+  <p>
+    a) Que cuenta con la capacidad técnica, profesional y legal para realizar la obra objeto del presente contrato.
+  </p>
+
+  <p>
+    b) Que la obra será creada de manera original y sin infringir derechos de terceros.
+  </p>
+
+  <p>
+    c) Que señala como domicilio el ubicado en
+    <input class="inline long" placeholder="DOMICILIO DEL DISEÑADOR" />.
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">C L Á U S U L A S</div>
+
+  <br><br>
+
+  <p><strong>PRIMERA.- OBJETO DEL CONTRATO</strong></p>
+
+  <p>
+    EL CLIENTE encarga a EL DISEÑADOR la creación de
+    <input class="inline long" placeholder="DESCRIPCIÓN DETALLADA DEL PROYECTO" />,
+    conforme a las especificaciones aprobadas por ambas partes.
+  </p>
+
+  <br>
+
+  <p><strong>SEGUNDA.- NATURALEZA DE LA OBRA (WORK FOR HIRE)</strong></p>
+
+  <p>
+    Las partes acuerdan que la obra objeto del presente contrato tendrá el carácter de “Obra por Encargo” (Work for Hire).
+  </p>
+
+  <p>
+    En consecuencia, todos los derechos patrimoniales de autor, incluyendo reproducción, distribución, comunicación pública, transformación y cualquier otra forma de explotación, corresponderá de manera exclusiva a EL CLIENTE desde el momento de su creación.
+  </p>
+
+  <p>
+    EL DISEÑADOR renuncia expresamente a ejercer cualquier derecho patrimonial sobre la obra, reservándose únicamente el derecho moral de reconocimiento de autoría cuando así lo permita EL CLIENTE por escrito.
+  </p>
+
+  <br>
+
+  <p><strong>TERCERA.- GARANTÍA DE ORIGINALIDAD</strong></p>
+
+  <p>
+    EL DISEÑADOR garantiza que la obra es original, que no infringe derechos de terceros y que tiene plena facultad para ceder los derechos establecidos en el presente contrato.
+  </p>
+
+  <br>
+
+  <p><strong>CUARTA.- ALCANCE Y ENTREGABLES</strong></p>
+
+  <p>
+    EL DISEÑADOR se obliga a entregar:
+  </p>
+
+  <p>
+    <input class="inline long" placeholder="LISTA DE ENTREGABLES" />
+  </p>
+
+  <p>
+    Formatos de entrega:
+  </p>
+
+  <p>
+    <input class="inline long" placeholder="FORMATOS" />
+  </p>
+
+  <p>
+    Fecha de entrega final:
+  </p>
+
+  <p>
+    <input class="inline medium" placeholder="FECHA" />
+  </p>
+
+  <p>
+    Cualquier trabajo adicional no contemplado en esta cláusula generará un costo extra acordado por escrito.
+  </p>
+
+  <br>
+
+  <p><strong>QUINTA.- PLAZOS Y REVISIONES</strong></p>
+
+  <p>
+    EL DISEÑADOR entregará propuestas iniciales en la fecha
+    <input class="inline medium" placeholder="FECHA" />.
+  </p>
+
+  <p>
+    EL CLIENTE tendrá derecho a
+    <input class="inline small" placeholder="NÚMERO" />
+    rondas de revisión sin costo adicional.
+  </p>
+
+  <p>
+    Revisiones adicionales o cambios que modifiquen el alcance original serán cotizados aparte.
+  </p>
+
+  <br>
+
+  <p><strong>SEXTA.- COMPENSACIÓN Y FORMA DE PAGO</strong></p>
+
+  <p>
+    EL CLIENTE pagará a EL DISEÑADOR la cantidad de
+    <input class="inline medium" placeholder="MONTO / PRO BONO" />,
+    conforme al siguiente esquema:
+  </p>
+
+  <p>
+    <input class="inline long" placeholder="CONDICIONES DE PAGO" />
+  </p>
+
+  <p>
+    En caso de retraso en el pago, EL DISEÑADOR podrá suspender la entrega de los trabajos.
+  </p>
+
+  <br>
+
+  <p><strong>SÉPTIMA.- CONFIDENCIALIDAD</strong></p>
+
+  <p>
+    Ambas partes se obligan a mantener confidencialidad sobre toda la información relacionada con el proyecto, aún después de la terminación del contrato.
+  </p>
+
+  <br>
+
+  <p><strong>OCTAVA.- TERMINACIÓN ANTICIPADA</strong></p>
+
+  <p>
+    El presente contrato podrá darse por terminado por mutuo acuerdo.
+  </p>
+
+  <p>
+    En caso de terminación anticipada por parte de EL CLIENTE, éste deberá cubrir el trabajo realizado hasta la fecha.
+  </p>
+
+  <br>
+
+  <p><strong>NOVENA.- LEGISLACIÓN APLICABLE Y JURISDICCIÓN</strong></p>
+
+  <p>
+    Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes de
+    <input class="inline medium" placeholder="ESTADO Y PAÍS" />
+    y a los tribunales competentes de
+    <input class="inline medium" placeholder="CIUDAD" />.
+  </p>
+
+  <p>
+    Leído que fue el presente contrato y enteradas las partes de su contenido y alcance legal, lo firman en dos tantos en la ciudad de
+    <input class="inline medium" placeholder="CIUDAD" />,
+    a
+    <input class="inline medium" placeholder="FECHA" />.
+  </p>
+
+  <br><br><br>
+
+  <div class="signatures">
+    <div class="signature-block">
+      “EL CONTRATANTE”
+      <div class="signature-line"></div>
+      (Nombre del contratante)
+    </div>
+
+    <div class="signature-block">
+      “EL DISEÑADOR”
+      <div class="signature-line"></div>
+      (Nombre del diseñador)
+    </div>
+  </div>
+
+  <br><br><br>
+
+  <div class="center">“T E S T I G O S”</div>
+
+  <br><br>
+
+  <div class="signatures">
+    <div class="signature-block">
+      <div class="signature-line small-line"></div>
+      (Nombre del testigo 1)
+    </div>
+    <div class="signature-block">
+      <div class="signature-line small-line"></div>
+      (Nombre del testigo 2)
+    </div>
+  </div>
+
+</div>
+
+<script>
+function downloadPDF(){
+  const contract = document.getElementById("contract");
+  const inputs = contract.querySelectorAll("input");
+
+  // Reemplaza inputs por texto plano para que NO se vean líneas/inputs en PDF
+  inputs.forEach(input => {
+    const span = document.createElement("span");
+    span.className = "print-value";
+    span.textContent = (input.value && input.value.trim()) ? input.value : " ";
+    input.style.display = "none";
+    input.parentNode.insertBefore(span, input.nextSibling);
+  });
+
+  html2pdf().set({
+    margin: 0,
+    filename: "Contrato_Obra_por_Encargo.pdf",
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "cm", format: "letter", orientation: "portrait" }
+  }).from(contract).save().then(() => {
+    contract.querySelectorAll(".print-value").forEach(s => s.remove());
+    inputs.forEach(i => i.style.display = "inline");
+  });
+}
+</script>
+
+</body>
+</html>

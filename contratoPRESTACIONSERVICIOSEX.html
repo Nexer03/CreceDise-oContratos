@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contrato Entrega Express</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- Tu CSS común para TODOS los contratos -->
+  <link rel="stylesheet" href="contrato.css" />
+
+  <!-- PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<button class="pdf-btn no-print" onclick="downloadPDF()">Descargar PDF</button>
+
+<div class="document" id="contract">
+
+  <p>
+    Contrato de prestación de servicios de entrega express que celebran, por una parte,
+    <input class="inline long" placeholder="NOMBRE COMPLETO DEL PROVEEDOR" />,
+    con rfc
+    <input class="inline medium" placeholder="RFC/IDENTIFICACIÓN" />,
+    señalando como domicilio legal el ubicado en
+    <input class="inline long" placeholder="DOMICILIO COMPLETO" />,
+    a quien en lo sucesivo se le denominará "el proveedor"; y por la otra parte,
+    <input class="inline long" placeholder="NOMBRE COMPLETO DEL CLIENTE" />,
+    con rfc
+    <input class="inline medium" placeholder="RFC/IDENTIFICACIÓN" />,
+    señalando como domicilio legal el ubicado en
+    <input class="inline long" placeholder="DOMICILIO COMPLETO" />,
+    a quien en lo sucesivo se le denominará "el cliente", ambas partes con capacidad legal para contratar y obligarse, quienes se sujetan al tenor de las siguientes declaraciones y cláusulas:
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">A N T E C E D E N T E S</div>
+
+  <br><br>
+
+  <p><strong>I.- DECLARA "EL PROVEEDOR":</strong></p>
+
+  <p>
+    a) Ser una persona
+    <input class="inline small" placeholder="FÍSICA / MORAL" />
+    legalmente constituida conforme a las leyes mexicanas, con capacidad jurídica plena para contratar y obligarse en los términos del presente instrumento.
+  </p>
+
+  <p>
+    b) Que su actividad económica principal incluye la prestación de servicios de logística, mensajería y transporte de mercancías bajo la modalidad de "Entrega Express".
+  </p>
+
+  <p>
+    c) Que cuenta con la infraestructura técnica, operativa y los vehículos necesarios, así como con el personal capacitado para garantizar que las entregas se realicen de manera eficiente y dentro de los plazos pactados.
+  </p>
+
+  <p>
+    d) Que señala como su domicilio legal para todo lo relativo a este contrato el ubicado en el proemio de este documento, y que su registro federal de contribuyentes es el ahí asentado.
+  </p>
+
+  <p><strong>II.- DECLARA "EL CLIENTE":</strong></p>
+
+  <p>
+    a) Ser una persona
+    <input class="inline small" placeholder="FÍSICA / MORAL" />
+    con capacidad legal y económica suficiente para contratar los servicios objeto de este contrato.
+  </p>
+
+  <p>
+    b) Que es propietario o poseedor legal de los bienes y mercancías que solicita transportar, y que estos son de procedencia lícita, no contraviniendo ninguna disposición de orden público o salud.
+  </p>
+
+  <p>
+    c) Que conoce y acepta las tarifas, tiempos de entrega y condiciones de manejo de mercancía establecidas por EL PROVEEDOR para la modalidad de servicio express.
+  </p>
+
+  <p>
+    d) Que es su voluntad contratar los servicios de EL PROVEEDOR bajo los términos y condiciones que se estipulan en el apartado de cláusulas.
+  </p>
+
+  <p><strong>III.- DECLARAN AMBAS PARTES:</strong></p>
+
+  <p>
+    a) Que se reconocen mutuamente la personalidad con la que comparecen y que no existe dolo, mala fe, error o violencia que afecte la validez de su consentimiento en este acto.
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">C L Á U S U L A S</div>
+
+  <br><br>
+
+  <p><strong>PRIMERA.- OBJETO DEL CONTRATO:</strong></p>
+
+  <p>
+    EL PROVEEDOR se obliga a entregar a EL CLIENTE los siguientes productos/servicios:
+    <input class="inline long" placeholder="DESCRIPCIÓN DETALLADA DE PRODUCTOS/SERVICIOS" />
+    bajo modalidad de entrega express con las características y plazos establecidos en el presente contrato.
+  </p>
+
+  <p><strong>SEGUNDA.- PLAZO DE ENTREGA EXPRESS:</strong></p>
+
+  <p>
+    EL PROVEEDOR se compromete a realizar la entrega en un plazo máximo de
+    <input class="inline medium" placeholder="NÚMERO DE HORAS/DÍAS" />
+    contados a partir del
+    <input class="inline medium" placeholder='MOMENTO DE INICIO: firma del contrato, recepción del pago, confirmación del pedido' />.
+    La fecha límite de entrega será el
+    <input class="inline medium" placeholder="FECHA Y HORA ESPECÍFICA" />.
+  </p>
+
+  <p><strong>TERCERA.- ESPECIFICACIONES Y CALIDAD:</strong></p>
+
+  <p>
+    Los productos/servicios deberán cumplir con las siguientes especificaciones:
+    <input class="inline long" placeholder="DETALLAR CARACTERÍSTICAS TÉCNICAS, ESTÁNDARES DE CALIDAD, CONDICIONES ESPECIALES" />.
+    El incumplimiento de estas especificaciones dará derecho a EL CLIENTE de rechazar la entrega.
+  </p>
+
+  <p><strong>CUARTA.- LUGAR Y FORMA DE ENTREGA:</strong></p>
+
+  <p>
+    La entrega se realizará en:
+    <input class="inline long" placeholder="DIRECCIÓN COMPLETA DE ENTREGA" />.
+    EL PROVEEDOR se hará responsable de
+    <input class="inline medium" placeholder="TRANSPORTE, INSTALACIÓN, MONTAJE, ETC." />.
+    La entrega se considerará completa cuando EL CLIENTE firme el acuse de recibo correspondiente.
+  </p>
+
+  <p><strong>QUINTA.- PRECIO Y FORMA DE PAGO:</strong></p>
+
+  <p>
+    El precio total por la entrega express es de $
+    <input class="inline medium" placeholder="MONTO EN NÚMERO" />
+    (
+    <input class="inline medium" placeholder="MONTO EN LETRA" />
+    )
+    <input class="inline medium" placeholder="ESPECIFICAR SI INCLUYE IVA" />.
+    El pago se realizará:
+    <input class="inline long" placeholder="FORMA DE PAGO: al firmar contrato, contra entrega, 50% anticipo y 50% contra entrega" />.
+  </p>
+
+  <p><strong>SEXTA.- PENALIZACIÓN POR RETRASO:</strong></p>
+
+  <p>
+    En caso de que EL PROVEEDOR no cumpla con el plazo de entrega establecido, se aplicará una penalización de
+    <input class="inline medium" placeholder="PORCENTAJE O MONTO" />
+    por cada
+    <input class="inline small" placeholder="HORA/DÍA" />
+    de retraso, hasta un máximo de
+    <input class="inline medium" placeholder="PORCENTAJE O MONTO MÁXIMO" />
+    del valor total del contrato. Alternativamente, EL CLIENTE podrá optar por la rescisión del contrato con devolución total del pago efectuado más
+    <input class="inline small" placeholder="PORCENTAJE" />
+    adicional por daños y perjuicios.
+  </p>
+
+  <p><strong>SÉPTIMA.- CAUSAS DE FUERZA MAYOR:</strong></p>
+
+  <p>
+    No se aplicarán penalizaciones cuando el retraso se deba a causas de fuerza mayor debidamente comprobadas, tales como desastres naturales, actos de autoridad, paros generales o situaciones fuera del control razonable de EL PROVEEDOR. En estos casos, EL PROVEEDOR deberá notificar inmediatamente a EL CLIENTE y acordar una nueva fecha de entrega.
+  </p>
+
+  <p><strong>OCTAVA.- VERIFICACIÓN Y RECEPCIÓN:</strong></p>
+
+  <p>
+    EL CLIENTE tendrá un plazo de
+    <input class="inline medium" placeholder="NÚMERO DE HORAS/DÍAS" />
+    para verificar que los productos/servicios entregados cumplen con las especificaciones pactadas. Durante este período, EL CLIENTE podrá rechazar la entrega si detecta incumplimientos o defectos. Transcurrido este plazo sin observaciones, se considerará aceptada la entrega.
+  </p>
+
+  <p><strong>NOVENA.- GARANTÍA:</strong></p>
+
+  <p>
+    EL PROVEEDOR otorga una garantía de
+    <input class="inline medium" placeholder="NÚMERO DE DÍAS/MESES" />
+    contra defectos de fabricación o vicios ocultos. Durante este período, EL PROVEEDOR se compromete a
+    <input class="inline medium" placeholder="REPARAR, REEMPLAZAR O REEMBOLSAR" />
+    sin costo adicional para EL CLIENTE.
+  </p>
+
+  <p><strong>DÉCIMA.- RESPONSABILIDAD CIVIL:</strong></p>
+
+  <p>
+    EL PROVEEDOR será responsable de cualquier daño o perjuicio causado a EL CLIENTE o a terceros durante el proceso de entrega, transporte o instalación. EL PROVEEDOR cuenta con seguro de responsabilidad civil por un monto de $
+    <input class="inline medium" placeholder="MONTO" />
+    que cubre estos riesgos.
+  </p>
+
+  <p><strong>DÉCIMA PRIMERA.- CANCELACIÓN:</strong></p>
+
+  <p>
+    EL CLIENTE podrá cancelar el pedido hasta
+    <input class="inline medium" placeholder="NÚMERO DE HORAS" />
+    antes de la fecha de entrega pactada, con una penalización de
+    <input class="inline small" placeholder="PORCENTAJE" />
+    del valor total. Después de este plazo, no procederá la cancelación salvo acuerdo expreso entre las partes.
+  </p>
+
+  <p><strong>DÉCIMA SEGUNDA.- CONFIDENCIALIDAD:</strong></p>
+
+  <p>
+    Ambas partes se comprometen a mantener confidencialidad sobre cualquier información sensible o comercial a la que tengan acceso durante la ejecución del presente contrato.
+  </p>
+
+  <p><strong>DÉCIMA TERCERA.- LEGISLACIÓN Y JURISDICCIÓN:</strong></p>
+
+  <p>
+    Para la interpretación y cumplimiento del presente contrato, las partes se someten a las leyes de
+    <input class="inline medium" placeholder="PAÍS/ESTADO" />
+    y a la jurisdicción de los tribunales de
+    <input class="inline medium" placeholder="CIUDAD" />.
+  </p>
+
+  <p>
+    Enteradas las partes del contenido y alcance legal del presente contrato, lo firman de conformidad.
+  </p>
+
+  <br><br><br>
+
+  <div class="signatures">
+    <div class="signature-block">
+      “PROVEEDOR”
+      <div class="signature-line"></div>
+      (Nombre del contratante)
+    </div>
+
+    <div class="signature-block">
+      “CLIENTE”
+      <div class="signature-line"></div>
+      (Nombre del colaborador)
+    </div>
+  </div>
+
+  <br><br><br>
+
+  <div class="center">“T E S T I G O S”</div>
+
+  <br><br>
+
+  <div class="signatures">
+    <div class="signature-line small-line"></div>
+    <div class="signature-line small-line"></div>
+  </div>
+
+</div>
+
+<script>
+function downloadPDF(){
+  const contract = document.getElementById("contract");
+  const inputs = contract.querySelectorAll("input");
+
+  // Reemplaza inputs por texto para que en el PDF NO se vean líneas
+  inputs.forEach(input => {
+    const span = document.createElement("span");
+    span.className = "print-value";
+    span.textContent = input.value && input.value.trim() ? input.value : " ";
+    input.style.display = "none";
+    input.parentNode.insertBefore(span, input.nextSibling);
+  });
+
+  html2pdf().set({
+    margin: 0,
+    filename: "Contrato_Entrega_Express.pdf",
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "cm", format: "letter", orientation: "portrait" }
+  }).from(contract).save().then(() => {
+    // Restaura inputs después de generar PDF
+    contract.querySelectorAll(".print-value").forEach(s => s.remove());
+    inputs.forEach(i => i.style.display = "inline");
+  });
+}
+</script>
+
+</body>
+</html>

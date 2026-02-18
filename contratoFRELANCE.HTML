@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>Contrato Freelance</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="contrato.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+<button class="pdf-btn no-print" onclick="downloadPDF()">Descargar PDF</button>
+
+<div class="document" id="contract">
+
+  <p>
+    En la Ciudad de Puerto Vallarta, Jalisco, el día
+    <input class="inline small" placeholder="DIA" />
+    de
+    <input class="inline medium" placeholder="MES" />
+     del
+    <input class="inline small" placeholder="AÑO" />.
+  </p>
+
+  <p>
+    Contrato de prestación de servicios profesionales freelance que celebran, por una parte,
+    <input class="inline long" placeholder="NOMBRE COMPLETO DEL CLIENTE" />,
+    mayor de edad, con rfc
+    <input class="inline medium" placeholder="RFC/CURP" />,
+    con domicilio legal en
+    <input class="inline long" placeholder="DOMICILIO COMPLETO: CALLE, NÚMERO, COLONIA, C.P., MUNICIPIO, ESTADO" />,
+    a quien en lo sucesivo se le denominará "el cliente"; y por la otra parte,
+    <input class="inline long" placeholder="NOMBRE COMPLETO DEL FREELANCER" />,
+    persona física, mayor de edad, con rfc
+    <input class="inline medium" placeholder="RFC/CURP/HOMOCLAVE" />,
+    con domicilio legal en
+    <input class="inline long" placeholder="DOMICILIO COMPLETO: CALLE, NÚMERO, COLONIA, C.P., PUERTO VALLARTA, JALISCO" />,
+    a quien en lo sucesivo se le denominará "el freelancer"; ambas partes con plena capacidad legal para contratar, obligarse y celebrar el presente instrumento, quienes se sujetan al tenor de las siguientes:
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">D E C L A R A C I O N E S</div>
+
+  <br><br>
+
+  <p><strong>DECLARA "EL FREELANCER":</strong></p>
+
+  <p>
+    I. Contar con experiencia profesional certificada, equipo técnico especializado y capacidad plena para prestar servicios independientes de
+    <input class="inline long" placeholder="especificar: diseño gráfico/branding/desarrollo web/etc." />.
+  </p>
+
+  <p>
+    II. Comprometerse a entregar trabajos conforme a estándares profesionales internacionales y especificaciones técnicas pactadas.
+  </p>
+
+  <p>
+    III. Ser titular exclusivo de derechos morales sobre creaciones hasta transferencia expresa por pago total.
+  </p>
+
+  <p><strong>DECLARA "EL CLIENTE":</strong></p>
+
+  <p>
+    I. Requerir servicios profesionales independientes especializados para
+    <input class="inline long" placeholder="descripción breve del proyecto" />.
+  </p>
+
+  <p>
+    II. Comprometerse a proporcionar oportunamente briefing completo, materiales, referencias y retroalimentación constructiva.
+  </p>
+
+  <p>
+    III. Aceptar que los plazos están supeditados al cumplimiento de sus obligaciones informativas y de pago.
+  </p>
+
+  <p><strong>DECLARACIONES COMUNES:</strong></p>
+
+  <p>
+    I. Reconocerse mutuamente personalidad y capacidad legal suficiente, sin vicios del consentimiento.
+  </p>
+
+  <p>
+    II. Señalar como domicilios procesales los indicados en proemio para efectos de notificaciones.
+  </p>
+
+  <p>
+    III. Elegir jurisdicción de Tribunales de Puerto Vallarta, Jalisco, renunciando a cualquier otro fuero.
+  </p>
+
+  <br><br>
+
+  <div class="center spaced">C L Á U S U L A S</div>
+
+  <br><br>
+
+  <p><strong>PRIMERA.- OBJETO.</strong></p>
+
+  <p>
+    EL FREELANCER se obliga a prestar a EL CLIENTE servicios profesionales independientes consistentes en
+    <input class="inline long" placeholder="descripción detallada del alcance: creación/rediseño de identidad visual, desarrollo web, contenido digital, etc." />,
+    conforme a Anexo I - Especificaciones Técnicas.
+  </p>
+
+  <p><strong>SEGUNDA.- ESPECIFICACIONES DE ENTREGA.</strong></p>
+
+  <p>
+    Archivos finales en formatos profesionales: vectoriales (AI/EPS/SVG), raster (PNG/JPG 300dpi), documentos (PDF/X1a), video (MP4 H.264). Archivos fuente editables únicamente si está expresamente pactado en Anexo II.
+  </p>
+
+  <p><strong>TERCERA.- PROCESO DE TRABAJO.</strong></p>
+
+  <p>
+    Incluye: (a) reunión diagnóstica; (b) propuesta conceptual; (c) dos rondas de revisiones funcionales. Iteraciones adicionales por tarifa de $
+    <input class="inline medium" placeholder="monto/hora" />
+    MXN más IVA.
+  </p>
+
+  <p><strong>CUARTA.- CRONOGRAMA.</strong></p>
+
+  <p>
+    <input class="inline medium" placeholder="Cantidad de días" />
+    días hábiles desde recepción de 50% inicial + entrega completa de materiales por EL CLIENTE. La mora imputable al CLIENTE extiende plazos proporcionalmente.
+  </p>
+
+  <p><strong>QUINTA.- CONTRAPRESTACIÓN.</strong></p>
+
+  <p>
+    $ <input class="inline medium" placeholder="MONTO TOTAL EN NÚMERO" />
+    <input class="inline medium" placeholder="MONTO EN LETRA" />
+    pesos mexicanos (IVA desglosado). Pago: 50% inicio, 50% entrega/aceptación. Retención de archivos fuente hasta pago total.
+  </p>
+
+  <p><strong>SEXTA.- IMPUTABILIDADES.</strong></p>
+
+  <p>
+    Retrasos del CLIENTE en información/pagos generan: (a) suspensión inmediata; (b) días adicionales equivalentes; (c) 3% mensual sobre saldos vencidos.
+  </p>
+
+  <p><strong>SÉPTIMA.- PROPIEDAD INTELECTUAL.</strong></p>
+
+  <p>
+    EL FREELANCER transfiere derechos patrimoniales sobre entregables finales tras pago total. Retiene derechos morales irrenunciables + portafolio profesional (salvo indicación expresa).
+  </p>
+
+  <p><strong>OCTAVA.- TERMINACIÓN.</strong></p>
+
+  <p>
+    CLIENTE: notificación 7 días, pierde anticipo + trabajo ejecutado. FREELANCER: incumplimiento grave permite terminación inmediata + daños/perjuicios.
+  </p>
+
+  <p><strong>NOVENA.- CONFIDENCIALIDAD.</strong></p>
+
+  <p>
+    Obligación recíproca por
+    <input class="inline small" placeholder="2" />
+    años post-terminación sobre información estratégica compartida.
+  </p>
+
+  <br><br>
+
+  <p><strong>DÉCIMA. JURISDICCIÓN.</strong></p>
+
+  <p>
+    Leyes Federales y Estatales de Jalisco. Tribunales Competentes en Puerto Vallarta, Jalisco.
+  </p>
+
+  <br><br><br><br><br><br><br>
+
+  <div class="signatures">
+    <div class="signature-block">
+      “CLIENTE”
+      <div class="signature-line"></div>
+      (Nombre del cliente)
+    </div>
+
+    <div class="signature-block">
+      “EL FREELANCER”
+      <div class="signature-line"></div>
+      (Nombre del freelancer)
+    </div>
+  </div>
+
+</div>
+
+<script>
+function downloadPDF(){
+  const contract = document.getElementById("contract");
+  const inputs = contract.querySelectorAll("input");
+
+  // Reemplaza inputs por texto plano para que NO se vean líneas en PDF
+  inputs.forEach(input => {
+    const span = document.createElement("span");
+    span.className = "print-value";
+    span.textContent = (input.value && input.value.trim()) ? input.value : " ";
+    input.style.display = "none";
+    input.parentNode.insertBefore(span, input.nextSibling);
+  });
+
+  html2pdf().set({
+    margin: 0,
+    filename: "Contrato_Freelance.pdf",
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: "cm", format: "letter", orientation: "portrait" }
+  }).from(contract).save().then(() => {
+    contract.querySelectorAll(".print-value").forEach(s => s.remove());
+    inputs.forEach(i => i.style.display = "inline");
+  });
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,75 @@
+body{
+    background:#dcdcdc;
+}
+
+.document{
+    width:21.59cm;
+    min-height:27.94cm;
+    margin:auto;
+    background:white;
+    padding:2.54cm;
+    box-sizing:border-box;
+
+    font-family:"Times New Roman", serif;
+    font-size:12pt;
+    line-height:1.5;
+    text-align:justify;
+}
+
+.center{
+    text-align:center;
+}
+
+.spaced{
+    letter-spacing:6px;
+}
+
+.inline{
+    border:none;
+    border-bottom:1px solid #000;
+    font-family:inherit;
+    font-size:12pt;
+    outline:none;
+}
+
+.small{ width:3cm; }
+.medium{ width:5cm; }
+.long{ width:9cm; }
+
+.signatures{
+    display:flex;
+    justify-content:space-between;
+    margin-top:3cm;
+}
+
+.signature-block{
+    text-align:center;
+    width:45%;
+}
+
+.signature-line{
+    border-bottom:1px solid #000;
+    height:1px;
+    margin:40px 0 5px 0;
+}
+
+.small-line{
+    width:6cm;
+}
+
+.pdf-btn{
+    display:block;
+    margin:20px auto;
+    padding:10px 25px;
+    cursor:pointer;
+}
+
+@media print{
+    .no-print{
+        display:none;
+    }
+}
+.print-value{
+    display:inline;
+    white-space:pre;
+}
