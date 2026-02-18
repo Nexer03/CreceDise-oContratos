@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -35,21 +37,37 @@
         <h2 id="registerTitle">Regístrate para recibir información</h2>
         <p>Completa tus datos para acceder a nuestro catálogo completo</p>
       </div>
-      <form id="registerForm" novalidate>
-        <div class="form-group">
-          <label for="email">Correo Electrónico</label>
-          <input type="email" id="email" class="form-control" placeholder="ejemplo@correo.com" required />
-        </div>
-        <div class="form-group">
-          <label for="phone">Número Telefónico</label>
-          <input type="tel" id="phone" class="form-control" placeholder="+52 322 123 4567" required />
-        </div>
-        <div class="form-group">
-          <label for="city">Ciudad</label>
-          <input type="text" id="city" class="form-control" placeholder="Puerto Vallarta" required />
-        </div>
-        <button type="submit" class="register-btn">Registrarse</button>
-      </form>
+      <form action="config/register.php" method="POST">
+
+            <div class="form-group">
+              <label>Nombre completo</label>
+              <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
+            </div>
+
+            <div class="form-group">
+              <label>Correo Electrónico</label>
+              <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+            </div>
+
+            <div class="form-group">
+              <label>Número Telefónico</label>
+              <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
+            </div>
+
+            <div class="form-group">
+              <label>Ciudad</label>
+              <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
+            </div>
+
+            <div class="form-group">
+              <label>Contraseña</label>
+              <input type="password" name="password" class="form-control" placeholder="********" required />
+            </div>
+
+            <button type="submit" class="register-btn">Registrarse</button>
+
+          </form>
+
       <div class="register-footer">
         <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
       </div>

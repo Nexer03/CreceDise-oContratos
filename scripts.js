@@ -242,11 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
   
-
-  document.getElementById('registerForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    submitForm(this);
-  });
   
 
   initSmoothScroll();
@@ -277,11 +272,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-document.addEventListener('submit', function(e) {
-  if (e.target.tagName === 'FORM' && !e.target.hasAttribute('novalidate')) {
-    e.preventDefault();
-  }
-});
 
 
 function handleImageError(img) {
