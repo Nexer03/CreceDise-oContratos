@@ -17,7 +17,7 @@
 body {
   font-family: 'Montserrat', sans-serif;
   color: var(--dark-blue);
-  background-color: var(--white);
+  background-color: transparent;
   line-height: 1.6;
   overflow-x: hidden;
 }
@@ -209,7 +209,9 @@ h6 {
 
 .hero {
   color: var(--white);
-  padding: 220px 0 100px;
+  margin-top: 200px;
+  padding-top: 60px;
+  padding-bottom: 48px;
   text-align: center;
   position: relative;
   overflow: hidden;
