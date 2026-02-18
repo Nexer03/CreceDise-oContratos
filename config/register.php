@@ -31,8 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $_SESSION['usuario_id'] = $pdo->lastInsertId();
         $_SESSION['usuario_nombre'] = $nombre;
+        $_SESSION['usuario_correo'] = $correo;
+        $_SESSION['flash_message'] = "¡Registro exitoso! Bienvenido a Crece Diseño.";
+        $_SESSION['flash_type'] = "success";
 
-        header("Location: index.php");
+        header("Location: ../index.php");
         exit;
 
     } catch (PDOException $e) {

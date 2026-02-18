@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -42,10 +43,33 @@
         
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto align-items-lg-center">
-            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link" href="cursos.html">Cursos</a></li>
-            <li class="nav-item"><a class="nav-link active" href="nosotros.html">Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.html#contacto">Contacto</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="nosotros.php">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
+            
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+            <li class="nav-item user-profile-menu">
+              <button class="user-toggle" aria-expanded="false">
+                <i class="fas fa-user-circle"></i>
+                <span>Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                <i class="fas fa-chevron-down small"></i>
+              </button>
+              <div class="user-dropdown">
+                <div class="user-info">
+                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                  <?php if(isset($_SESSION['usuario_correo'])): ?>
+                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
+                  <?php endif; ?>
+                </div>
+                <a href="config/logout.php" class="logout-btn">
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+              </div>
+            </li>
+            <?php else: ?>
+                <li class="nav-item"><a class="nav-link btn btn-primary btn-cta" href="index.php" onclick="localStorage.setItem('openModal', 'true'); window.location.href='index.php'; return false;">Registrarse / Iniciar Sesión</a></li>
+            <?php endif; ?>
           </ul>
         </div>
       </div>
@@ -268,16 +292,16 @@
         </div>
         <div class="footer-col">
           <h3>Enlaces Rápidos</h3>
-          <a href="index.html">Inicio</a>
-          <a href="cursos.html">Cursos</a>
-          <a href="nosotros.html">Nosotros</a>
-          <a href="index.html#contacto">Contacto</a>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
         </div>
         <div class="footer-col">
           <h3>Recursos</h3>
-          <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
-          <a href="cursos.html#paga">Cursos de Paga</a>
-          <a href="cursos.html#financiamiento">Financiamiento</a>
+          <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
+          <a href="cursos.php#paga">Cursos de Paga</a>
+          <a href="cursos.php#financiamiento">Financiamiento</a>
           <a href="#">Política de Privacidad</a>
         </div>
         <div class="footer-col">
@@ -300,6 +324,10 @@
   </a>
 
   
+  <script>
+    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>

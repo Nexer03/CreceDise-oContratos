@@ -23,8 +23,31 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  
-  <div class="welcome-overlay" id="welcomeOverlay" aria-hidden="true">
+  <script>
+    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+  </script>
+
+  <?php if(isset($_SESSION['flash_message'])): ?>
+  <div class="flash-message <?php echo $_SESSION['flash_type'] ?? 'info'; ?>" role="alert">
+    <div class="flash-icon">
+      <?php if(($_SESSION['flash_type'] ?? '') == 'success'): ?>
+        <i class="fas fa-check-circle"></i>
+      <?php else: ?>
+        <i class="fas fa-info-circle"></i>
+      <?php endif; ?>
+    </div>
+    <div class="flash-content">
+      <h4><?php echo ($_SESSION['flash_type'] ?? '') == 'success' ? 'Éxito' : 'Aviso'; ?></h4>
+      <p><?php echo $_SESSION['flash_message']; ?></p>
+    </div>
+  </div>
+  <?php 
+    // Clear flash message after displaying
+    unset($_SESSION['flash_message']);
+    unset($_SESSION['flash_type']);
+  endif; ?>
+
+  <div class="welcome-overlay <?php echo isset($_SESSION['usuario_id']) ? 'hidden' : ''; ?>" id="welcomeOverlay" aria-hidden="true">
     <img class="welcome-logo" src="logo.svg" alt="Crece Diseño" />
     <h1 class="welcome-text">Bienvenidos a Crece Diseño</h1>
   </div>
@@ -33,43 +56,64 @@
   <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
     <div class="register-content">
       <button class="register-close" id="registerClose" aria-label="Cerrar">&times;</button>
-      <div class="register-header">
-        <h2 id="registerTitle">Regístrate para recibir información</h2>
-        <p>Completa tus datos para acceder a nuestro catálogo completo</p>
+      
+      <!-- Registration Form Container -->
+      <div id="registerFormContainer">
+        <div class="register-header">
+          <h2 id="registerTitle">Regístrate para recibir información</h2>
+          <p>Completa tus datos para acceder a nuestro catálogo completo</p>
+        </div>
+        <form action="config/register.php" method="POST">
+              <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
+              </div>
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Número Telefónico</label>
+                <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Registrarse</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('login')">¿Ya tienes cuenta? Iniciar Sesión</button>
+        </div>
+        <div class="register-footer">
+          <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
+        </div>
       </div>
-      <form action="config/register.php" method="POST">
 
-            <div class="form-group">
-              <label>Nombre completo</label>
-              <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
-            </div>
-
-            <div class="form-group">
-              <label>Correo Electrónico</label>
-              <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
-            </div>
-
-            <div class="form-group">
-              <label>Número Telefónico</label>
-              <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
-            </div>
-
-            <div class="form-group">
-              <label>Ciudad</label>
-              <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
-            </div>
-
-            <div class="form-group">
-              <label>Contraseña</label>
-              <input type="password" name="password" class="form-control" placeholder="********" required />
-            </div>
-
-            <button type="submit" class="register-btn">Registrarse</button>
-
-          </form>
-
-      <div class="register-footer">
-        <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
+      <!-- Login Form Container (Initially Hidden) -->
+      <div id="loginFormContainer" style="display: none;">
+        <div class="register-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Bienvenido de nuevo</p>
+        </div>
+        <form action="config/login.php" method="POST">
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Iniciar Sesión</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('register')">¿No tienes cuenta? Registrarse</button>
+        </div>
       </div>
     </div>
   </div>
@@ -82,7 +126,7 @@
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
         
-        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.html">
+        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
           <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
@@ -95,10 +139,32 @@
       
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto align-items-lg-center">
-            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link" href="cursos.html">Cursos</a></li>
-            <li class="nav-item"><a class="nav-link active" href="nosotros.html">Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.html#contacto">Contacto</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="nosotros.php">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
+            
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+            <li class="nav-item user-profile-menu">
+              <button class="user-toggle" aria-expanded="false">
+                <i class="fas fa-user-circle"></i>
+                <span>Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                <i class="fas fa-chevron-down small"></i>
+              </button>
+              <div class="user-dropdown">
+                <div class="user-info">
+                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
+                  <?php if(isset($_SESSION['usuario_correo'])): ?>
+                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
+                  <?php endif; ?>
+                </div>
+                <a href="config/logout.php" class="logout-btn">
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                </a>
+              </div>
+            </li>
+            <?php endif; ?>
+            
           </ul>
         </div>
       </div>
@@ -226,15 +292,15 @@
         </div>
         <div class="footer-col">
           <h3>Enlaces Rápidos</h3>
-          <a href="#inicio">Inicio</a>
-          <a href="cursos.html">Cursos</a>
-          <a href="nosotros.html">Nosotros</a>
-          <a href="#contacto">Contacto</a>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
         </div>
         <div class="footer-col">
           <h3>Cursos</h3>
-          <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
-          <a href="cursos.html#paga">Cursos de Paga</a>
+          <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
+          <a href="cursos.php#paga">Cursos de Paga</a>
           <a href="#">Certificaciones</a>
           <a href="#">Talleres</a>
         </div>
