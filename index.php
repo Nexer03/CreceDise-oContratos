@@ -141,6 +141,7 @@
           <ul class="navbar-nav ms-auto align-items-lg-center">
             <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
             <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
             <li class="nav-item"><a class="nav-link active" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
             
@@ -294,6 +295,7 @@
           <h3>Enlaces Rápidos</h3>
           <a href="index.php">Inicio</a>
           <a href="cursos.php">Cursos</a>
+          <a href="contratos.php">Contratos</a>
           <a href="nosotros.php">Nosotros</a>
           <a href="index.php#contacto">Contacto</a>
         </div>

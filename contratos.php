@@ -1,3 +1,4 @@
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -50,11 +51,11 @@
 
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto align-items-lg-center">
-            <li class="nav-item"><a class="nav-link" href="index.html">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link" href="cursos.html">Cursos</a></li>
-            <li class="nav-item"><a class="nav-link active" href="contratos.html">Contratos</a></li>
-            <li class="nav-item"><a class="nav-link" href="nosotros.html">Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.html#contacto">Contacto</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="contratos.php">Contratos</a></li>
+            <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
           </ul>
         </div>
 
@@ -336,17 +337,18 @@
 
         <div class="footer-col">
           <h3>Enlaces</h3>
-          <a href="index.html">Inicio</a>
-          <a href="cursos.html">Cursos</a>
-          <a href="nosotros.html">Nosotros</a>
-          <a href="index.html#contacto">Contacto</a>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="contratos.php">Contratos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
         </div>
 
         <div class="footer-col">
           <h3>Contratos</h3>
-          <a href="contratos.html">Listado</a>
+          <a href="contratos.php">Listado</a>
           <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.HTML">Cesión de derechos</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
         </div>
       </div>
     </div>
@@ -416,7 +418,8 @@
 
     search.addEventListener('input', applyFilters);
   </script>
-
+  <script>
+    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+  </script>
 </body>
-
 </html>
