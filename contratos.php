@@ -421,5 +421,6 @@
   <script>
     window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
   </script>
+  <script src="scripts.js"></script>
 </body>
 </html>

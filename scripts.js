@@ -305,3 +305,16 @@ function toggleForms(formType) {
     loginForm.style.display = 'none';
   }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  const flashMessages = document.querySelectorAll('.flash-message');
+  flashMessages.forEach(message => {
+    setTimeout(() => {
+      message.style.transition = 'opacity 0.5s ease';
+      message.style.opacity = '0';
+      setTimeout(() => {
+        message.remove();
+      }, 500);
+    }, 3000);
+  });
+});
