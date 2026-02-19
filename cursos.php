@@ -8,6 +8,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Gupter:wght@400;500;700&display=swap" rel="stylesheet">
     <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css" />
     <style>
         /* Estilos existentes se mantienen igual */
@@ -25,63 +27,6 @@
             overflow-x: hidden;
         }
         
-        /* Header */
-        header {
-            background-color: #FFFFFF;
-            padding: 1rem 0;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            position: relative;
-            z-index: 10;
-        }
-        
-        .header-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 1.5rem;
-        }
-        
-        .logo-container {
-            width: 150px;
-        }
-        
-        .logo-container svg {
-            width: 100%;
-            height: auto;
-        }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav li {
-            margin-left: 1.5rem;
-        }
-        
-        nav a {
-            text-decoration: none;
-            color: #1A1C36;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            transition: color 0.3s ease;
-        }
-        
-        nav a:hover {
-            color: #217CE3;
-        }
-        
-        .mobile-menu-btn {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #1A1C36;
-        }
         
         /* Hero Section */
         .hero-section {
@@ -89,6 +34,7 @@
             height: 40vh;
             min-height: 300px;
             display: flex;
+            padding-top: 100px; /* Add padding for fixed header */
             align-items: center;
             justify-content: center;
             overflow: hidden;
@@ -1730,6 +1676,8 @@
             }
         });
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
