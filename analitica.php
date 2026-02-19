@@ -260,11 +260,23 @@ try {
   </header>
 
   <!-- LISTADO DE COMPRAS -->
-  <section class="hero-section">
-      <div class="container" data-aos="fade-up">
-          <h1>Historial de Movimientos</h1>
-          <p>Consulta tus compras y descargas de contratos.</p>
+  <section class="hero" id="inicio">
+    <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
+    <div class="container">
+      <div class="hero-content center-block" data-aos="fade-up" data-aos-duration="800">
+        <h1>Catálogo de Formación: Gestión, Innovación y Valor</h1>
+        <p>
+          Plataforma conceptual y digital diseñada para transformar la gestión empresarial y el desarrollo
+          profesional, alineando objetivos con principios de sostenibilidad total. Funciona como mecanismo
+          de comunicación de facilitación que permite medir, planificar y actuar hacia crecimiento
+          competitivo y responsable.
+        </p>
+        <div class="d-flex gap-2 justify-content-center">
+          <a href="cursos.html" class="btn btn-primary btn-cta">Ver cursos</a>
+          <a href="#contacto" class="btn btn-outline-primary btn-cta-2">Contactar</a>
+        </div>
       </div>
+    </div>
   </section>
 
   <section class="history-container">
