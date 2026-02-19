@@ -75,6 +75,9 @@ require_once __DIR__ . '/config/config.php';
                     <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
                   <?php endif; ?>
                 </div>
+                <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-history"></i> Historial de Compras
+                </a>
                 <a href="config/logout.php" class="logout-btn">
                   <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </a>
