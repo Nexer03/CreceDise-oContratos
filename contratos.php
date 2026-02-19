@@ -1,4 +1,9 @@
-<?php session_start(); ?>
+<?php session_start();
+
+require_once __DIR__ . '/config/config.php';
+
+?>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -25,9 +30,8 @@
   <link rel="stylesheet" href="styles.css" />
   <!-- CSS de esta página -->
   <link rel="stylesheet" href="contratos.css" />
-  <script
-    src="https://www.paypal.com/sdk/js?client-id=BAAeyqbw2h3daWzfzChTa921XqBml5Nww6C7XY3OYLHKpjz8vzLyPlYAIKO2BGedu0mCVTGtMnjV1K8r6Q&components=hosted-buttons&disable-funding=venmo&currency=MXN">
-    </script>
+  <!-- PayPal JS SDK (Buttons). Hosted Buttons (BAA...) NO sirve con /api/create-order.php y /api/capture-order.php -->
+  <script src="https://www.paypal.com/sdk/js?client-id=<?php echo htmlspecialchars(PAYPAL_CLIENT_ID, ENT_QUOTES, 'UTF-8'); ?>&currency=MXN&intent=capture&disable-funding=venmo"></script>
 </head>
 
 <body>
@@ -137,12 +141,8 @@
             </div>
 
             <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-U9PJN3SUK4VTG"></div>
-            <script>
-              paypal.HostedButtons({
-                hostedButtonId: "U9PJN3SUK4VTG",
-              }).render("#paypal-container-U9PJN3SUK4VTG")
-            </script>
+            <!-- No tocamos tu diseño: solo cambiamos el render a PayPal Buttons + endpoints -->
+            <div id="paypal-container-U9PJN3SUK4VTG" class="paypal-btn" data-product="prestacion_servicios"></div>
             <?php else: ?>
             <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
               Iniciar Sesión para Comprar
@@ -169,12 +169,7 @@
             </div>
 
             <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-4AQDTQTL4GPJ4"></div>
-            <script>
-              paypal.HostedButtons({
-                hostedButtonId: "4AQDTQTL4GPJ4",
-              }).render("#paypal-container-4AQDTQTL4GPJ4")
-            </script>
+            <div id="paypal-container-4AQDTQTL4GPJ4" class="paypal-btn" data-product="entrega_express"></div>
             <?php else: ?>
             <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
               Iniciar Sesión para Comprar
@@ -196,12 +191,7 @@
 
 
             <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-GRLEAVMGX7VUA"></div>
-            <script>
-              paypal.HostedButtons({
-                hostedButtonId: "GRLEAVMGX7VUA",
-              }).render("#paypal-container-GRLEAVMGX7VUA")
-            </script>
+            <div id="paypal-container-GRLEAVMGX7VUA" class="paypal-btn" data-product="licencia_temporal"></div>
             <?php else: ?>
             <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
               Iniciar Sesión para Comprar
@@ -223,12 +213,7 @@
             </div>
 
             <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-F3Y4CE6RFLNV4"></div>
-            <script>
-              paypal.HostedButtons({
-                hostedButtonId: "F3Y4CE6RFLNV4",
-              }).render("#paypal-container-F3Y4CE6RFLNV4")
-            </script>
+            <div id="paypal-container-F3Y4CE6RFLNV4" class="paypal-btn" data-product="branding_diseno"></div>
             <?php else: ?>
             <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
               Iniciar Sesión para Comprar
@@ -254,10 +239,17 @@
             </div>
 
             <div class="contract-actions">
-              <a class="btn btn-primary btn-cta w-100" href="contratoFRELANCE.HTML">
-                Abrir contrato
-              </a>
-            </div>
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+              <div class="paypal-wrap">
+                <div class="paypal-btn" data-product="freelance"></div>
+              </div>
+            <?php else: ?>
+              <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+                Iniciar Sesión para Comprar
+              </button>
+            <?php endif; ?>
+          </div>
+
           </div>
         </div>
 
@@ -278,9 +270,15 @@
             </div>
 
             <div class="contract-actions">
-              <a class="btn btn-primary btn-cta w-100" href="contratoCOLABORACIONES.HTML">
-                Abrir contrato
-              </a>
+              <?php if(isset($_SESSION['usuario_id'])): ?>
+                <div class="paypal-wrap">
+                  <div class="paypal-btn" data-product="colaboracion"></div>
+                </div>
+              <?php else: ?>
+                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+                  Iniciar Sesión para Comprar
+                </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -302,9 +300,15 @@
             </div>
 
             <div class="contract-actions">
-              <a class="btn btn-primary btn-cta w-100" href="contratoOBRAPORENCARGO.HTML">
-                Abrir contrato
-              </a>
+              <?php if(isset($_SESSION['usuario_id'])): ?>
+                <div class="paypal-wrap">
+                  <div class="paypal-btn" data-product="obra_por_encargo"></div>
+                </div>
+              <?php else: ?>
+                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+                  Iniciar Sesión para Comprar
+                </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -326,9 +330,15 @@
             </div>
 
             <div class="contract-actions">
-              <a class="btn btn-primary btn-cta w-100" href="contrato%20CESIONDEDERECHOS.HTML">
-                Abrir contrato
-              </a>
+              <?php if(isset($_SESSION['usuario_id'])): ?>
+                <div class="paypal-wrap">
+                  <div class="paypal-btn" data-product="cesion_derechos"></div>
+                </div>
+              <?php else: ?>
+                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+                  Iniciar Sesión para Comprar
+                </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>
@@ -351,15 +361,19 @@
             </div>
 
             <div class="contract-actions">
-              <a class="btn btn-primary btn-cta w-100" href="contratoTERMINACION.HTML">
-                Abrir contrato
-              </a>
+              <?php if(isset($_SESSION['usuario_id'])): ?>
+                <div class="paypal-wrap">
+                  <div class="paypal-btn" data-product="terminacion_anticipada"></div>
+                </div>
+              <?php else: ?>
+                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+                  Iniciar Sesión para Comprar
+                </button>
+              <?php endif; ?>
             </div>
           </div>
         </div>
-
       </div>
-
       <div class="contracts-empty" id="contractsEmpty" hidden>
         <p>No se encontraron contratos con ese criterio.</p>
       </div>
@@ -468,6 +482,52 @@
     });
 
     search.addEventListener('input', applyFilters);
+
+    // --- PayPal Buttons (usa tus endpoints) ---
+    // No tocamos tu UI: renderizamos dentro de los mismos contenedores.
+    (function initPayPalButtons(){
+      if (!window.paypal) return;
+
+      const renderOne = (el) => {
+        const product = el.dataset.product;
+        if (!product) return;
+
+        paypal.Buttons({
+          createOrder: () => {
+            return fetch('/api/create-order.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ product })
+            })
+            .then(r => r.json())
+            .then(d => {
+              if (!d || !d.id) throw new Error(d?.error || 'No order id');
+              return d.id;
+            });
+          },
+          onApprove: (data) => {
+            return fetch('/api/capture-order.php', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ orderID: data.orderID, product })
+            })
+            .then(r => r.json())
+            .then(d => {
+              // Tu capture puede regresar el JSON completo de PayPal o {ok:true}
+              const ok = d?.ok === true || d?.status === 'COMPLETED';
+              if (!ok) throw new Error(d?.error || 'Pago no validado');
+              alert('Pago completado (Sandbox)');
+            });
+          },
+          onError: (err) => {
+            console.error('PayPal error:', err);
+            alert('Error en el pago. Revisa consola (F12).');
+          }
+        }).render(el);
+      };
+
+      document.querySelectorAll('.paypal-btn').forEach(renderOne);
+    })();
   </script>
   <!-- Registration/Login Modal -->
   <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
