@@ -368,7 +368,7 @@ h6 {
   background: var(--white);
   border-radius: 15px;
   padding: 30px;
-  max-width: 500px;
+  max-width: 700px;
   width: 90%;
   box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
   transform: translateY(20px);
@@ -1497,5 +1497,63 @@ ul {
   to {
     opacity: 1;
     transform: translateX(0);
+  }
+}
+
+/* Modal Grid Layout Optimization */
+#registerFormContainer form,
+#loginFormContainer form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+#registerFormContainer .form-group,
+#loginFormContainer .form-group {
+  margin-bottom: 0;
+}
+
+/* Register Form Specifics */
+#registerFormContainer .form-group:nth-child(1),
+#registerFormContainer .form-group:nth-child(2) {
+  grid-column: span 1;
+}
+
+#registerFormContainer .form-group:nth-child(3),
+#registerFormContainer .form-group:nth-child(4) {
+  grid-column: span 1;
+}
+
+#registerFormContainer .form-group:last-of-type {
+  grid-column: span 2;
+}
+
+#registerFormContainer button[type="submit"] {
+  grid-column: span 2;
+  margin-top: 10px;
+}
+
+/* Login Form Specifics: Side-by-side fields to save vertical space */
+#loginFormContainer .form-group {
+  grid-column: span 1;
+}
+
+#loginFormContainer button[type="submit"] {
+  grid-column: span 2;
+  margin-top: 10px;
+}
+
+@media (max-width: 600px) {
+
+  #registerFormContainer form,
+  #loginFormContainer form {
+    grid-template-columns: 1fr;
+  }
+
+  #registerFormContainer .form-group,
+  #loginFormContainer .form-group,
+  #registerFormContainer button[type="submit"],
+  #loginFormContainer button[type="submit"] {
+    grid-column: span 1 !important;
   }
 }
