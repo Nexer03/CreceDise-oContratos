@@ -78,7 +78,7 @@
             </li>
             <?php else: ?>
             <li class="nav-item ms-lg-2">
-              <button class="btn-cta-2" onclick="openModal()">
+              <button class="btn btn-primary btn-cta" onclick="showRegisterModal()">
                 Registrarse / Iniciar Sesión
               </button>
             </li>
@@ -136,12 +136,18 @@
               </div>
             </div>
 
+            <?php if(isset($_SESSION['usuario_id'])): ?>
             <div id="paypal-container-U9PJN3SUK4VTG"></div>
             <script>
               paypal.HostedButtons({
                 hostedButtonId: "U9PJN3SUK4VTG",
               }).render("#paypal-container-U9PJN3SUK4VTG")
             </script>
+            <?php else: ?>
+            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+              Iniciar Sesión para Comprar
+            </button>
+            <?php endif; ?>
 
 
           </div>
@@ -162,12 +168,18 @@
 
             </div>
 
+            <?php if(isset($_SESSION['usuario_id'])): ?>
             <div id="paypal-container-4AQDTQTL4GPJ4"></div>
             <script>
               paypal.HostedButtons({
                 hostedButtonId: "4AQDTQTL4GPJ4",
               }).render("#paypal-container-4AQDTQTL4GPJ4")
             </script>
+            <?php else: ?>
+            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+              Iniciar Sesión para Comprar
+            </button>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -183,12 +195,18 @@
             </div>
 
 
+            <?php if(isset($_SESSION['usuario_id'])): ?>
             <div id="paypal-container-GRLEAVMGX7VUA"></div>
             <script>
               paypal.HostedButtons({
                 hostedButtonId: "GRLEAVMGX7VUA",
               }).render("#paypal-container-GRLEAVMGX7VUA")
             </script>
+            <?php else: ?>
+            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+              Iniciar Sesión para Comprar
+            </button>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -204,12 +222,18 @@
               </div>
             </div>
 
+            <?php if(isset($_SESSION['usuario_id'])): ?>
             <div id="paypal-container-F3Y4CE6RFLNV4"></div>
             <script>
               paypal.HostedButtons({
                 hostedButtonId: "F3Y4CE6RFLNV4",
               }).render("#paypal-container-F3Y4CE6RFLNV4")
             </script>
+            <?php else: ?>
+            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
+              Iniciar Sesión para Comprar
+            </button>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -448,7 +472,7 @@
   <!-- Registration/Login Modal -->
   <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
     <div class="register-content">
-      <button class="register-close" id="registerClose" aria-label="Cerrar">&times;</button>
+      <button class="register-close" id="registerClose" aria-label="Cerrar" onclick="closeRegisterModal()">&times;</button>
       
       <!-- Registration Form Container -->
       <div id="registerFormContainer">

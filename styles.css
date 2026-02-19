@@ -761,34 +761,47 @@ footer>.container {
 
 .social-links {
   display: flex;
-  gap: 14px;
-  margin-top: 18px;
+  gap: 15px;
+  margin-top: 15px;
 }
 
 .social-centered {
-  width: 100%;
-  justify-content: center;
+  align-items: center;
 }
 
 .social-link {
-  display: inline-flex;
+  display: flex !important;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  background-color: rgba(255, 255, 255, .12);
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  color: rgba(255, 255, 255, .9);
+  background-color: var(--light-bg);
+  color: var(--dark-blue);
   text-decoration: none;
-  transition: transform .2s ease, background-color .2s ease, color .2s ease;
+  transition: all 0.3s ease;
   font-size: 1.2rem;
-  backdrop-filter: blur(2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  padding: 0 !important;
+}
+
+.social-link i {
+  line-height: normal !important;
+  font-size: inherit;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: inline-block;
+  width: auto;
+  height: auto;
+  color: var(--dark-blue) !important;
+  /* Force visibility */
 }
 
 .social-link:hover {
   background-color: var(--bright-blue);
-  color: #fff;
-  transform: translateY(-3px) scale(1.1);
+  color: var(--white);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(33, 124, 227, 0.3);
 }
 
 .copyright {

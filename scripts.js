@@ -43,6 +43,7 @@ function requestTick() {
 
 function showWelcomeOverlay() {
   const overlay = document.getElementById('welcomeOverlay');
+  if (!overlay) return;
   overlay.classList.remove('hidden');
 
 
