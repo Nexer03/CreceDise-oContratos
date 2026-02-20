@@ -427,10 +427,13 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                 <a href="admin_analitica.php" class="admin-btn">
                   <i class="fas fa-chart-line"></i> Panel Admin
                 </a>
-
+                <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo
+                </a>
                 <a href="analitica.php" class="history-btn">
                   <i class="fas fa-receipt"></i> Historial de Compras
                 </a>
+                
 
                 <a href="config/logout.php" class="logout-btn">
                   <i class="fas fa-sign-out-alt"></i> Cerrar Sesión

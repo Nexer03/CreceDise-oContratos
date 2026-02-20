@@ -72,6 +72,9 @@ require_once __DIR__ . '/config/admin_flag.php';
                     <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                       <i class="fas fa-chart-line"></i> Panel Admin
                     </a>
+                    <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo
+                </a>
                   <?php endif; ?>
                 <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-history"></i> Historial de Compras
