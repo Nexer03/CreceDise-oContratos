@@ -369,6 +369,16 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
         font-weight: 700;
       }
       .page-link { border-radius: 10px; }
+      :root { --nav-offset: 96px; } /* fallback */
+
+      body {
+        padding-top: var(--nav-offset);
+      }
+
+      /* ya no lo ocupas si haces padding-top global */
+      .hero-section {
+        margin-top: 0 !important;
+      }
   </style>
 </head>
 
@@ -680,5 +690,17 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
           }
       });
   </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('.custom-navbar');
+    const setOffset = () => {
+      const h = nav ? nav.offsetHeight : 80;
+      // +12 para que respire un poco
+      document.documentElement.style.setProperty('--nav-offset', (h + 12) + 'px');
+    };
+    setOffset();
+    window.addEventListener('resize', setOffset);
+  });
+</script>
 </body>
 </html>
