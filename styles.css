@@ -212,7 +212,7 @@ h6 {
   margin-top: 200px;
   padding-top: 60px;
   padding-bottom: 48px;
-  text-align: center;
+  align-items: bottom;
   position: relative;
   overflow: hidden;
 }

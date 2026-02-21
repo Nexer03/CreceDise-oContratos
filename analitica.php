@@ -227,16 +227,7 @@ try {
         background: #f0f4f8;
         color: #217CE3;
       }
-      :root { --nav-offset: 96px; } /* fallback */
-
-      body {
-        padding-top: var(--nav-offset);
-      }
-
-      /* ya no lo ocupas si haces padding-top global */
-      .hero-section {
-        margin-top: 0 !important;
-      }
+      /* Eliminando el padding-top global para que el hero se ajuste al navbar transparente */
   </style>
 </head>
 
@@ -314,16 +305,13 @@ try {
     <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
     <div class="container">
       <div class="hero-content center-block" data-aos="fade-up" data-aos-duration="800">
-        <h1>Catálogo de Formación: Gestión, Innovación y Valor</h1>
+        <h1>Tus Contratos Adquiridos</h1>
         <p>
-          Plataforma conceptual y digital diseñada para transformar la gestión empresarial y el desarrollo
-          profesional, alineando objetivos con principios de sostenibilidad total. Funciona como mecanismo
-          de comunicación de facilitación que permite medir, planificar y actuar hacia crecimiento
-          competitivo y responsable.
+          Aquí tienes un registro de todos los contratos que has comprado.
+          Puedes acceder a ellos en cualquier momento para llenarlos y descargar su versión final en PDF sin marcas.
         </p>
         <div class="d-flex gap-2 justify-content-center">
-          <a href="cursos.html" class="btn btn-primary btn-cta">Ver cursos</a>
-          <a href="#contacto" class="btn btn-outline-primary btn-cta-2">Contactar</a>
+          <a href="contratos.php" class="btn btn-primary btn-cta">Ver más contratos</a>
         </div>
       </div>
     </div>
@@ -451,16 +439,23 @@ try {
       });
   </script>
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const nav = document.querySelector('.custom-navbar');
-    const setOffset = () => {
-      const h = nav ? nav.offsetHeight : 80;
-      // +12 para que respire un poco
-      document.documentElement.style.setProperty('--nav-offset', (h + 12) + 'px');
-    };
-    setOffset();
-    window.addEventListener('resize', setOffset);
-  });
-</script>
+    // Efecto navbar al hacer scroll
+    (function () {
+      const navbar = document.getElementById('mainNavbar');
+      let lastScrollTop = 0;
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > 100) navbar.classList.add('navbar-scrolled');
+        else navbar.classList.remove('navbar-scrolled');
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) navbar.classList.add('navbar-hidden');
+        else navbar.classList.remove('navbar-hidden');
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
