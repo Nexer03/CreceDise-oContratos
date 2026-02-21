@@ -13,16 +13,33 @@ if (!isset($_SESSION['usuario_id'])) {
 $usuarioId = $_SESSION['usuario_id'];
 $catalog = require __DIR__ . '/config/catalog.php';
 
+// --- Admin flag (no rompe nada) ---
+$isAdmin = 0;
+
+// Si ya lo guardas en sesión, úsalo
+if (isset($_SESSION['is_admin'])) {
+    $isAdmin = (int)$_SESSION['is_admin'];
+} else {
+    // Si no, lo consultamos a DB (fallback seguro)
+    try {
+        $stAdmin = $pdo->prepare("SELECT is_admin FROM usuarios WHERE id = :id LIMIT 1");
+        $stAdmin->execute([':id' => $usuarioId]);
+        $rowAdmin = $stAdmin->fetch(PDO::FETCH_ASSOC);
+        $isAdmin = (int)($rowAdmin['is_admin'] ?? 0);
+        $_SESSION['is_admin'] = $isAdmin; // cache en sesión
+    } catch (PDOException $e) {
+        $isAdmin = 0; // si falla, mejor no dar acceso
+    }
+}
+
 // Fetch Payments
 $payments = [];
 $error = null;
 try {
-    // Attempt to select created_at if it exists
     $stmt = $pdo->prepare("SELECT * FROM payments WHERE usuario_id = :uid ORDER BY id DESC");
     $stmt->execute([':uid' => $usuarioId]);
     $payments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    // Table might not exist or connection failed
     $error = $e->getMessage();
 }
 
@@ -193,6 +210,33 @@ try {
         background: #f0f4f8;
         color: #217CE3;
       }
+
+      /* (opcional) estilo igual al history-btn para admin */
+      .admin-btn {
+        color: var(--dark-blue);
+        text-decoration: none;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 8px 10px;
+        border-radius: 6px;
+        transition: background 0.2s;
+      }
+      .admin-btn:hover {
+        background: #f0f4f8;
+        color: #217CE3;
+      }
+      :root { --nav-offset: 96px; } /* fallback */
+
+      body {
+        padding-top: var(--nav-offset);
+      }
+
+      /* ya no lo ocupas si haces padding-top global */
+      .hero-section {
+        margin-top: 0 !important;
+      }
   </style>
 </head>
 
@@ -237,6 +281,12 @@ try {
                     <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
                   <?php endif; ?>
                 </div>
+
+                <?php if(!empty($isAdmin)): ?>
+                  <a href="admin_analitica.php" class="admin-btn">
+                    <i class="fas fa-chart-line"></i> Panel Admin
+                  </a>
+                <?php endif; ?>
                 
                 <a href="analitica.php" class="history-btn">
                   <i class="fas fa-receipt"></i> Historial de Compras
@@ -313,7 +363,6 @@ try {
                           <tbody>
                               <?php foreach ($payments as $pay): 
                                   $productKey = $pay['product'] ?? '';
-                                  // Look up title in catalog, fallback to DB value or Key
                                   $title = $catalog[$productKey]['title'] ?? ucfirst(str_replace('_', ' ', $productKey));
                                   if (empty($title)) $title = "Producto Desconocido";
 
@@ -324,7 +373,6 @@ try {
                                   $statusOriginal = $pay['status'] ?? 'UNKNOWN';
                                   $status = strtoupper($statusOriginal);
                                   
-                                  // Handle Date
                                   $dateStr = 'Fecha no registrada';
                                   if (!empty($pay['created_at'])) {
                                       $dateStr = date('d/m/Y H:i', strtotime($pay['created_at']));
@@ -332,7 +380,6 @@ try {
                                        $dateStr = date('d/m/Y H:i', strtotime($pay['fecha']));
                                   }
 
-                                  // Status Class
                                   $statusClass = 'status-pending';
                                   $statusText = 'Pendiente';
                                   
@@ -403,5 +450,17 @@ try {
           }
       });
   </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const nav = document.querySelector('.custom-navbar');
+    const setOffset = () => {
+      const h = nav ? nav.offsetHeight : 80;
+      // +12 para que respire un poco
+      document.documentElement.style.setProperty('--nav-offset', (h + 12) + 'px');
+    };
+    setOffset();
+    window.addEventListener('resize', setOffset);
+  });
+</script>
 </body>
 </html>

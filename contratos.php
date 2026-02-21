@@ -1,9 +1,20 @@
 <?php session_start();
 
 require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/admin_flag.php';
 
 ?>
+<?php
+require_once __DIR__ . '/config/database.php';
+session_start();
 
+$comprados = [];
+if (isset($_SESSION['usuario_id'])) {
+  $stmt = $pdo->prepare("SELECT product FROM payments WHERE usuario_id=? AND status='COMPLETED'");
+  $stmt->execute([$_SESSION['usuario_id']]);
+  $comprados = $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 
@@ -75,6 +86,14 @@ require_once __DIR__ . '/config/config.php';
                     <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
                   <?php endif; ?>
                 </div>
+                <?php if (!empty($isAdmin)): ?>
+                  <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                    <i class="fas fa-chart-line"></i> Panel Admin
+                  </a>
+                  <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo
+                </a>
+                <?php endif; ?>
                 <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-history"></i> Historial de Compras
                 </a>
@@ -126,263 +145,253 @@ require_once __DIR__ . '/config/config.php';
   </section>
 
   <!-- LISTADO DE CONTRATOS -->
-  <section class="contracts-list">
-    <div class="container">
+    <section class="contracts-list">
+      <div class="container">
+        <div class="row g-4" id="contractsGrid">
 
-      <div class="row g-4" id="contractsGrid">
-
-        <!-- Prestación de servicios -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all"
-          data-title="Prestación de Servicios">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-file-signature"></i></div>
-              <div>
-                <h3>Prestación de Servicios</h3>
-                <p>Contrato legal editable + PDF limpio.</p>
-              </div>
-            </div>
-
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-            <!-- No tocamos tu diseño: solo cambiamos el render a PayPal Buttons + endpoints -->
-            <div id="paypal-container-U9PJN3SUK4VTG" class="paypal-btn" data-product="prestacion_servicios"></div>
-            <?php else: ?>
-            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-              Iniciar Sesión para Comprar
-            </button>
-            <?php endif; ?>
-
-
-          </div>
-        </div>
-
-        <!-- Entrega Express -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Entrega Express">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-truck-fast"></i></div>
-              <div>
-                <h3>Entrega Express</h3>
-                <p>Condiciones de entrega, tiempos y penalizaciones.</p>
-              </div>
-            </div>
-
-            <div class="contract-meta">
-
-            </div>
-
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-4AQDTQTL4GPJ4" class="paypal-btn" data-product="entrega_express"></div>
-            <?php else: ?>
-            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-              Iniciar Sesión para Comprar
-            </button>
-            <?php endif; ?>
-          </div>
-        </div>
-
-        <!-- Licencia Temporal -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Licencia Temporal">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-clock"></i></div>
-              <div>
-                <h3>Licencia Temporal</h3>
-                <p>Uso por tiempo definido, territorio y restricciones.</p>
-              </div>
-            </div>
-
-
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-GRLEAVMGX7VUA" class="paypal-btn" data-product="licencia_temporal"></div>
-            <?php else: ?>
-            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-              Iniciar Sesión para Comprar
-            </button>
-            <?php endif; ?>
-          </div>
-        </div>
-
-        <!-- Branding -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all"
-          data-title="Branding y Diseño Gráfico">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-pen-nib"></i></div>
-              <div>
-                <h3>Branding y Diseño</h3>
-                <p>Alcance, entregables y propiedad intelectual.</p>
-              </div>
-            </div>
-
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-            <div id="paypal-container-F3Y4CE6RFLNV4" class="paypal-btn" data-product="branding_diseno"></div>
-            <?php else: ?>
-            <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-              Iniciar Sesión para Comprar
-            </button>
-            <?php endif; ?>
-          </div>
-        </div>
-
-        <!-- Freelance -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Freelance">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-user-tie"></i></div>
-              <div>
-                <h3>Freelance</h3>
-                <p>Servicios independientes, pagos y entregas.</p>
-              </div>
-            </div>
-
-            <div class="contract-meta">
-              <span class="pill">Editable</span>
-              <span class="pill">PDF</span>
-            </div>
-
-            <div class="contract-actions">
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-              <div class="paypal-wrap">
-                <div class="paypal-btn" data-product="freelance"></div>
-              </div>
-            <?php else: ?>
-              <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-                Iniciar Sesión para Comprar
-              </button>
-            <?php endif; ?>
-          </div>
-
-          </div>
-        </div>
-
-        <!-- Colaboración -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Colaboración">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-people-group"></i></div>
-              <div>
-                <h3>Colaboración</h3>
-                <p>Acuerdo de colaboración con entregables.</p>
-              </div>
-            </div>
-
-            <div class="contract-meta">
-              <span class="pill">Editable</span>
-              <span class="pill">PDF</span>
-            </div>
-
-            <div class="contract-actions">
-              <?php if(isset($_SESSION['usuario_id'])): ?>
-                <div class="paypal-wrap">
-                  <div class="paypal-btn" data-product="colaboracion"></div>
+          <!-- Prestación de servicios -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Prestación de Servicios">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-file-signature"></i></div>
+                <div>
+                  <h3>Prestación de Servicios</h3>
+                  <p>Contrato legal editable + PDF limpio.</p>
                 </div>
-              <?php else: ?>
-                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-                  Iniciar Sesión para Comprar
-                </button>
-              <?php endif; ?>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('prestacion_servicios', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=prestacion_servicios">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="prestacion_servicios"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
             </div>
           </div>
-        </div>
 
-        <!-- Obra por encargo -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Obra por Encargo">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-copyright"></i></div>
-              <div>
-                <h3>Obra por Encargo</h3>
-                <p>Work for hire, entregables y cesión patrimonial.</p>
+          <!-- Entrega Express -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Entrega Express">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-truck-fast"></i></div>
+                <div>
+                  <h3>Entrega Express</h3>
+                  <p>Condiciones de entrega, tiempos y penalizaciones.</p>
+                </div>
+              </div>
+
+              <div class="contract-meta"></div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('entrega_express', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=entrega_express">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="entrega_express"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
               </div>
             </div>
-
-            <div class="contract-meta">
-              <span class="pill">Editable</span>
-              <span class="pill">PDF</span>
-            </div>
-
-            <div class="contract-actions">
-              <?php if(isset($_SESSION['usuario_id'])): ?>
-                <div class="paypal-wrap">
-                  <div class="paypal-btn" data-product="obra_por_encargo"></div>
-                </div>
-              <?php else: ?>
-                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-                  Iniciar Sesión para Comprar
-                </button>
-              <?php endif; ?>
-            </div>
           </div>
-        </div>
 
-        <!-- Cesión de derechos -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Cesión de Derechos">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-file-contract"></i></div>
-              <div>
-                <h3>Cesión de Derechos</h3>
-                <p>Cesión patrimonial, territorio y vigencia.</p>
+          <!-- Licencia Temporal -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Licencia Temporal">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                  <h3>Licencia Temporal</h3>
+                  <p>Uso por tiempo definido, territorio y restricciones.</p>
+                </div>
               </div>
-            </div>
 
-            <div class="contract-meta">
-              <span class="pill">Editable</span>
-              <span class="pill">PDF</span>
-            </div>
-
-            <div class="contract-actions">
-              <?php if(isset($_SESSION['usuario_id'])): ?>
-                <div class="paypal-wrap">
-                  <div class="paypal-btn" data-product="cesion_derechos"></div>
-                </div>
-              <?php else: ?>
-                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-                  Iniciar Sesión para Comprar
-                </button>
-              <?php endif; ?>
-            </div>
-          </div>
-        </div>
-
-        <!-- Terminación -->
-        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all"
-          data-title="Terminación Anticipada">
-          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
-            <div class="contract-card-header">
-              <div class="contract-icon"><i class="fa-solid fa-ban"></i></div>
-              <div>
-                <h3>Terminación Anticipada</h3>
-                <p>Convenio de terminación y finiquito.</p>
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('licencia_temporal', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=licencia_temporal">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="licencia_temporal"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
               </div>
-            </div>
 
-            <div class="contract-meta">
-              <span class="pill">Editable</span>
-              <span class="pill">PDF</span>
-            </div>
-
-            <div class="contract-actions">
-              <?php if(isset($_SESSION['usuario_id'])): ?>
-                <div class="paypal-wrap">
-                  <div class="paypal-btn" data-product="terminacion_anticipada"></div>
-                </div>
-              <?php else: ?>
-                <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">
-                  Iniciar Sesión para Comprar
-                </button>
-              <?php endif; ?>
             </div>
           </div>
+
+          <!-- Branding -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Branding y Diseño Gráfico">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-pen-nib"></i></div>
+                <div>
+                  <h3>Branding y Diseño</h3>
+                  <p>Alcance, entregables y propiedad intelectual.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('branding_diseno', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=branding_diseno">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="branding_diseno"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Freelance -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Freelance">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-user-tie"></i></div>
+                <div>
+                  <h3>Freelance</h3>
+                  <p>Servicios independientes, pagos y entregas.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('freelance', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=freelance">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="freelance"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Colaboración -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Colaboración">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-people-group"></i></div>
+                <div>
+                  <h3>Colaboración</h3>
+                  <p>Acuerdo de colaboración con entregables.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('colaboracion', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=colaboracion">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="colaboracion"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Obra por encargo -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Obra por Encargo">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-copyright"></i></div>
+                <div>
+                  <h3>Obra por Encargo</h3>
+                  <p>Work for hire, entregables y cesión patrimonial.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('obra_por_encargo', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=obra_por_encargo">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="obra_por_encargo"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Cesión de derechos -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="propiedad all" data-title="Cesión de Derechos">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="50">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-file-contract"></i></div>
+                <div>
+                  <h3>Cesión de Derechos</h3>
+                  <p>Cesión patrimonial, territorio y vigencia.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('cesion_derechos', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=cesion_derechos">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="cesion_derechos"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Terminación -->
+          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Terminación Anticipada">
+            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+              <div class="contract-card-header">
+                <div class="contract-icon"><i class="fa-solid fa-ban"></i></div>
+                <div>
+                  <h3>Terminación Anticipada</h3>
+                  <p>Convenio de terminación y finiquito.</p>
+                </div>
+              </div>
+
+              <div class="contract-actions">
+                <?php if(isset($_SESSION['usuario_id'])): ?>
+                  <?php if(in_array('terminacion_anticipada', $comprados)): ?>
+                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=terminacion_anticipada">Abrir contrato</a>
+                  <?php else: ?>
+                    <div class="paypal-btn" data-product="terminacion_anticipada"></div>
+                  <?php endif; ?>
+                <?php else: ?>
+                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+                <?php endif; ?>
+              </div>
+
+            </div>
+          </div>
+
         </div>
+
+        <div class="contracts-empty" id="contractsEmpty" hidden>
+          <p>No se encontraron contratos con ese criterio.</p>
+        </div>
+
       </div>
-      <div class="contracts-empty" id="contractsEmpty" hidden>
-        <p>No se encontraron contratos con ese criterio.</p>
-      </div>
-
-    </div>
-  </section>
+    </section>
 
   <!-- Footer (ligero, consistente) -->
   <footer class="mt-5">
@@ -516,10 +525,10 @@ require_once __DIR__ . '/config/config.php';
             })
             .then(r => r.json())
             .then(d => {
-              // Tu capture puede regresar el JSON completo de PayPal o {ok:true}
               const ok = d?.ok === true || d?.status === 'COMPLETED';
               if (!ok) throw new Error(d?.error || 'Pago no validado');
-              alert('Pago completado (Sandbox)');
+
+              window.location.href = `descargar.php?product=${encodeURIComponent(product)}`;
             });
           },
           onError: (err) => {
