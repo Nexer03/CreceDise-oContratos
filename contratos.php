@@ -55,7 +55,7 @@ if (isset($_SESSION['usuario_id'])) {
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
 
-        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.html">
+        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
           <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 

@@ -201,7 +201,7 @@ require_once __DIR__ . '/config/admin_flag.php';
           competitivo y responsable.
         </p>
         <div class="d-flex gap-2 justify-content-center">
-          <a href="cursos.html" class="btn btn-primary btn-cta">Ver cursos</a>
+          <a href="cursos.php" class="btn btn-primary btn-cta">Ver cursos</a>
           <a href="#contacto" class="btn btn-outline-primary btn-cta-2">Contactar</a>
         </div>
       </div>
@@ -258,7 +258,7 @@ require_once __DIR__ . '/config/admin_flag.php';
 
         
         <div class="text-center mt-4">
-          <a href="nosotros.html" class="btn btn-lg btn-cta about-big-cta">Conoce Más Sobre Nosotros</a>
+          <a href="nosotros.php" class="btn btn-lg btn-cta about-big-cta">Conoce Más Sobre Nosotros</a>
         </div>
       </div>
     </div>

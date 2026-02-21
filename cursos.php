@@ -1451,7 +1451,7 @@ require_once __DIR__ . '/config/admin_flag.php';
                 </div>
                 
                 <div style="text-align: center; margin-top: 2rem;">
-                    <a href="index3.html#contacto" class="btn btn-primary">Solicitar Asesoría Personalizada</a>
+                    <a href="index.php#contacto" class="btn btn-primary">Solicitar Asesoría Personalizada</a>
                 </div>
             </div>
         </div>
