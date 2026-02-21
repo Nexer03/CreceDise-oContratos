@@ -150,30 +150,60 @@ if (isset($_SESSION['usuario_id'])) {
         <div class="row g-4" id="contractsGrid">
 
           <!-- Prestación de servicios -->
-          <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Prestación de Servicios">
-            <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
-              <div class="contract-card-header">
-                <div class="contract-icon"><i class="fa-solid fa-file-signature"></i></div>
-                <div>
-                  <h3>Prestación de Servicios</h3>
-                  <p>Contrato legal editable + PDF limpio.</p>
-                </div>
+        <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="servicios all" data-title="Prestación de Servicios">
+          <div class="contract-card h-100" data-aos="fade-up" data-aos-duration="800">
+            <div class="contract-card-header">
+              <div class="contract-icon"><i class="fa-solid fa-file-signature"></i></div>
+              <div>
+                <h3>Prestación de Servicios</h3>
+                <p>Contrato legal editable + PDF limpio.</p>
               </div>
-
-              <div class="contract-actions">
-                <?php if(isset($_SESSION['usuario_id'])): ?>
-                  <?php if(in_array('prestacion_servicios', $comprados)): ?>
-                    <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=prestacion_servicios">Abrir contrato</a>
-                  <?php else: ?>
-                    <div class="paypal-btn" data-product="prestacion_servicios"></div>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
-                <?php endif; ?>
-              </div>
-
             </div>
+
+          <!-- PREVIEW (Bootstrap Carousel) -->
+          <div id="carousel-prestacion-servicios" class="carousel slide contract-carousel" data-bs-ride="false">
+            <div class="carousel-indicators">
+              <button type="button" data-bs-target="#carousel-prestacion-servicios" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+              <button type="button" data-bs-target="#carousel-prestacion-servicios" data-bs-slide-to="1" aria-label="Slide 2"></button>
+              <button type="button" data-bs-target="#carousel-prestacion-servicios" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            </div>
+
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="recursos/prestacion_servicios/1.jpg" class="d-block w-100" alt="Prestación de Servicios - Página 1">
+              </div>
+              <div class="carousel-item">
+                <img src="recursos/prestacion_servicios/2.jpg" class="d-block w-100" alt="Prestación de Servicios - Página 2">
+              </div>
+              <div class="carousel-item">
+                <img src="recursos/prestacion_servicios/3.jpg" class="d-block w-100" alt="Prestación de Servicios - Página 3">
+              </div>
+            </div>
+
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel-prestacion-servicios" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Anterior</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel-prestacion-servicios" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Siguiente</span>
+            </button>
           </div>
+
+          <div class="contract-actions">
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+              <?php if(in_array('prestacion_servicios', $comprados)): ?>
+                <a class="btn btn-primary btn-cta w-100" href="descargar.php?product=prestacion_servicios">Abrir contrato</a>
+              <?php else: ?>
+                <div class="paypal-btn" data-product="prestacion_servicios"></div>
+              <?php endif; ?>
+            <?php else: ?>
+              <button class="btn btn-primary btn-cta w-100" onclick="showRegisterModal()">Iniciar Sesión para Comprar</button>
+            <?php endif; ?>
+          </div>
+
+        </div>
+      </div>
 
           <!-- Entrega Express -->
           <div class="col-12 col-md-6 col-lg-4 contract-item" data-tags="operacion all" data-title="Entrega Express">
@@ -186,7 +216,35 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
               </div>
 
-              <div class="contract-meta"></div>
+              <!-- PREVIEW (Bootstrap Carousel) -->
+            <div id="carousel-entrega-express" class="carousel slide contract-carousel" data-bs-ride="false">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel-entrega-express" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel-entrega-express" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel-entrega-express" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              </div>
+
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="recursos/entrega_express/1.jpg" class="d-block w-100" alt="Entrega Express - Página 1">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/entrega_express/2.jpg" class="d-block w-100" alt="Entrega Express - Página 2">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/entrega_express/3.jpg" class="d-block w-100" alt="Entrega Express - Página 3">
+                </div>
+              </div>
+
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel-entrega-express" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel-entrega-express" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+              </button>
+            </div>
 
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
@@ -212,7 +270,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Uso por tiempo definido, territorio y restricciones.</p>
                 </div>
               </div>
+            <!-- PREVIEW (Bootstrap Carousel) -->
+            <div id="carousel-licencia-temporal" class="carousel slide contract-carousel" data-bs-ride="false">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel-licencia-temporal" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel-licencia-temporal" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel-licencia-temporal" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              </div>
 
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="recursos/licencia_temporal/1.jpg" class="d-block w-100" alt="Licencia Temporal - Página 1">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/licencia_temporal/2.jpg" class="d-block w-100" alt="Licencia Temporal - Página 2">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/licencia_temporal/3.jpg" class="d-block w-100" alt="Licencia Temporal - Página 3">
+                </div>
+              </div>
+
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel-licencia-temporal" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel-licencia-temporal" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+              </button>
+            </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('licencia_temporal', $comprados)): ?>
@@ -238,7 +324,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Alcance, entregables y propiedad intelectual.</p>
                 </div>
               </div>
+              <!-- PREVIEW (Bootstrap Carousel) -->
+              <div id="carousel-branding-diseno" class="carousel slide contract-carousel" data-bs-ride="false">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carousel-branding-diseno" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carousel-branding-diseno" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carousel-branding-diseno" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
 
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="recursos/branding_diseno/1.jpg" class="d-block w-100" alt="Branding y Diseño - Página 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/branding_diseno/2.jpg" class="d-block w-100" alt="Branding y Diseño - Página 2">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/branding_diseno/3.jpg" class="d-block w-100" alt="Branding y Diseño - Página 3">
+                  </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-branding-diseno" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel-branding-diseno" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Siguiente</span>
+                </button>
+              </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('branding_diseno', $comprados)): ?>
@@ -264,7 +378,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Servicios independientes, pagos y entregas.</p>
                 </div>
               </div>
+                <!-- PREVIEW (Bootstrap Carousel) -->
+                <div id="carousel-freelance" class="carousel slide contract-carousel" data-bs-ride="false">
+                  <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#carousel-freelance" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#carousel-freelance" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#carousel-freelance" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                  </div>
 
+                  <div class="carousel-inner">
+                    <div class="carousel-item active">
+                      <img src="recursos/freelance/1.jpg" class="d-block w-100" alt="Freelance - Página 1">
+                    </div>
+                    <div class="carousel-item">
+                      <img src="recursos/freelance/2.jpg" class="d-block w-100" alt="Freelance - Página 2">
+                    </div>
+                    <div class="carousel-item">
+                      <img src="recursos/freelance/3.jpg" class="d-block w-100" alt="Freelance - Página 3">
+                    </div>
+                  </div>
+
+                  <button class="carousel-control-prev" type="button" data-bs-target="#carousel-freelance" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Anterior</span>
+                  </button>
+                  <button class="carousel-control-next" type="button" data-bs-target="#carousel-freelance" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Siguiente</span>
+                  </button>
+                </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('freelance', $comprados)): ?>
@@ -290,7 +432,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Acuerdo de colaboración con entregables.</p>
                 </div>
               </div>
+                    <!-- PREVIEW (Bootstrap Carousel) -->
+              <div id="carousel-colaboracion" class="carousel slide contract-carousel" data-bs-ride="false">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carousel-colaboracion" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carousel-colaboracion" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carousel-colaboracion" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
 
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="recursos/colaboracion/1.jpg" class="d-block w-100" alt="Colaboración - Página 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/colaboracion/2.jpg" class="d-block w-100" alt="Colaboración - Página 2">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/colaboracion/3.jpg" class="d-block w-100" alt="Colaboración - Página 3">
+                  </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-colaboracion" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel-colaboracion" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Siguiente</span>
+                </button>
+              </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('colaboracion', $comprados)): ?>
@@ -316,7 +486,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Work for hire, entregables y cesión patrimonial.</p>
                 </div>
               </div>
+               <!-- PREVIEW (Bootstrap Carousel) -->
+              <div id="carousel-obra-por-encargo" class="carousel slide contract-carousel" data-bs-ride="false">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carousel-obra-por-encargo" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carousel-obra-por-encargo" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carousel-obra-por-encargo" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
 
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="recursos/obra_por_encargo/1.jpg" class="d-block w-100" alt="Obra por Encargo - Página 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/obra_por_encargo/2.jpg" class="d-block w-100" alt="Obra por Encargo - Página 2">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/obra_por_encargo/3.jpg" class="d-block w-100" alt="Obra por Encargo - Página 3">
+                  </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-obra-por-encargo" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel-obra-por-encargo" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Siguiente</span>
+                </button>
+              </div>     
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('obra_por_encargo', $comprados)): ?>
@@ -342,7 +540,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Cesión patrimonial, territorio y vigencia.</p>
                 </div>
               </div>
+              <!-- PREVIEW (Bootstrap Carousel) -->
+              <div id="carousel-cesion-derechos" class="carousel slide contract-carousel" data-bs-ride="false">
+                <div class="carousel-indicators">
+                  <button type="button" data-bs-target="#carousel-cesion-derechos" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                  <button type="button" data-bs-target="#carousel-cesion-derechos" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                  <button type="button" data-bs-target="#carousel-cesion-derechos" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
 
+                <div class="carousel-inner">
+                  <div class="carousel-item active">
+                    <img src="recursos/cesion_derechos/1.jpg" class="d-block w-100" alt="Cesión de Derechos - Página 1">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/cesion_derechos/2.jpg" class="d-block w-100" alt="Cesión de Derechos - Página 2">
+                  </div>
+                  <div class="carousel-item">
+                    <img src="recursos/cesion_derechos/3.jpg" class="d-block w-100" alt="Cesión de Derechos - Página 3">
+                  </div>
+                </div>
+
+                <button class="carousel-control-prev" type="button" data-bs-target="#carousel-cesion-derechos" data-bs-slide="prev">
+                  <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Anterior</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#carousel-cesion-derechos" data-bs-slide="next">
+                  <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                  <span class="visually-hidden">Siguiente</span>
+                </button>
+              </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('cesion_derechos', $comprados)): ?>
@@ -368,7 +594,35 @@ if (isset($_SESSION['usuario_id'])) {
                   <p>Convenio de terminación y finiquito.</p>
                 </div>
               </div>
+                  <!-- PREVIEW (Bootstrap Carousel) -->
+            <div id="carousel-terminacion-anticipada" class="carousel slide contract-carousel" data-bs-ride="false">
+              <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carousel-terminacion-anticipada" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                <button type="button" data-bs-target="#carousel-terminacion-anticipada" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                <button type="button" data-bs-target="#carousel-terminacion-anticipada" data-bs-slide-to="2" aria-label="Slide 3"></button>
+              </div>
 
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img src="recursos/terminacion_anticipada/1.jpg" class="d-block w-100" alt="Terminación Anticipada - Página 1">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/terminacion_anticipada/2.jpg" class="d-block w-100" alt="Terminación Anticipada - Página 2">
+                </div>
+                <div class="carousel-item">
+                  <img src="recursos/terminacion_anticipada/3.jpg" class="d-block w-100" alt="Terminación Anticipada - Página 3">
+                </div>
+              </div>
+
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel-terminacion-anticipada" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Anterior</span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel-terminacion-anticipada" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Siguiente</span>
+              </button>
+            </div>
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php if(in_array('terminacion_anticipada', $comprados)): ?>

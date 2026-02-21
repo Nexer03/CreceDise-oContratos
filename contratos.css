@@ -177,3 +177,41 @@
   padding: 36px 0 0;
   opacity: 0.85;
 }
+/* CARROUSEL */
+.contract-carousel {
+  margin: 12px 0 14px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.contract-carousel .carousel-inner {
+  height: 480px; /* Ajusta: 240-320 según te guste */
+}
+
+.contract-carousel img {
+  width: 100%;
+  height: 480px;
+  object-fit: cover;
+  display: block;
+}
+
+/* Indicadores un poco más discretos */
+.contract-carousel .carousel-indicators [data-bs-target] {
+  width: 20px;
+  height: 5px;
+  border-radius: 999px;
+}
+/* Flechas */
+.contract-carousel .carousel-control-prev-icon,
+.contract-carousel .carousel-control-next-icon {
+  filter: invert(1); /* las vuelve negras */
+}
+/* Indicadores normales */
+.contract-carousel .carousel-indicators [data-bs-target] {
+  background-color: #666; 
+}
+
+/* Indicador activo */
+.contract-carousel .carousel-indicators .active {
+  background-color: #1e2a78; 
+}
