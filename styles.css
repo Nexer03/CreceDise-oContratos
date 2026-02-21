@@ -1430,6 +1430,52 @@ ul {
   color: #888;
 }
 
+.admin-btn,
+.history-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  color: #1A1C36;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-bottom: 6px;
+}
+
+.admin-btn i,
+.history-btn i {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1em;
+  color: #1A1C36;
+  transition: color 0.2s ease;
+}
+
+.admin-btn:hover,
+.history-btn:hover {
+  background: rgba(33, 124, 227, 0.08);
+  color: var(--bright-blue);
+}
+
+.admin-btn:hover i,
+.history-btn:hover i {
+  color: var(--bright-blue);
+}
+
+.admin-btn.active,
+.history-btn.active {
+  color: var(--bright-blue);
+}
+
+.admin-btn.active i,
+.history-btn.active i {
+  color: var(--bright-blue);
+}
+
 .logout-btn {
   display: block;
   width: 100%;

@@ -232,8 +232,8 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
           background-color: #f5f7fa;
       }
       .hero-section {
-        margin-top: 100px;
-        padding: 60px 0;
+        margin-top: 200px;
+        padding: 50px 0;
         text-align: center;
         background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       }
@@ -267,77 +267,6 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
           background-color: #217CE3;
           color: white;
       }
-
-      /* Navbar User Dropdown Style */
-      .user-profile-menu { position: relative; margin-left: 15px; }
-      .user-toggle {
-        background: none;
-        border: 2px solid #217CE3;
-        border-radius: 30px;
-        padding: 5px 15px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        cursor: pointer;
-        color: #217CE3;
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
-      .user-toggle:hover { background: #217CE3; color: white; }
-      .user-dropdown {
-        position: absolute;
-        top: 120%;
-        right: 0;
-        background: white;
-        border-radius: 12px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        width: 280px;
-        padding: 15px;
-        display: none;
-        flex-direction: column;
-        z-index: 1000;
-      }
-      .user-dropdown.active { display: flex; }
-      .user-info { padding-bottom: 10px; border-bottom: 1px solid #eee; margin-bottom: 10px; }
-      .user-name { display: block; font-weight: 700; color: #1A1C36; }
-      .user-email { font-size: 0.85rem; color: #666; }
-      .logout-btn {
-        color: #dc3545;
-        text-decoration: none;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 6px;
-        transition: background 0.2s;
-        margin-top: 5px;
-      }
-      .logout-btn:hover { background: #fff5f5; }
-      .history-btn {
-        color: var(--dark-blue);
-        text-decoration: none;
-        font-weight: 600;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 6px;
-        transition: background 0.2s;
-      }
-      .history-btn:hover { background: #f0f4f8; color: #217CE3; }
-      .admin-btn {
-        color: var(--dark-blue);
-        text-decoration: none;
-        font-weight: 700;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px 10px;
-        border-radius: 6px;
-        transition: background 0.2s;
-      }
-      .admin-btn:hover { background: #f0f4f8; color: #217CE3; }
 
       /* Admin-specific */
       .kpi-grid .kpi {
@@ -391,16 +320,18 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
   <header class="shadow-sm">
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
-
+        
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
           <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
+        
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-          aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
+      
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto align-items-lg-center">
             <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
@@ -408,7 +339,7 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
             <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
             <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
-
+            
             <?php if(isset($_SESSION['usuario_id'])): ?>
             <li class="nav-item user-profile-menu">
               <button class="user-toggle" aria-expanded="false">
@@ -423,20 +354,19 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                     <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
                   <?php endif; ?>
                 </div>
-
-                <a href="admin_analitica.php" class="admin-btn">
+                <?php if (!empty($isAdmin)): ?>
+                <a href="admin_analitica.php" class="admin-btn active">
                   <i class="fas fa-chart-line"></i> Panel Admin
                 </a>
                 <a href="admin_catalogo.php" class="admin-btn">
-                 <i class="fas fa-tags"></i> Editar Catálogo
+                 <i class="fas fa-tags"></i> Editar Catálogo 
                 </a>
+              <?php endif; ?>
                 <a href="analitica.php" class="history-btn">
-                  <i class="fas fa-receipt"></i> Historial de Compras
+                  <i class="fas fa-history"></i> Historial de Compras
                 </a>
-                
-
                 <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
                 </a>
               </div>
             </li>
@@ -445,9 +375,9 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                  <a href="index.php" class="btn btn-primary btn-cta">Iniciar Sesión</a>
             </li>
             <?php endif; ?>
+            
           </ul>
         </div>
-
       </div>
     </nav>
   </header>
@@ -667,32 +597,12 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
   </section>
 
   <!-- SCRIPTS -->
+  <script>
+    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script>
-      AOS.init();
-
-      document.addEventListener('DOMContentLoaded', function() {
-          const userToggle = document.querySelector('.user-toggle');
-          const userDropdown = document.querySelector('.user-dropdown');
-
-          if(userToggle && userDropdown) {
-              userToggle.addEventListener('click', function(e) {
-                  e.stopPropagation();
-                  userDropdown.classList.toggle('active');
-                  const expanded = userDropdown.classList.contains('active');
-                  userToggle.setAttribute('aria-expanded', expanded);
-              });
-
-              document.addEventListener('click', function(e) {
-                  if (!userDropdown.contains(e.target) && !userToggle.contains(e.target)) {
-                      userDropdown.classList.remove('active');
-                      userToggle.setAttribute('aria-expanded', 'false');
-                  }
-              });
-          }
-      });
-  </script>
+  <script src="scripts.js"></script>
   <script>
   document.addEventListener('DOMContentLoaded', () => {
     const nav = document.querySelector('.custom-navbar');
