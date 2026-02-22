@@ -274,6 +274,16 @@ document.addEventListener('DOMContentLoaded', function () {
       this.setAttribute('aria-expanded', !expanded);
     });
   }
+
+  document.addEventListener('click', function (event) {
+    const navbarCollapse = document.getElementById('mainNav');
+    const toggler = document.querySelector('.navbar-toggler');
+    if (navbarCollapse && navbarCollapse.classList.contains('show')) {
+      if (!navbarCollapse.contains(event.target) && !toggler.contains(event.target)) {
+        toggler.click();
+      }
+    }
+  });
 });
 
 

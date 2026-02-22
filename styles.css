@@ -143,12 +143,20 @@ h6 {
 
 
 @media (max-width: 991px) {
+  .navbar-collapse {
+    background-color: rgba(255, 255, 255, 0.98);
+    border-radius: 16px;
+    padding: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+  }
+
   .navbar-nav .nav-link {
-    font-size: 1.2rem;
-    padding: 1rem 1.5rem !important;
-    margin: 0.2rem 0;
+    font-size: 1rem;
+    padding: 0.5rem 1rem !important;
+    margin: 0;
     text-align: center;
-    border-radius: 12px;
+    border-radius: 8px;
     display: block;
     width: 100%;
   }
@@ -158,19 +166,16 @@ h6 {
   }
 
   .navbar-nav .nav-link::after {
-    bottom: 15px;
-    width: 60% !important;
-    left: 50%;
-    transform: translateX(-50%);
+    display: none !important;
   }
 
   .custom-navbar.navbar-scrolled .navbar-nav .nav-link {
-    font-size: 1.15rem;
-    padding: 0.8rem 1.2rem !important;
+    font-size: 1rem;
+    padding: 0.5rem 1rem !important;
   }
 
   .custom-navbar.navbar-scrolled .navbar-nav .nav-link::after {
-    bottom: 12px;
+    display: none !important;
   }
 }
 
@@ -1604,9 +1609,46 @@ ul {
 
 @media (max-width: 600px) {
 
+  .register-modal {
+    align-items: flex-start;
+    padding: 40px 10px;
+    overflow-y: auto;
+  }
+
+  .register-content {
+    padding: 20px 15px;
+    margin: 0 auto;
+    border-radius: 12px;
+  }
+
+  .register-header {
+    margin-bottom: 15px;
+  }
+
+  .register-header h2 {
+    font-size: 1.35rem;
+  }
+
+  .form-control {
+    padding: 8px 12px;
+    font-size: 0.95rem;
+  }
+
+  .register-btn {
+    padding: 10px;
+    font-size: 1rem;
+  }
+
+  .register-close {
+    top: 10px;
+    right: 15px;
+    font-size: 1.3rem;
+  }
+
   #registerFormContainer form,
   #loginFormContainer form {
     grid-template-columns: 1fr;
+    gap: 10px;
   }
 
   #registerFormContainer .form-group,
