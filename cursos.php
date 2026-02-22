@@ -27,7 +27,6 @@ require_once __DIR__ . '/config/admin_flag.php';
         
         body {
             font-family: 'Montserrat', sans-serif;
-            background-color: #FFFFFF;
             color: #1A1C36;
             line-height: 1.6;
             overflow-x: hidden;
@@ -677,6 +676,9 @@ require_once __DIR__ . '/config/admin_flag.php';
     </style>
 </head>
 <body>
+  
+  <div class="background-container"></div>
+
     <header class="shadow-sm">
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
