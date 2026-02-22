@@ -3,10 +3,7 @@
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/admin_flag.php';
 
-?>
-<?php
 require_once __DIR__ . '/config/database.php';
-session_start();
 
 $comprados = [];
 if (isset($_SESSION['usuario_id'])) {
@@ -124,9 +121,11 @@ if (isset($_SESSION['usuario_id'])) {
 
     <div class="container">
       <div class="contracts-hero-content" data-aos="fade-up" data-aos-duration="800">
-        <h1>Contratos editables</h1>
-        <p>
-          Abre el contrato, llena los campos editables y descarga el PDF limpio (sin líneas).
+        <h1 class="contracts-main-title">Contratos <span class="highlight-gradient">editables</span> <i class="fa-solid fa-pen-nib title-icon"></i></h1>
+        <p class="contracts-subtitle">
+          <span class="highlight-step"><i class="fa-solid fa-folder-open"></i> Abre</span> el contrato, 
+          <span class="highlight-step"><i class="fa-solid fa-pen-to-square"></i> llena</span> los campos editables y 
+          <span class="highlight-step"><i class="fa-solid fa-file-pdf"></i> descarga</span> el PDF limpio (sin líneas).
         </p>
 
         <div class="contracts-search" data-aos="fade-up" data-aos-delay="150">
