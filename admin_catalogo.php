@@ -15,7 +15,6 @@ if (empty($_SESSION['is_admin'])) {
   die("Acceso denegado.");
 }
 
-// Path del catálogo (intenta config/ y fallback a raíz)
 $catalogPath = __DIR__ . '/config/catalog.php';
 if (!file_exists($catalogPath)) {
   $catalogPath = __DIR__ . '/catalog.php';
@@ -35,17 +34,13 @@ $saveErr = null;
 function normalize_price($value) {
   $value = trim((string)$value);
   $value = str_replace(',', '.', $value);
-
   if (!preg_match('/^\d+(\.\d{1,2})?$/', $value)) return null;
-
   $num = (float)$value;
   if ($num < 0 || $num > 100000) return null;
-
   return number_format($num, 2, '.', '');
 }
 
 function write_catalog_file($path, array $catalog) {
-  // Mantén short array syntax como tu archivo original
   $lines = [];
   $lines[] = "<?php";
   $lines[] = "return [";
@@ -54,13 +49,26 @@ function write_catalog_file($path, array $catalog) {
     $k = addslashes($key);
     $price = addslashes((string)($item['price'] ?? '0.00'));
     $title = addslashes((string)($item['title'] ?? $key));
-    $lines[] = "  '{$k}' => ['price' => '{$price}', 'title' => '{$title}'],";
+    $desc = addslashes((string)($item['description'] ?? ''));
+    $icon = addslashes((string)($item['icon'] ?? 'fa-solid fa-file'));
+    $tags = addslashes((string)($item['tags'] ?? 'all'));
+    $url = addslashes((string)($item['url'] ?? ''));
+    $images = (int)($item['images'] ?? 0);
+    
+    $lines[] = "  '{$k}' => [";
+    $lines[] = "    'price' => '{$price}',";
+    $lines[] = "    'title' => '{$title}',";
+    $lines[] = "    'description' => '{$desc}',";
+    $lines[] = "    'icon' => '{$icon}',";
+    $lines[] = "    'tags' => '{$tags}',";
+    $lines[] = "    'url' => '{$url}',";
+    $lines[] = "    'images' => {$images}";
+    $lines[] = "  ],";
   }
 
   $lines[] = "];";
   $content = implode("\n", $lines) . "\n";
 
-  // Escritura atómica
   $tmp = $path . '.tmp';
   if (file_put_contents($tmp, $content, LOCK_EX) === false) {
     return "No se pudo escribir el archivo temporal.";
@@ -72,36 +80,131 @@ function write_catalog_file($path, array $catalog) {
   return null;
 }
 
-// Guardar cambios
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+// Recursively delete directory
+function deleteDir($dirPath) {
+    if (!is_dir($dirPath)) {
+        return;
+    }
+    if (substr($dirPath, strlen($dirPath) - 1, 1) != '/') {
+        $dirPath .= '/';
+    }
+    $files = glob($dirPath . '*', GLOB_MARK);
+    foreach ($files as $file) {
+        if (is_dir($file)) {
+            deleteDir($file);
+        } else {
+            unlink($file);
+        }
+    }
+    rmdir($dirPath);
+}
+
+// Acción: Save product
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'save_product') {
   $token = $_POST['csrf_token'] ?? '';
   if (!hash_equals($csrf, $token)) {
     $saveErr = "Token inválido. Recarga la página e intenta de nuevo.";
   } else {
-    $prices = $_POST['price'] ?? [];
-    $changed = 0;
-
-    foreach ($catalog as $key => $item) {
-      if (!array_key_exists($key, $prices)) continue;
-
-      $newPrice = normalize_price($prices[$key]);
-      if ($newPrice === null) {
-        $saveErr = "Precio inválido en: {$key}. Usa formato tipo 199 o 199.00";
-        break;
-      }
-
-      if (($catalog[$key]['price'] ?? '') !== $newPrice) {
-        $catalog[$key]['price'] = $newPrice;
-        $changed++;
-      }
+    $original_key = trim($_POST['original_key'] ?? '');
+    $key = trim($_POST['prod_key'] ?? '');
+    $title = trim($_POST['prod_title'] ?? '');
+    $price = normalize_price($_POST['prod_price'] ?? '0.00');
+    $desc = trim($_POST['prod_desc'] ?? '');
+    $icon = trim($_POST['prod_icon'] ?? '');
+    if (empty($icon)) {
+        $rIcons = ['fa-solid fa-file-contract', 'fa-solid fa-file-signature', 'fa-solid fa-handshake', 'fa-solid fa-folder-open', 'fa-solid fa-file-invoice', 'fa-solid fa-certificate', 'fa-solid fa-book'];
+        $icon = $rIcons[array_rand($rIcons)];
     }
+    $tags = trim($_POST['prod_tags'] ?? 'all');
+    $url = trim($_POST['prod_url'] ?? '');
+    
+    // Validate key
+    if (!preg_match('/^[a-z0-9_]+$/', $key)) {
+        $saveErr = "La Key solo puede contener letras minúsculas, números y guiones bajos.";
+    } elseif ($price === null) {
+        $saveErr = "Precio inválido.";
+    } elseif ($original_key !== $key && isset($catalog[$key])) {
+        $saveErr = "La Key '{$key}' ya existe.";
+    } else {
+        // If it's an edit and key changed, we need to rename the directory
+        $dirPath = __DIR__ . "/recursos/{$key}";
+        if ($original_key && $original_key !== $key) {
+            $oldDirPath = __DIR__ . "/recursos/{$original_key}";
+            if (is_dir($oldDirPath)) {
+                rename($oldDirPath, $dirPath);
+            }
+            // Remove old key from catalog
+            unset($catalog[$original_key]);
+        }
+        
+        if (!is_dir($dirPath)) {
+            mkdir($dirPath, 0777, true);
+        }
 
-    if (!$saveErr) {
-      $err = write_catalog_file($catalogPath, $catalog);
-      if ($err) $saveErr = $err;
-      else $saveOk = ($changed > 0) ? "Listo: se guardaron {$changed} cambios." : "Sin cambios que guardar.";
+        // Previous image count
+        $imgCount = 0;
+        if (isset($catalog[$key])) {
+            $imgCount = (int)($catalog[$key]['images'] ?? 0);
+        } else if ($original_key && isset($catalog[$original_key])) {
+            $imgCount = (int)($catalog[$original_key]['images'] ?? 0);
+        }
+
+        // Handle image uploads
+        if (!empty($_FILES['prod_images']['name'][0])) {
+            // Delete old images first to replace them all
+            $files = glob($dirPath . '/*');
+            foreach($files as $file){ 
+                if(is_file($file)) unlink($file); 
+            }
+            
+            $imgCount = 0;
+            $countFiles = count($_FILES['prod_images']['name']);
+            for ($i = 0; $i < $countFiles; $i++) {
+                $tmpFilePath = $_FILES['prod_images']['tmp_name'][$i];
+                if ($tmpFilePath != "") {
+                    $imgCount++;
+                    $newFilePath = $dirPath . "/{$imgCount}.jpg";
+                    move_uploaded_file($tmpFilePath, $newFilePath);
+                }
+            }
+        }
+        
+        // Save to catalog array
+        $catalog[$key] = [
+            'price' => $price,
+            'title' => $title,
+            'description' => $desc,
+            'icon' => $icon,
+            'tags' => $tags,
+            'url' => $url,
+            'images' => $imgCount
+        ];
+        
+        $err = write_catalog_file($catalogPath, $catalog);
+        if ($err) $saveErr = $err;
+        else $saveOk = "Producto '{$title}' guardado correctamente.";
     }
   }
+}
+
+// Acción: Delete product
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'delete_product') {
+    $token = $_POST['csrf_token'] ?? '';
+    if (!hash_equals($csrf, $token)) {
+      $saveErr = "Token inválido.";
+    } else {
+      $key = trim($_POST['delete_key'] ?? '');
+      if (isset($catalog[$key])) {
+          // Removes from array
+          unset($catalog[$key]);
+          // Removes directory
+          deleteDir(__DIR__ . "/recursos/{$key}");
+          
+          $err = write_catalog_file($catalogPath, $catalog);
+          if ($err) $saveErr = $err;
+          else $saveOk = "Producto '{$key}' eliminado correctamente.";
+      }
+    }
 }
 ?>
 <!DOCTYPE html>
@@ -143,13 +246,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     .price-input { max-width: 140px; }
     .muted { color:#6c757d; font-size:.9rem; }
+    .contracts-hero {
+      margin-top: 0 !important;
+    }
+    :root { --nav-offset: 96px; } /* fallback */
   </style>
 </head>
 
 <body>
   <div class="background-container"></div>
 
-  <!-- NAVBAR (usa el mismo patrón que tu analitica.php) -->
+  <!-- NAVBAR -->
   <header class="shadow-sm">
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
@@ -216,7 +323,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container" data-aos="fade-up">
       <div class="contracts-hero-content text-center">
         <h1 class="contracts-main-title">Editar <span class="highlight-gradient">Catálogo</span> <i class="fa-solid fa-tags title-icon"></i></h1>
-        <p class="contracts-subtitle" style="margin: 0 auto;">Actualiza precios del catálogo sin tocar el código.</p>
+        <p class="contracts-subtitle" style="margin: 0 auto;">Gestión completa de productos y contratos dinámicos.</p>
       </div>
     </div>
   </section>
@@ -232,109 +339,254 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="alert alert-danger"><?php echo htmlspecialchars($saveErr); ?></div>
         <?php endif; ?>
 
-        <div class="d-flex align-items-center justify-content-between mb-3">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-3 gap-3">
           <div>
-            <div class="h5 mb-1">Productos</div>
-            <div class="muted">Tip: usa formato 99 o 99.00 (MXN).</div>
+            <div class="h5 mb-1">Catálogo de Productos</div>
+            <div class="muted">Lista de contratos a mostrar en la tienda.</div>
           </div>
-          <a href="admin_analitica.php" class="btn btn-outline-primary rounded-pill">
-            <i class="fas fa-arrow-left me-1"></i> Volver al panel
-          </a>
+          <div class="d-flex gap-2">
+              <button class="btn btn-primary rounded-pill btn-add-product" data-bs-toggle="modal" data-bs-target="#productModal">
+                <i class="fas fa-plus me-1"></i> Agregar Nuevo
+              </button>
+              <a href="admin_analitica.php" class="btn btn-outline-secondary rounded-pill">
+                <i class="fas fa-arrow-left me-1"></i> Panel Admin
+              </a>
+          </div>
         </div>
 
-        <form method="POST">
-          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
-
-          <div class="table-responsive">
-            <table class="table table-hover align-middle">
-              <thead class="table-light">
-                <tr>
-                  <th style="min-width:260px;">Producto</th>
-                  <th>Key</th>
-                  <th style="width:180px;">Precio (MXN)</th>
-                </tr>
-              </thead>
-              <tbody>
-                <?php foreach ($catalog as $key => $item):
-                  $title = $item['title'] ?? $key;
-                  $price = $item['price'] ?? '0.00';
-                ?>
-                <tr>
-                  <td><strong><?php echo htmlspecialchars($title); ?></strong></td>
-                  <td class="text-muted small"><?php echo htmlspecialchars($key); ?></td>
-                  <td>
-                    <div class="input-group price-input">
-                      <span class="input-group-text">$</span>
-                      <input
-                        type="text"
-                        class="form-control"
-                        name="price[<?php echo htmlspecialchars($key); ?>]"
-                        value="<?php echo htmlspecialchars($price); ?>"
-                        inputmode="decimal"
-                        autocomplete="off"
-                      />
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="min-width:200px;">Producto</th>
+                <th>Key / Precio</th>
+                <th>Tags & Icono</th>
+                <th>Imágenes</th>
+                <th class="text-end" style="width:180px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <?php foreach ($catalog as $key => $item):
+                $title = $item['title'] ?? $key;
+                $price = $item['price'] ?? '0.00';
+                $desc = $item['description'] ?? '';
+                $icon = $item['icon'] ?? 'fa-solid fa-file';
+                $tags = $item['tags'] ?? 'all';
+                $imgs = (int)($item['images'] ?? 0);
+              ?>
+              <tr>
+                <td>
+                    <div class="fw-bold text-dark d-flex align-items-center gap-2">
+                        <i class="<?php echo htmlspecialchars($icon); ?> text-primary"></i> 
+                        <?php echo htmlspecialchars($title); ?>
                     </div>
-                  </td>
+                    <div class="small text-muted text-truncate" style="max-width:250px;"><?php echo htmlspecialchars($desc); ?></div>
+                </td>
+                <td>
+                    <div class="small text-muted"><code><?php echo htmlspecialchars($key); ?></code></div>
+                    <div class="fw-bold">$<?php echo htmlspecialchars($price); ?> MXN</div>
+                </td>
+                <td>
+                    <span class="badge bg-light text-dark border"><?php echo htmlspecialchars($tags); ?></span>
+                </td>
+                <td>
+                    <?php if($imgs > 0): ?>
+                        <span class="badge bg-info rounded-pill"><?php echo $imgs; ?> imgs</span>
+                    <?php else: ?>
+                        <span class="badge bg-light text-muted border">Sin imgs</span>
+                    <?php endif; ?>
+                </td>
+                <td class="text-end">
+                    <button class="btn btn-sm btn-outline-warning rounded-pill edit-product-btn"
+                        data-key="<?php echo htmlspecialchars($key); ?>"
+                        data-title="<?php echo htmlspecialchars($title); ?>"
+                        data-price="<?php echo htmlspecialchars($price); ?>"
+                        data-desc="<?php echo htmlspecialchars($desc); ?>"
+                        data-icon="<?php echo htmlspecialchars($icon); ?>"
+                        data-tags="<?php echo htmlspecialchars($tags); ?>"
+                        data-url="<?php echo htmlspecialchars($item['url'] ?? ''); ?>"
+                        data-bs-toggle="modal" data-bs-target="#productModal">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <form method="POST" class="d-inline" onsubmit="return confirm('¿Seguro que deseas eliminar este producto y sus imágenes?');">
+                        <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+                        <input type="hidden" name="action" value="delete_product">
+                        <input type="hidden" name="delete_key" value="<?php echo htmlspecialchars($key); ?>">
+                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </form>
+                </td>
+              </tr>
+              <?php endforeach; ?>
+              
+              <?php if (empty($catalog)): ?>
+                <tr>
+                    <td colspan="5" class="text-center py-4 text-muted">El catálogo está vacío. ¡Agrega tu primer producto!</td>
                 </tr>
-                <?php endforeach; ?>
-              </tbody>
-            </table>
-          </div>
-
-          <div class="d-flex justify-content-end">
-            <button class="btn btn-primary rounded-pill px-4" type="submit">
-              <i class="fas fa-save me-1"></i> Guardar cambios
-            </button>
-          </div>
-        </form>
+              <?php endif; ?>
+            </tbody>
+          </table>
+        </div>
 
       </div>
     </div>
   </section>
 
-  <!-- Footer (ligero, consistente) -->
+  <!-- Product Modal -->
+  <div class="modal fade" id="productModal" tabindex="-1" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content" style="border-radius: 20px; border:none; box-shadow: 0 15px 50px rgba(0,0,0,0.1);">
+        <div class="modal-header border-bottom-0 pb-0">
+          <h5 class="modal-title section-title px-2 pt-2" id="productModalLabel">Modificar Producto</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <form method="POST" enctype="multipart/form-data">
+          <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrf); ?>">
+          <input type="hidden" name="action" value="save_product">
+          <input type="hidden" name="original_key" id="original_key" value="">
+          
+          <div class="modal-body px-4 py-3">
+            <div class="row g-3">
+                <div class="col-md-6">
+                  <label for="prod_key" class="form-label fw-bold small mb-1">Key Única del Sistema <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="prod_key" name="prod_key" placeholder="ej_mi_contrato" required pattern="[a-z0-9_]+" style="border-radius: 12px;">
+                  <div class="form-text small">Solo minúsculas, números o guiones bajos. Sin espacios.</div>
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="prod_price" class="form-label fw-bold small mb-1">Precio (MXN) <span class="text-danger">*</span></label>
+                  <div class="input-group">
+                      <span class="input-group-text" style="border-radius: 12px 0 0 12px;">$</span>
+                      <input type="text" class="form-control" id="prod_price" name="prod_price" placeholder="99.00" required inputmode="decimal" style="border-radius: 0 12px 12px 0;">
+                  </div>
+                </div>
+
+                <div class="col-12">
+                  <label for="prod_title" class="form-label fw-bold small mb-1">Título Visual <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="prod_title" name="prod_title" required placeholder="Contrato de Arrendamiento" style="border-radius: 12px;">
+                </div>
+                
+                <input type="hidden" id="prod_icon" name="prod_icon" value="">
+
+                <div class="col-12">
+                  <label for="prod_desc" class="form-label fw-bold small mb-1">Descripción Corta <span class="text-danger">*</span></label>
+                  <input type="text" class="form-control" id="prod_desc" name="prod_desc" required placeholder="Detalles de lo que incluye el contrato." style="border-radius: 12px;">
+                </div>
+                
+                <div class="col-md-6">
+                  <label for="prod_tags" class="form-label fw-bold small mb-1">Filtros (Categorías)</label>
+                  <input type="text" class="form-control" id="prod_tags" name="prod_tags" value="all" placeholder="servicios all" style="border-radius: 12px;">
+                  <div class="form-text small">Separados por espacio. Usa `all` siempre. Ej: `servicios all`</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="prod_url" class="form-label fw-bold small mb-1">URL de Descarga</label>
+                  <input type="text" class="form-control" id="prod_url" name="prod_url" placeholder="https://..." style="border-radius: 12px;">
+                  <div class="form-text small">Dejar en blanco para usar la descarga predeterminada.</div>
+                </div>
+
+                <div class="col-md-6">
+                  <label for="prod_images" class="form-label fw-bold small mb-1">Imágenes de Preview Multiples .JPG</label>
+                  <input type="file" class="form-control" id="prod_images" name="prod_images[]" multiple accept=".jpg,.jpeg,.png" style="border-radius: 12px;">
+                  <div class="form-text small">Si subes nuevas, reemplazarán a las existentes.</div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer border-top-0 px-4 pb-4">
+            <button type="button" class="btn btn-outline-secondary rounded-pill" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary rounded-pill px-4 shadow-sm"><i class="fas fa-save me-1"></i> Guardar Producto</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
   <footer>
     <div class="container">
       <div class="footer-container">
         <div class="footer-col">
           <h3>Crece Diseño</h3>
-          <p>Contratos editables listos para descarga en PDF.</p>
-          <div class="social-links social-centered">
-            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
-              target="_blank" rel="noopener" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
-              rel="noopener" aria-label="TikTok">
-              <i class="fab fa-tiktok"></i>
-            </a>
-          </div>
+          <p>Potenciando la industria creativa a través de la formalidad legal.</p>
         </div>
-
         <div class="footer-col">
-          <h3>Enlaces</h3>
-          <a href="index.php">Inicio</a>
-          <a href="cursos.php">Cursos</a>
-          <a href="contratos.php">Contratos</a>
-          <a href="nosotros.php">Nosotros</a>
-          <a href="index.php#contacto">Contacto</a>
+          <h4>Navegación</h4>
+          <ul>
+            <li><a href="index.php">Inicio</a></li>
+            <li><a href="cursos.php">Cursos</a></li>
+            <li><a href="contratos.php">Contratos</a></li>
+          </ul>
         </div>
-
-        <div class="footer-col">
-          <h3>Contratos</h3>
-          <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+        <div class="footer-col contact-col">
+          <h4>Contáctanos</h4>
+          <ul>
+            <li><i class="fa-solid fa-envelope"></i> admin@crecediseno.com</li>
+            <li><i class="fa-solid fa-phone"></i> +52 (000) 000-0000</li>
+          </ul>
         </div>
       </div>
     </div>
   </footer>
 
-  <script>
-    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
-  </script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="scripts.js"></script>
+  <script>
+    AOS.init({ once: true, offset: 50 });
+
+    const nav = document.querySelector('.custom-navbar');
+    const setOffset = () => {
+      const h = nav ? nav.offsetHeight : 80;
+      document.documentElement.style.setProperty('--nav-offset', h + 'px');
+    };
+    setOffset();
+    window.addEventListener('resize', setOffset);
+
+    // Modal populate logic
+    document.addEventListener('DOMContentLoaded', () => {
+        const modalTitle = document.getElementById('productModalLabel');
+        const origKeyInp = document.getElementById('original_key');
+        
+        const keyInp = document.getElementById('prod_key');
+        const titleInp = document.getElementById('prod_title');
+        const priceInp = document.getElementById('prod_price');
+        const descInp = document.getElementById('prod_desc');
+        const iconInp = document.getElementById('prod_icon');
+        const tagsInp = document.getElementById('prod_tags');
+        const urlInp = document.getElementById('prod_url');
+        const fileInp = document.getElementById('prod_images');
+
+        document.querySelector('.btn-add-product').addEventListener('click', () => {
+            modalTitle.innerText = "Agregar Nuevo Producto";
+            origKeyInp.value = "";
+            keyInp.value = "";
+            titleInp.value = "";
+            priceInp.value = "";
+            descInp.value = "";
+            iconInp.value = "";
+            tagsInp.value = "servicios all";
+            urlInp.value = "";
+            fileInp.value = "";
+            fileInp.required = true;
+        });
+
+        document.querySelectorAll('.edit-product-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                modalTitle.innerText = "Modificar Producto";
+                origKeyInp.value = btn.getAttribute('data-key');
+                keyInp.value = btn.getAttribute('data-key');
+                titleInp.value = btn.getAttribute('data-title');
+                priceInp.value = btn.getAttribute('data-price');
+                descInp.value = btn.getAttribute('data-desc');
+                iconInp.value = btn.getAttribute('data-icon');
+                tagsInp.value = btn.getAttribute('data-tags');
+                urlInp.value = btn.getAttribute('data-url') || '';
+                fileInp.value = "";
+                fileInp.required = false;
+            });
+        });
+    });
+  </script>
 </body>
 </html>
