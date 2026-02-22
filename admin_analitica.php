@@ -48,6 +48,7 @@ function fetchColumnFloat(PDO $pdo, string $sql, array $params = []): float {
 
 // Inputs
 $q = trim($_GET['q'] ?? '');
+$p_q = trim($_GET['p_q'] ?? '');
 $userFilterId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
 
 // Pagination
@@ -80,7 +81,7 @@ $totalUsersFiltered = fetchColumnInt($pdo, "SELECT COUNT(*) FROM usuarios u $use
 
 $userSql = "
 SELECT 
-  u.id, u.nombre, u.correo, u.fecha_registro,
+  u.id, u.nombre, u.correo, u.telefono, u.ciudad, u.fecha_registro,
   COUNT(p.id) AS compras_total,
   COALESCE(SUM(CASE WHEN p.status='COMPLETED' THEN p.amount ELSE 0 END),0) AS gastado_total,
   MAX(p.created_at) AS ultima_compra
@@ -115,16 +116,25 @@ try {
     $topUser = null;
 }
 
-// PAYMENTS (global or by user)
+// PAYMENTS (global or by user/search)
 $payWhere = "";
 $payParams = [];
 
+if ($p_q !== '') {
+    $payWhere = "WHERE (u.nombre LIKE :pq OR u.correo LIKE :pq OR p.payer_email LIKE :pq)";
+    $payParams[':pq'] = "%{$p_q}%";
+}
+
 if ($userFilterId > 0) {
-    $payWhere = "WHERE p.usuario_id = :uid";
+    if ($payWhere === "") {
+        $payWhere = "WHERE p.usuario_id = :uid";
+    } else {
+        $payWhere .= " AND p.usuario_id = :uid";
+    }
     $payParams[':uid'] = $userFilterId;
 }
 
-$totalPaymentsFiltered = fetchColumnInt($pdo, "SELECT COUNT(*) FROM payments p $payWhere", $payParams);
+$totalPaymentsFiltered = fetchColumnInt($pdo, "SELECT COUNT(*) FROM payments p JOIN usuarios u ON u.id = p.usuario_id $payWhere", $payParams);
 
 $paySql = "
 SELECT 
@@ -138,7 +148,13 @@ LIMIT :lim OFFSET :off
 ";
 
 $stPays = $pdo->prepare($paySql);
-foreach ($payParams as $k => $v) $stPays->bindValue($k, $v, PDO::PARAM_INT);
+foreach ($payParams as $k => $v) {
+    if ($k === ':uid') {
+        $stPays->bindValue($k, $v, PDO::PARAM_INT);
+    } else {
+        $stPays->bindValue($k, $v, PDO::PARAM_STR);
+    }
+}
 $stPays->bindValue(':lim', (int)$payPerPage, PDO::PARAM_INT);
 $stPays->bindValue(':off', (int)$payOffset, PDO::PARAM_INT);
 $stPays->execute();
@@ -293,15 +309,6 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
       }
       .page-link { border-radius: 10px; }
       :root { --nav-offset: 96px; } /* fallback */
-
-      body {
-        padding-top: var(--nav-offset);
-      }
-
-      /* ya no lo ocupas si haces padding-top global */
-      .hero-section {
-        margin-top: 0 !important;
-      }
   </style>
 </head>
 
@@ -488,10 +495,17 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                                   <td><strong>$<?php echo number_format((float)($u['gastado_total'] ?? 0), 2); ?> MXN</strong></td>
                                   <td><?php echo htmlspecialchars($ult); ?></td>
                                   <td>
-                                      <a class="btn btn-sm btn-outline-primary rounded-pill"
-                                         href="<?php echo htmlspecialchars(buildUrl(['user_id'=>(int)$u['id'], 'p_page'=>1])); ?>">
-                                          <i class="fas fa-receipt me-1"></i> Ver compras
-                                      </a>
+                                      <div class="d-flex gap-2">
+                                          <button class="btn btn-sm btn-outline-warning rounded-pill flex-fill text-center edit-user-btn"
+                                                  data-id="<?php echo (int)$u['id']; ?>"
+                                                  data-nombre="<?php echo htmlspecialchars($u['nombre'] ?? ''); ?>"
+                                                  data-correo="<?php echo htmlspecialchars($u['correo'] ?? ''); ?>"
+                                                  data-telefono="<?php echo htmlspecialchars($u['telefono'] ?? ''); ?>"
+                                                  data-ciudad="<?php echo htmlspecialchars($u['ciudad'] ?? ''); ?>"
+                                                  data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                              <i class="fas fa-user-edit me-1"></i> Editar
+                                          </button>
+                                      </div>
                                   </td>
                               </tr>
                               <?php endforeach; ?>
@@ -504,7 +518,7 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
           </div>
 
           <!-- PAYMENTS -->
-          <div class="table-card" data-aos="fade-up" data-aos-delay="160">
+          <div class="table-card" id="compras" data-aos="fade-up" data-aos-delay="160">
               <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
                   <div>
                       <div class="section-title mb-0">
@@ -523,11 +537,27 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                       </div>
                   </div>
 
-                  <?php if($selectedUser): ?>
-                    <a class="btn btn-outline-secondary pill-btn" href="<?php echo htmlspecialchars(buildUrl(['user_id'=>null,'p_page'=>1])); ?>">
-                      <i class="fas fa-arrow-left me-1"></i> Quitar filtro
-                    </a>
-                  <?php endif; ?>
+                  <div class="d-flex align-items-center gap-2">
+                    <?php if($selectedUser): ?>
+                      <a class="btn btn-outline-secondary pill-btn" href="<?php echo htmlspecialchars(buildUrl(['user_id'=>null,'p_page'=>1])); ?>">
+                        <i class="fas fa-arrow-left me-1"></i> Quitar filtro
+                      </a>
+                    <?php endif; ?>
+
+                    <form method="GET" action="admin_analitica.php" class="d-flex align-items-center gap-2 m-0">
+                        <?php if($q !== ''): ?>
+                          <input type="hidden" name="q" value="<?php echo htmlspecialchars($q); ?>">
+                        <?php endif; ?>
+                        <?php if($userFilterId > 0): ?>
+                          <input type="hidden" name="user_id" value="<?php echo (int)$userFilterId; ?>">
+                        <?php endif; ?>
+                        <input class="form-control soft-input" type="text" name="p_q" placeholder="Buscar compra o usuario..." value="<?php echo htmlspecialchars($p_q); ?>" />
+                        <button class="btn btn-primary pill-btn" type="submit"><i class="fas fa-search"></i> Buscar</button>
+                        <?php if($p_q !== ''): ?>
+                          <a class="btn btn-outline-secondary pill-btn" href="<?php echo htmlspecialchars(buildUrl(['p_q'=>null,'p_page'=>1])); ?>"><i class="fas fa-times me-1"></i></a>
+                        <?php endif; ?>
+                    </form>
+                  </div>
               </div>
 
               <div class="table-responsive">
@@ -635,11 +665,75 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
   <script>
     window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
   </script>
+  <!-- Edit User Modal -->
+  <div class="modal fade" id="editUserModal" tabindex="-1" aria-labelledby="editUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form action="config/admin_edit_user.php" method="POST">
+          <div class="modal-header">
+            <h5 class="modal-title" id="editUserModalLabel">Editar Usuario</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="hidden" name="user_id" id="editUserId">
+            
+            <div class="mb-3">
+              <label for="editNombre" class="form-label">Nombre Completo</label>
+              <input type="text" class="form-control" id="editNombre" name="nombre" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="editCorreo" class="form-label">Correo Electrónico</label>
+              <input type="email" class="form-control" id="editCorreo" name="correo" required>
+            </div>
+            
+            <div class="mb-3">
+              <label for="editTelefono" class="form-label">Teléfono</label>
+              <input type="text" class="form-control" id="editTelefono" name="telefono">
+            </div>
+            
+            <div class="mb-3">
+              <label for="editCiudad" class="form-label">Ciudad</label>
+              <input type="text" class="form-control" id="editCiudad" name="ciudad">
+            </div>
+            
+            <hr>
+            
+            <div class="mb-3">
+              <label for="editPassword" class="form-label">Nueva Contraseña <small class="text-muted">(Opcional)</small></label>
+              <input type="password" class="form-control" id="editPassword" name="password" placeholder="Dejar en blanco para no cambiar">
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="scripts.js"></script>
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize AOS
+    AOS.init({ once: true, offset: 50 });
+
+    // Handle Edit User Modal population
+    document.addEventListener('DOMContentLoaded', () => {
+      const editButtons = document.querySelectorAll('.edit-user-btn');
+      editButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.getElementById('editUserId').value = btn.getAttribute('data-id');
+          document.getElementById('editNombre').value = btn.getAttribute('data-nombre');
+          document.getElementById('editCorreo').value = btn.getAttribute('data-correo');
+          document.getElementById('editTelefono').value = btn.getAttribute('data-telefono') !== 'null' ? btn.getAttribute('data-telefono') : '';
+          document.getElementById('editCiudad').value = btn.getAttribute('data-ciudad') !== 'null' ? btn.getAttribute('data-ciudad') : '';
+          document.getElementById('editPassword').value = ''; // Always clear password field
+        });
+      });
+
     const nav = document.querySelector('.custom-navbar');
     const setOffset = () => {
       const h = nav ? nav.offsetHeight : 80;
@@ -648,7 +742,20 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
     };
     setOffset();
     window.addEventListener('resize', setOffset);
+
+    <?php if ($p_q !== '' || $payPage > 1 || $userFilterId > 0): ?>
+    setTimeout(() => {
+      const comprasSec = document.getElementById("compras");
+      if(comprasSec) {
+        const h = nav ? nav.offsetHeight : 80;
+        window.scrollTo({
+          top: comprasSec.offsetTop - h - 20,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+    <?php endif; ?>
   });
-</script>
+  </script>
 </body>
 </html>
