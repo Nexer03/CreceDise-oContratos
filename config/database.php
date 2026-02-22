@@ -3,7 +3,7 @@
 $host = 'localhost';
 $db   = 'contratosdiseno';
 $user = 'root';
-$pass = '';
+$pass = '121318';
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);
