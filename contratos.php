@@ -647,7 +647,7 @@ if (isset($_SESSION['usuario_id'])) {
     </section>
 
   <!-- Footer (ligero, consistente) -->
-  <footer class="mt-5">
+  <footer>
     <div class="container">
       <div class="footer-container">
         <div class="footer-col">
