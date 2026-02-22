@@ -25,6 +25,7 @@ require_once __DIR__ . '/config/admin_flag.php';
 
   
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="contratos.css" />
 </head>
 <body>
   
@@ -94,21 +95,23 @@ require_once __DIR__ . '/config/admin_flag.php';
   </header>
 
  
-  <section class="hero" id="inicio">
+  <section class="contracts-hero" id="inicio">
     <div class="banner-container">
       <img src="patron1.svg" alt="Patrón de fondo" />
     </div>
 
     <div class="container">
-      <div class="hero-content center-block" data-aos="fade-up" data-aos-duration="800">
-        <h1>Conoce Nuestra Historia</h1>
-        <p>
+      <div class="contracts-hero-content text-center" data-aos="fade-up" data-aos-duration="800">
+        <h1 class="contracts-main-title">Conoce Nuestra <span class="highlight-gradient">Historia</span> <i class="fa-solid fa-users title-icon"></i></h1>
+        <p class="contracts-subtitle" style="margin: 0 auto;">
           Un colectivo comprometido con el crecimiento y desarrollo profesional 
           de los diseñadores gráficos en Puerto Vallarta
         </p>
       </div>
     </div>
   </section>
+
+  <div class="history-container">
 
  
   <section class="about-section" id="quienes-somos">
@@ -292,45 +295,42 @@ require_once __DIR__ . '/config/admin_flag.php';
   </section>
 
   
+  </div>
+
+  <!-- Footer (ligero, consistente) -->
   <footer>
     <div class="container">
       <div class="footer-container">
         <div class="footer-col">
           <h3>Crece Diseño</h3>
-          <p>Catálogo de formación para diseñadores gráficos en Puerto Vallarta</p>
+          <p>Contratos editables listos para descarga en PDF.</p>
           <div class="social-links social-centered">
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank" rel="noopener" aria-label="Instagram">
+            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
+              target="_blank" rel="noopener" aria-label="Instagram">
               <i class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank" rel="noopener" aria-label="TikTok">
+            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
+              rel="noopener" aria-label="TikTok">
               <i class="fab fa-tiktok"></i>
             </a>
           </div>
         </div>
+
         <div class="footer-col">
-          <h3>Enlaces Rápidos</h3>
+          <h3>Enlaces</h3>
           <a href="index.php">Inicio</a>
           <a href="cursos.php">Cursos</a>
           <a href="contratos.php">Contratos</a>
           <a href="nosotros.php">Nosotros</a>
           <a href="index.php#contacto">Contacto</a>
         </div>
+
         <div class="footer-col">
-          <h3>Recursos</h3>
-          <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
-          <a href="cursos.php#paga">Cursos de Paga</a>
-          <a href="cursos.php#financiamiento">Financiamiento</a>
-          <a href="#">Política de Privacidad</a>
+          <h3>Contratos</h3>
+          <a href="contratos.php">Listado</a>
+          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
         </div>
-        <div class="footer-col">
-          <h3>Contacto</h3>
-          <p>contacto@crecediseño.com</p>
-          <p>+52 322 123 4567</p>
-          <p>Puerto Vallarta, Jalisco</p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p>&copy; 2023 Crece Diseño. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>

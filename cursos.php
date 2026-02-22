@@ -16,6 +16,7 @@ require_once __DIR__ . '/config/admin_flag.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
     <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="contratos.css" />
     <style>
         /* Estilos existentes se mantienen igual */
         * {
@@ -33,37 +34,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         }
         
         
-        /* Hero Section */
-        .hero-section {
-            position: relative;
-            height: 40vh;
-            min-height: 300px;
-            display: flex;
-            padding-top: 100px; /* Add padding for fixed header */
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            background: linear-gradient(135deg, #5B4393, #217CE3);
-        }
-        
-        .hero-content {
-            text-align: center;
-            color: white;
-            max-width: 800px;
-            padding: 1.5rem;
-        }
-        
-        .hero-content h1 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-        
-        .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 1.5rem;
-        }
+        /* Hero CSS removed to use global CSS */
         
         /* Main Content */
         .main-content {
@@ -768,13 +739,17 @@ require_once __DIR__ . '/config/admin_flag.php';
     </nav>
   </header>
     
-    <section class="hero-section">
-         <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
-        <div class="hero-content">
-            <h1>Catálogo de Formación</h1>
-            <p>Accede a todos nuestros cursos gratuitos, de paga y opciones de financiamiento para impulsar tu desarrollo profesional.</p>
+    <section class="contracts-hero" id="inicio">
+        <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
+        <div class="container" data-aos="fade-up">
+            <div class="contracts-hero-content text-center">
+                <h1 class="contracts-main-title">Catálogo de <span class="highlight-gradient">Formación</span></h1>
+                <p class="contracts-subtitle" style="margin: 0 auto;">Accede a todos nuestros cursos gratuitos, de paga y opciones de financiamiento para impulsar tu desarrollo profesional.</p>
+            </div>
         </div>
     </section>
+    
+    <div class="history-container">
     
     <section class="main-content">
         <h2 class="section-title">Acceso a todos los recursos</h2>
@@ -1456,35 +1431,44 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
         </div>
     </section>
+    </div> <!-- end history-container -->
     
-    <footer id="contacto">
-        <div class="footer-container">
-            <div class="footer-section footer-contact">
-                <h4>Contacto</h4>
-                <p><i class="fas fa-envelope"></i> info@crecediseño.com</p>
-                <p><i class="fas fa-phone"></i> +52 322 123 4567</p>
-                <p><i class="fas fa-map-marker-alt"></i> Puerto Vallarta, México</p>
-            </div>
-            <div class="footer-section">
-                <h4>Enlaces Rápidos</h4>
-                <a href="index.php">Inicio</a>
-                <a href="cursos.php">Cursos</a>
-                <a href="contratos.php">Contratos</a>
-                <a href="cursos.php#financiamiento">Financiamiento</a>
-                <a href="#">Política de Privacidad</a>
-            </div>
-            <div class="footer-section">
-                <h4>Síguenos</h4>
-                <a href="#"><i class="fab fa-instagram"></i> Instagram</a>
-                <a href="#"><i class="fab fa-tiktok"></i> TikTok</a>
-                <a href="#"><i class="fab fa-facebook"></i> Facebook</a>
-                <a href="#"><i class="fab fa-linkedin"></i> LinkedIn</a>
-            </div>
+  <footer>
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>Crece Diseño</h3>
+          <p>Contratos editables listos para descarga en PDF.</p>
+          <div class="social-links social-centered">
+            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
+              target="_blank" rel="noopener" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
+              rel="noopener" aria-label="TikTok">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
         </div>
-        <div class="copyright">
-            <p>&copy; 2023 Catálogo de Formación. Todos los derechos reservados.</p>
+
+        <div class="footer-col">
+          <h3>Enlaces</h3>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="contratos.php">Contratos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
         </div>
-    </footer>
+
+        <div class="footer-col">
+          <h3>Contratos</h3>
+          <a href="contratos.php">Listado</a>
+          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+        </div>
+      </div>
+    </div>
+  </footer>
     
     <a href="https://wa.me/523221234567" class="whatsapp-button" target="_blank">
         <i class="fab fa-whatsapp"></i>

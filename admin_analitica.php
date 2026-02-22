@@ -226,33 +226,27 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
 
   <!-- CSS principal -->
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="contratos.css" />
 
   <style>
       body {
           background-color: #f5f7fa;
       }
-      .hero-section {
-        margin-top: 200px;
-        padding: 50px 0;
-        text-align: center;
-        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      }
-      .hero-section h1 {
-          font-family: 'Quicksand', sans-serif;
-          color: var(--dark-blue);
-          font-weight: 700;
-          margin-bottom: 1rem;
-      }
       .history-container {
-          padding: 50px 0;
+          padding: 80px 0 80px;
           min-height: 50vh;
+          background-color: #ffffff;
+          background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23cbd5e1' fill-opacity='0.25'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+          position: relative;
+          z-index: 1;
       }
       .table-card {
           background: white;
-          border-radius: 15px;
-          box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+          border-radius: 18px;
+          box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08), 0 2px 10px rgba(0, 0, 0, 0.04);
           overflow: hidden;
           padding: 30px;
+          border: 1px solid rgba(0, 0, 0, 0.05);
       }
       .btn-back {
           background-color: var(--dark-blue);
@@ -383,10 +377,13 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
   </header>
 
   <!-- HERO -->
-  <section class="hero-section">
+  <section class="contracts-hero" id="inicio">
+      <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
       <div class="container" data-aos="fade-up">
-          <h1>Panel de Administración</h1>
-          <p>Estadísticas de usuarios, compras y detalle por usuario.</p>
+          <div class="contracts-hero-content text-center">
+            <h1 class="contracts-main-title">Panel de <span class="highlight-gradient">Administración</span> <i class="fa-solid fa-chart-line title-icon"></i></h1>
+            <p class="contracts-subtitle" style="margin: 0 auto;">Estadísticas de usuarios, compras y detalle por usuario.</p>
+          </div>
       </div>
   </section>
 
@@ -595,6 +592,44 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
 
       </div>
   </section>
+
+  <!-- Footer (ligero, consistente) -->
+  <footer>
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>Crece Diseño</h3>
+          <p>Contratos editables listos para descarga en PDF.</p>
+          <div class="social-links social-centered">
+            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
+              target="_blank" rel="noopener" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
+              rel="noopener" aria-label="TikTok">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>Enlaces</h3>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="contratos.php">Contratos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>Contratos</h3>
+          <a href="contratos.php">Listado</a>
+          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
   <!-- SCRIPTS -->
   <script>

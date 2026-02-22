@@ -26,6 +26,7 @@ require_once __DIR__ . '/config/admin_flag.php';
 
   
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="contratos.css" />
 </head>
 <body>
   <script>
@@ -189,12 +190,13 @@ require_once __DIR__ . '/config/admin_flag.php';
   </header>
 
   
-  <section class="hero" id="inicio">
+  <section class="contracts-hero" id="inicio">
     <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
     <div class="container">
-      <div class="hero-content center-block" data-aos="fade-up" data-aos-duration="800">
-        <h1>Catálogo de Formación: Gestión, Innovación y Valor</h1>
-        <p>
+      <div class="contracts-hero-content text-center" data-aos="fade-up" data-aos-duration="800">
+        <h1 class="contracts-main-title">Catálogo de <span class="highlight-gradient">Formación</span> <i class="fa-solid fa-book-open title-icon"></i></h1>
+        <h3 style="color: white; font-family: 'Quicksand', sans-serif; margin-bottom: 20px;">Gestión, Innovación y Valor</h3>
+        <p class="contracts-subtitle" style="margin: 0 auto 2rem auto;">
           Plataforma conceptual y digital diseñada para transformar la gestión empresarial y el desarrollo
           profesional, alineando objetivos con principios de sostenibilidad total. Funciona como mecanismo
           de comunicación de facilitación que permite medir, planificar y actuar hacia crecimiento
@@ -202,11 +204,13 @@ require_once __DIR__ . '/config/admin_flag.php';
         </p>
         <div class="d-flex gap-2 justify-content-center">
           <a href="cursos.php" class="btn btn-primary btn-cta">Ver cursos</a>
-          <a href="#contacto" class="btn btn-outline-primary btn-cta-2">Contactar</a>
+          <a href="#contacto" class="btn btn-outline-light btn-cta" style="border: 2px solid white; color: white;">Contactar</a>
         </div>
       </div>
     </div>
   </section>
+
+  <div class="history-container">
 
   
   <section class="about-section" id="nosotros">
@@ -290,47 +294,42 @@ require_once __DIR__ . '/config/admin_flag.php';
       </div>
     </div>
   </section>
+  </div>
 
-  
+  <!-- Footer (ligero, consistente) -->
   <footer>
     <div class="container">
       <div class="footer-container">
         <div class="footer-col">
           <h3>Crece Diseño</h3>
-          <p>Catálogo de Formación para diseñadores gráficos en Puerto Vallarta.</p>
+          <p>Contratos editables listos para descarga en PDF.</p>
           <div class="social-links social-centered">
-            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link" target="_blank" rel="noopener" aria-label="Instagram">
+            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
+              target="_blank" rel="noopener" aria-label="Instagram">
               <i class="fab fa-instagram"></i>
             </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank" rel="noopener" aria-label="TikTok">
+            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
+              rel="noopener" aria-label="TikTok">
               <i class="fab fa-tiktok"></i>
             </a>
           </div>
         </div>
+
         <div class="footer-col">
-          <h3>Enlaces Rápidos</h3>
+          <h3>Enlaces</h3>
           <a href="index.php">Inicio</a>
           <a href="cursos.php">Cursos</a>
           <a href="contratos.php">Contratos</a>
           <a href="nosotros.php">Nosotros</a>
           <a href="index.php#contacto">Contacto</a>
         </div>
+
         <div class="footer-col">
-          <h3>Cursos</h3>
-          <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
-          <a href="cursos.php#paga">Cursos de Paga</a>
-          <a href="#">Certificaciones</a>
-          <a href="#">Talleres</a>
+          <h3>Contratos</h3>
+          <a href="contratos.php">Listado</a>
+          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
         </div>
-        <div class="footer-col">
-          <h3>Contacto</h3>
-          <p>contacto@crecediseño.com</p>
-          <p>+52 322 123 4567</p>
-          <p>Puerto Vallarta, Jalisco</p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p>&copy; 2023 Crece Diseño. Todos los derechos reservados.</p>
       </div>
     </div>
   </footer>
