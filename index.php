@@ -150,6 +150,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
             <li class="nav-item"><a class="nav-link active" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
+            <li class="nav-item"><a class="nav-link" href="foro.php">Foro</a></li>
             
             <?php if(isset($_SESSION['usuario_id'])): ?>
             <li class="nav-item user-profile-menu">
