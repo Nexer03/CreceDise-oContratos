@@ -427,6 +427,38 @@ function render_course_card(array $c, string $tone = 'free'): void {
     applyPayFilter(active?.dataset.filter || 'all');
   });
 </script>
+<script>
+document.addEventListener('change', async (e) => {
+  const el = e.target;
+  if (!el.classList.contains('course-checkbox')) return;
 
+  // SOLO cuando se marca
+  if (!el.checked) return;
+
+  const body = new URLSearchParams();
+  body.set('course_id', el.dataset.courseId || '');
+  body.set('checked', '1');
+
+  try {
+    const r = await fetch('save_courses.php', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+      body
+    });
+
+    if (!r.ok) {
+      // si falla, revierte el check para no mentirle al usuario
+      el.checked = false;
+      return;
+    }
+
+    const data = await r.json().catch(() => null);
+    if (!data || data.ok !== true) el.checked = false;
+
+  } catch (err) {
+    el.checked = false;
+  }
+});
+</script>
 </body>
 </html>
