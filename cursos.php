@@ -130,15 +130,22 @@ function render_course_card(array $c, string $tone = 'free'): void {
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Catálogo de Formación - Cursos y Recursos</title>
+  <title>Crece Diseño - Cursos</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
+  <!-- Tipografías -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- AOS (animaciones) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
 
+  <!-- CSS principal -->
   <link rel="stylesheet" href="styles.css">
+  <!-- CSS de contratos para reutilizar estilos -->
+  <link rel="stylesheet" href="contratos.css">
 
   <style>
     body{ font-family: 'Montserrat', sans-serif; }
@@ -172,24 +179,25 @@ function render_course_card(array $c, string $tone = 'free'): void {
     /* Cards */
     .course-card2{
       background:#fff; border-radius:14px; overflow:hidden;
-      box-shadow: 0 10px 24px rgba(16,24,40,.08);
-      border:1px solid rgba(16,24,40,.06);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); /* Sombra mejorada para contraste fondo blanco */
+      border:1px solid rgba(0,0,0,0.08); /* Borde más visible */
       display:flex; flex-direction:column;
-      transition: transform .2s ease, box-shadow .2s ease;
+      transition: transform .3s ease, box-shadow .3s ease;
     }
-    .course-card2:hover{ transform: translateY(-4px); box-shadow: 0 14px 32px rgba(16,24,40,.12); }
+    .course-card2:hover{ transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); border-color: var(--bright-blue); }
 
     .course-card2__head{ padding:16px 16px 14px; position:relative; }
-    .card-head-free{ background: linear-gradient(135deg, rgba(33,124,227,.20), rgba(91,67,147,.22)); }
-    .card-head-pay{ background: linear-gradient(135deg, rgba(91,67,147,.18), rgba(33,124,227,.12)); }
-    .card-head-fin{ background: linear-gradient(135deg, rgba(25,28,54,.10), rgba(33,124,227,.10)); }
+    .card-head-free{ background: linear-gradient(135deg, rgba(33,124,227,.15), rgba(91,67,147,.15)); }
+    .card-head-pay{ background: linear-gradient(135deg, rgba(91,67,147,.15), rgba(33,124,227,.12)); }
+    .card-head-fin{ background: linear-gradient(135deg, rgba(25,28,54,.08), rgba(33,124,227,.08)); }
 
     .course-ico{
       width:40px; height:40px; border-radius:12px;
       display:flex; align-items:center; justify-content:center;
-      background: rgba(255,255,255,.75);
-      border: 1px solid rgba(16,24,40,.08);
+      background: rgba(255,255,255,1);
+      border: 1px solid rgba(0,0,0,.08);
       color:#217CE3; flex: 0 0 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
     .badge-free{ background:#217CE3; }
@@ -199,7 +207,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
     .course-card2__body{ padding:16px; display:flex; flex-direction:column; flex:1; }
 
     .course-meta{ list-style:none; padding:0; margin:0 0 12px; display:grid; gap:10px; }
-    .course-meta li{ display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:#f8f9fb; border:1px solid rgba(16,24,40,.06); }
+    .course-meta li{ display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:#f8f9fb; border:1px solid rgba(0,0,0,.06); }
     .course-meta span{ color:#667085; font-size:.85rem; }
     .course-meta strong{ color:#1A1C36; font-weight:700; font-size:.9rem; text-align:right; }
 
@@ -207,20 +215,92 @@ function render_course_card(array $c, string $tone = 'free'): void {
     .course-check2 input{ display:none; }
     .course-check2 .check-ui{
       width:22px; height:22px; border-radius:7px;
-      background: rgba(255,255,255,.6);
-      border: 2px solid rgba(255,255,255,.85);
+      background: rgba(255,255,255,.9);
+      border: 2px solid rgba(0,0,0,.1);
       display:inline-block; position:relative;
-      box-shadow: 0 6px 14px rgba(16,24,40,.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
+      transition: all 0.2s ease;
     }
-    .course-check2 input:checked + .check-ui{ background:#fff; border-color:#fff; }
+    .course-check2:hover .check-ui { background: #fff; border-color: #217CE3; }
+    .course-check2 input:checked + .check-ui{ background:#fff; border-color:#217CE3; }
     .course-check2 input:checked + .check-ui::after{
       content:"✓"; position:absolute; top:50%; left:50%;
       transform:translate(-50%,-55%);
       color:#217CE3; font-weight:900; font-size:14px;
     }
 
-    .section-pill{ border-radius:999px; padding:.65rem 1.1rem; font-weight:700; }
-    .subpill .nav-link{ border-radius:999px; font-weight:700; }
+    /* Tabs/Chips Styles for Cursos (match contratos chips) */
+    .section-pill{ 
+      border-radius: 999px !important; 
+      padding: 8px 18px !important; 
+      font-weight: 700 !important;
+      font-family: 'Quicksand', sans-serif !important;
+      border: 1px solid rgba(0,0,0,0.15) !important;
+      background: rgba(255,255,255,0.8) !important;
+      color: var(--dark-blue) !important;
+      transition: all 0.3s ease !important;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05) !important;
+    }
+    .section-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      border-color: rgba(0,0,0,0.3) !important;
+    }
+    .section-pill.active {
+      background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%) !important;
+      color: var(--dark-purple) !important;
+      border-color: transparent !important;
+      box-shadow: 0 8px 20px rgba(251,194,235,0.3) !important;
+      transform: translateY(-1px);
+    }
+    
+    .subpill .nav-link{ 
+      border-radius: 999px !important; 
+      font-weight: 700 !important;
+      padding: 6px 14px !important;
+      font-family: 'Quicksand', sans-serif !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      background: #fff !important;
+      color: #555 !important;
+      transition: all 0.3s ease !important;
+    }
+    .subpill .nav-link:hover {
+      background: rgba(33,124,227,0.05) !important;
+      color: var(--bright-blue) !important;
+      border-color: rgba(33,124,227,0.3) !important;
+    }
+    .subpill .nav-link.active {
+      background: var(--bright-blue) !important;
+      color: #fff !important;
+      border-color: var(--bright-blue) !important;
+      box-shadow: 0 4px 10px rgba(33,124,227,0.3) !important;
+    }
+
+    /* Category Filter Buttons in Paga */
+    .filter-chip {
+      border-radius: 999px !important; 
+      font-weight: 700 !important;
+      padding: 6px 16px !important;
+      font-size: 0.9rem !important;
+      font-family: 'Quicksand', sans-serif !important;
+      border: 1px solid rgba(0,0,0,0.1) !important;
+      background: #fff !important;
+      color: #555 !important;
+      transition: all 0.3s ease !important;
+      cursor: pointer;
+    }
+    .filter-chip:hover {
+      background: rgba(33,124,227,0.05) !important;
+      color: var(--bright-blue) !important;
+      border-color: rgba(33,124,227,0.3) !important;
+      transform: translateY(-1px);
+    }
+    .filter-chip.active {
+      background: var(--bright-blue) !important;
+      color: #fff !important;
+      border-color: var(--bright-blue) !important;
+      box-shadow: 0 4px 10px rgba(33,124,227,0.3) !important;
+    }
 
     @media (max-width: 576px){
       .course-meta li{ flex-direction:column; align-items:flex-start; }
@@ -232,61 +312,93 @@ function render_course_card(array $c, string $tone = 'free'): void {
 
 <div class="background-container"></div>
 
-<header class="shadow-sm">
-  <nav class="navbar navbar-expand-lg bg-white fixed-top">
-    <div class="container">
+  <header class="shadow-sm">
+    <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
+      <div class="container-fluid px-2 px-sm-3 px-lg-4">
 
-      <a class="navbar-brand" href="index.php">
-        <img src="logo.svg" alt="Crece Diseño" height="40">
-      </a>
+        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
+          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+        </a>
 
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
+        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
+          aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
 
-      <div class="collapse navbar-collapse" id="mainNav">
-        <ul class="navbar-nav ms-auto align-items-lg-center">
+        <div class="collapse navbar-collapse" id="mainNav">
+          <ul class="navbar-nav ms-auto align-items-lg-center">
+            <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link active" href="cursos.php">Cursos</a></li>
+            <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
+            <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
+          <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
 
-          <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
-          <li class="nav-item"><a class="nav-link active" href="cursos.php">Cursos</a></li>
-          <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
-          <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
-
-          <?php if(isset($_SESSION['usuario_id'])): ?>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+            <?php if(isset($_SESSION['usuario_id'])): ?>
+            <li class="nav-item user-profile-menu">
+              <button class="user-toggle" aria-expanded="false">
                 <i class="fas fa-user-circle"></i>
-                Hola, <?= e($_SESSION['usuario_nombre'] ?? $nombre_usuario) ?>
-              </a>
-              <ul class="dropdown-menu dropdown-menu-end">
+                <span>Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre'] ?? $nombre_usuario); ?></span>
+                <i class="fas fa-chevron-down small"></i>
+              </button>
+              <div class="user-dropdown">
+                <div class="user-info">
+                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre'] ?? $nombre_usuario); ?></span>
+                  <?php if(isset($_SESSION['usuario_correo'])): ?>
+                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
+                  <?php endif; ?>
+                </div>
                 <?php if (!empty($isAdmin)): ?>
-                  <li><a class="dropdown-item" href="admin_catalogo.php">Panel Admin</a></li>
+                  <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                    <i class="fas fa-chart-line"></i> Panel Admin
+                  </a>
+                  <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo
+                </a>
                 <?php endif; ?>
-                <li><a class="dropdown-item" href="analitica.php">Historial</a></li>
-                <li><a class="dropdown-item text-danger" href="config/logout.php">Cerrar Sesión</a></li>
-              </ul>
+                <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-history"></i> Historial de Compras
+                </a>
+                <a href="config/logout.php" class="logout-btn">
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+              </div>
             </li>
-          <?php else: ?>
-            <li class="nav-item">
-              <a class="btn btn-primary" href="index.php">Iniciar Sesión</a>
+            <?php else: ?>
+            <li class="nav-item ms-lg-2">
+              <button class="btn btn-primary btn-cta" onclick="showRegisterModal()">
+                Registrarse / Iniciar Sesión
+              </button>
             </li>
-          <?php endif; ?>
+            <?php endif; ?>
+          </ul>
+        </div>
 
-        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <!-- HERO -->
+  <section class="contracts-hero" id="inicio">
+    <div class="banner-container">
+      <img src="patron1.svg" alt="Patrón de fondo" />
+    </div>
+
+    <div class="container">
+      <div class="contracts-hero-content" data-aos="fade-up" data-aos-duration="800">
+        <h1 class="contracts-main-title">Catálogo de <span class="highlight-gradient">Formación</span> <i class="fa-solid fa-graduation-cap title-icon"></i></h1>
+        <p class="contracts-subtitle">
+          Cursos gratuitos (digitales y presenciales), cursos de paga y recursos de financiamiento.
+        </p>
       </div>
     </div>
-  </nav>
-</header>
+  </section>
 
-<div class="container my-5 py-5">
+  <!-- LISTADO DE CURSOS -->
+  <section class="contracts-list">
+    <div class="container">
 
-  <h1 class="text-center mb-2" data-aos="fade-up">Catálogo de Formación</h1>
-  <p class="text-center text-muted mb-4" data-aos="fade-up" data-aos-delay="100">
-    Cursos gratuitos (digitales y presenciales), cursos de paga y recursos de financiamiento.
-  </p>
-
-  <!-- Tabs principales -->
-  <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="mainTabs" role="tablist" data-aos="fade-up" data-aos-delay="150">
+      <!-- Tabs principales -->
+      <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="mainTabs" role="tablist" data-aos="fade-up" data-aos-delay="150">
     <li class="nav-item" role="presentation">
       <button class="nav-link active section-pill" id="tab-gratuitos" data-bs-toggle="pill" data-bs-target="#pane-gratuitos" type="button" role="tab">Cursos Gratuitos</button>
     </li>
@@ -338,14 +450,14 @@ function render_course_card(array $c, string $tone = 'free'): void {
     <div class="tab-pane fade" id="pane-paga" role="tabpanel" aria-labelledby="tab-paga">
 
       <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
-        <button class="btn btn-outline-secondary btn-sm active js-pay-filter" data-filter="all">Todos</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="diseno">Diseño</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="ux">UX/UI</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="animacion">Animación</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="tecnologia">Tecnología</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="marketing">Marketing</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="finanzas">Finanzas</button>
-        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="otros">Otros</button>
+        <button class="filter-chip active js-pay-filter" data-filter="all">Todos</button>
+        <button class="filter-chip js-pay-filter" data-filter="diseno">Diseño</button>
+        <button class="filter-chip js-pay-filter" data-filter="ux">UX/UI</button>
+        <button class="filter-chip js-pay-filter" data-filter="animacion">Animación</button>
+        <button class="filter-chip js-pay-filter" data-filter="tecnologia">Tecnología</button>
+        <button class="filter-chip js-pay-filter" data-filter="marketing">Marketing</button>
+        <button class="filter-chip js-pay-filter" data-filter="finanzas">Finanzas</button>
+        <button class="filter-chip js-pay-filter" data-filter="otros">Otros</button>
       </div>
 
       <ul class="nav nav-pills justify-content-center gap-2 mb-3 subpill" role="tablist">
@@ -391,8 +503,48 @@ function render_course_card(array $c, string $tone = 'free'): void {
       </div>
     </div>
 
-  </div>
-</div>
+    </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (ligero, consistente) -->
+  <footer>
+    <div class="container">
+      <div class="footer-container">
+        <div class="footer-col">
+          <h3>Crece Diseño</h3>
+          <p>Contratos editables listos para descarga en PDF.</p>
+          <div class="social-links social-centered">
+            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
+              target="_blank" rel="noopener" aria-label="Instagram">
+              <i class="fab fa-instagram"></i>
+            </a>
+            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
+              rel="noopener" aria-label="TikTok">
+              <i class="fab fa-tiktok"></i>
+            </a>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h3>Enlaces</h3>
+          <a href="index.php">Inicio</a>
+          <a href="cursos.php">Cursos</a>
+          <a href="contratos.php">Contratos</a>
+          <a href="nosotros.php">Nosotros</a>
+          <a href="index.php#contacto">Contacto</a>
+        </div>
+
+        <div class="footer-col">
+          <h3>Contratos</h3>
+          <a href="contratos.php">Listado</a>
+          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+        </div>
+      </div>
+    </div>
+  </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
@@ -459,6 +611,96 @@ document.addEventListener('change', async (e) => {
     el.checked = false;
   }
 });
+
+    // Efecto navbar al hacer scroll (igual lógica que scripts.js)
+    (function () {
+      const navbar = document.getElementById('mainNavbar');
+      if (!navbar) return;
+      let lastScrollTop = 0;
+
+      window.addEventListener('scroll', () => {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+        if (scrollTop > 100) navbar.classList.add('navbar-scrolled');
+        else navbar.classList.remove('navbar-scrolled');
+
+        if (scrollTop > lastScrollTop && scrollTop > 100) navbar.classList.add('navbar-hidden');
+        else navbar.classList.remove('navbar-hidden');
+
+        lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
+      }, { passive: true });
+    })();
 </script>
+
+  <!-- Registration/Login Modal -->
+  <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
+    <div class="register-content">
+      <button class="register-close" id="registerClose" aria-label="Cerrar" onclick="closeRegisterModal()">&times;</button>
+      
+      <!-- Registration Form Container -->
+      <div id="registerFormContainer">
+        <div class="register-header">
+          <h2 id="registerTitle">Regístrate para recibir información</h2>
+          <p>Completa tus datos para acceder a nuestro catálogo completo</p>
+        </div>
+        <form action="config/register.php" method="POST">
+              <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
+              </div>
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Número Telefónico</label>
+                <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Registrarse</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('login')">¿Ya tienes cuenta? Iniciar Sesión</button>
+        </div>
+        <div class="register-footer">
+          <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
+        </div>
+      </div>
+
+      <!-- Login Form Container (Initially Hidden) -->
+      <div id="loginFormContainer" style="display: none;">
+        <div class="register-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Bienvenido de nuevo</p>
+        </div>
+        <form action="config/login.php" method="POST">
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Iniciar Sesión</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('register')">¿No tienes cuenta? Registrarse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
+  </script>
+  <script src="scripts.js"></script>
 </body>
 </html>
