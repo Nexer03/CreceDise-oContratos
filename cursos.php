@@ -1,1685 +1,432 @@
 <?php
 session_start();
+
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/config/database.php';
 require_once __DIR__ . '/config/admin_flag.php';
+
+$nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
+
+// Obtener cursos activos (una sola vez)
+$stmt = $pdo->query("SELECT id, slug, title, category, tab, subtab, provider, modality, cost_label, url, description FROM courses WHERE is_active = 1 ORDER BY tab, subtab, created_at DESC");
+$courses = $stmt ? $stmt->fetchAll(PDO::FETCH_ASSOC) : [];
+
+// Agrupar por tipo y subtipos
+$gratuitos_digital = [];
+$gratuitos_presencial = [];
+
+$paga_digital = [];
+$paga_presencial = [];
+
+$financiamiento = [];
+
+foreach ($courses as $c) {
+  $tab = $c['tab'] ?? '';
+  $sub = $c['subtab'] ?? '';
+
+  if ($tab === 'gratuitos') {
+    if ($sub === 'presencial-gratuito') $gratuitos_presencial[] = $c;
+    else $gratuitos_digital[] = $c; // default digital-gratuito
+  } elseif ($tab === 'paga') {
+    if ($sub === 'presencial-paga') $paga_presencial[] = $c;
+    else $paga_digital[] = $c; // default digital-paga
+  } elseif ($tab === 'financiamiento') {
+    $financiamiento[] = $c;
+  }
+}
+
+function e(?string $v): string { return htmlspecialchars($v ?? '', ENT_QUOTES, 'UTF-8'); }
+function trunc(?string $v, int $n = 170): string {
+  $v = trim((string)$v);
+  if ($v === '') return '';
+  if (mb_strlen($v, 'UTF-8') <= $n) return $v;
+  return rtrim(mb_substr($v, 0, $n, 'UTF-8')) . '…';
+}
+
+function modality_icon(?string $m): string {
+  $m = mb_strtolower(trim((string)$m), 'UTF-8');
+  if (str_contains($m, 'presencial')) return 'fa-location-dot';
+  if (str_contains($m, 'línea') || str_contains($m, 'linea') || str_contains($m, 'online')) return 'fa-globe';
+  if (str_contains($m, 'inform')) return 'fa-circle-info';
+  return 'fa-book-open';
+}
+
+function category_key(?string $cat): string {
+  $c = mb_strtolower(trim((string)$cat), 'UTF-8');
+  if ($c === '') return 'otros';
+  if (str_contains($c, 'ux') || str_contains($c, 'ui')) return 'ux';
+  if (str_contains($c, 'anim') || str_contains($c, 'motion')) return 'animacion';
+  if (str_contains($c, 'tecno') || str_contains($c, 'inteligencia') || $c === 'ia') return 'tecnologia';
+  if (str_contains($c, 'dise')) return 'diseno';
+  if (str_contains($c, 'marketing')) return 'marketing';
+  if (str_contains($c, 'finan')) return 'finanzas';
+  return 'otros';
+}
+
+function render_course_card(array $c, string $tone = 'free'): void {
+  $title = e($c['title'] ?? '');
+  $category = e($c['category'] ?? '');
+  $provider = e($c['provider'] ?? '');
+  $modality = e($c['modality'] ?? '');
+  $cost = e($c['cost_label'] ?? '');
+  $url = trim((string)($c['url'] ?? ''));
+  $desc = e(trunc($c['description'] ?? ''));
+
+  $icon = modality_icon($c['modality'] ?? '');
+
+  $headerClass = ($tone === 'fin') ? 'card-head-fin' : (($tone === 'pay') ? 'card-head-pay' : 'card-head-free');
+  $badgeClass  = ($tone === 'fin') ? 'badge-fin' : (($tone === 'pay') ? 'badge-pay' : 'badge-free');
+
+  // Checkbox: solo UI (sin guardar)
+  $dataId = (int)($c['id'] ?? 0);
+
+  // Para filtros (solo UI)
+  $catKey = category_key($c['category'] ?? '');
+
+  echo "\n<div class=\"col-12 col-md-6 col-lg-4\">\n";
+  echo "  <div class=\"course-card2 h-100\" data-category=\"{$catKey}\">\n";
+  echo "    <div class=\"course-card2__head {$headerClass}\">\n";
+  echo "      <label class=\"course-check2\" title=\"Guardar (más tarde)\">\n";
+  echo "        <input type=\"checkbox\" class=\"course-checkbox\" data-course-id=\"{$dataId}\">\n";
+  echo "        <span class=\"check-ui\"></span>\n";
+  echo "      </label>\n";
+  echo "      <div class=\"d-flex align-items-start gap-2\">\n";
+  echo "        <div class=\"course-ico\"><i class=\"fa-solid {$icon}\"></i></div>\n";
+  echo "        <div class=\"flex-grow-1\">\n";
+  echo "          <h5 class=\"m-0 fw-bold\">{$title}</h5>\n";
+  if ($category !== '') {
+    echo "          <span class=\"badge {$badgeClass} mt-2\">{$category}</span>\n";
+  }
+  echo "        </div>\n";
+  echo "      </div>\n";
+  echo "    </div>\n";
+
+  echo "    <div class=\"course-card2__body\">\n";
+  if ($desc !== '') {
+    echo "      <p class=\"text-muted mb-3\">{$desc}</p>\n";
+  }
+
+  echo "      <ul class=\"course-meta\">\n";
+  if ($provider !== '') echo "        <li><span>Institución</span><strong>{$provider}</strong></li>\n";
+  if ($modality !== '') echo "        <li><span>Modalidad</span><strong>{$modality}</strong></li>\n";
+  if ($cost !== '') echo "        <li><span>Costo</span><strong>{$cost}</strong></li>\n";
+  echo "      </ul>\n";
+
+  echo "      <div class=\"mt-auto pt-2\">\n";
+  if ($url !== '') {
+    $safeUrl = e($url);
+    echo "        <a href=\"{$safeUrl}\" target=\"_blank\" rel=\"noopener\" class=\"btn btn-primary w-100\">Ver curso</a>\n";
+  } else {
+    echo "        <button class=\"btn btn-outline-secondary w-100\" disabled>Sin enlace</button>\n";
+  }
+  echo "      </div>\n";
+
+  echo "    </div>\n";
+  echo "  </div>\n";
+  echo "</div>\n";
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Formación - Cursos y Recursos</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Quicksand:wght@400;500;600;700&family=Gupter:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="contratos.css" />
-    <style>
-        /* Estilos existentes se mantienen igual */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Montserrat', sans-serif;
-            color: #1A1C36;
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
-        
-        
-        /* Hero CSS removed to use global CSS */
-        
-        /* Main Content */
-        .main-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 3rem 1.5rem;
-        }
-        
-        .section-title {
-            text-align: center;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 2rem;
-            margin-bottom: 2rem;
-            color: #1A1C36;
-            position: relative;
-        }
-        
-        .section-title:after {
-            content: '';
-            display: block;
-            width: 80px;
-            height: 3px;
-            background: linear-gradient(to right, #5B4393, #217CE3);
-            margin: 10px auto;
-            border-radius: 2px;
-        }
-        
-        .section-description {
-            text-align: center;
-            font-size: 1.1rem;
-            max-width: 800px;
-            margin: 0 auto 3rem;
-            color: #444;
-        }
-        
-        /* Search and Filter Section */
-        .search-filter-section {
-            margin-bottom: 2rem;
-            padding: 1.5rem;
-            background-color: #f8f9fa;
-            border-radius: 10px;
-        }
-        
-        .search-container {
-            display: flex;
-            margin-bottom: 1.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        .search-input {
-            flex-grow: 1;
-            padding: 0.8rem 1rem;
-            border: 2px solid #ddd;
-            border-radius: 25px 0 0 25px;
-            font-family: 'Montserrat', sans-serif;
-            font-size: 1rem;
-            outline: none;
-            transition: border-color 0.3s ease;
-        }
-        
-        .search-input:focus {
-            border-color: #217CE3;
-        }
-        
-        .search-btn {
-            padding: 0 1.5rem;
-            background: #217CE3;
-            color: white;
-            border: none;
-            border-radius: 0 25px 25px 0;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        
-        .search-btn:hover {
-            background: #5B4393;
-        }
-        
-        .filter-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-        }
-        
-        .filter-btn {
-            padding: 0.6rem 1.2rem;
-            background: white;
-            border: 2px solid #ddd;
-            color: #555;
-            border-radius: 20px;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .filter-btn:hover, .filter-btn.active {
-            background: #5B4393;
-            color: white;
-            border-color: #5B4393;
-        }
-        
-        /* Tabs Navigation */
-        .tabs-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 3rem;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-        
-        .tab-btn {
-            padding: 1rem 2rem;
-            background: white;
-            border: 2px solid #217CE3;
-            color: #217CE3;
-            border-radius: 30px;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            font-size: 1.1rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .tab-btn:hover, .tab-btn.active {
-            background: #217CE3;
-            color: white;
-        }
-        
-        /* Subcategory Tabs */
-        .subcategory-tabs {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-        }
-        
-        .subcategory-btn {
-            padding: 0.7rem 1.5rem;
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            color: #555;
-            border-radius: 20px;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 500;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        
-        .subcategory-btn:hover, .subcategory-btn.active {
-            background: #5B4393;
-            color: white;
-            border-color: #5B4393;
-        }
-        
-        /* Courses Grid */
-        .courses-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .course-card {
-            background-color: #FFFFFF;
-            border-radius: 10px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .course-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
-        }
-        
-        .course-header {
-            padding: 1.5rem 1.5rem 1rem;
-            text-align: center;
-            background: linear-gradient(135deg, #5B4393, #217CE3);
-            color: white;
-        }
-        
-        .course-header h3 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        
-        .course-category {
-            display: inline-block;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.9rem;
-        }
-        
-        .course-body {
-            padding: 1.5rem;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .course-description {
-            margin-bottom: 1.2rem;
-            flex-grow: 1;
-        }
-        
-        .course-details {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-        
-        .course-details li {
-            padding: 0.4rem 0;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-        
-        .course-details li:before {
-            content: '✓';
-            position: absolute;
-            left: 0;
-            color: #217CE3;
-            font-weight: bold;
-        }
-        
-        .btn {
-            display: inline-block;
-            padding: 0.7rem 1.5rem;
-            border-radius: 25px;
-            text-decoration: none;
-            font-family: 'Quicksand', sans-serif;
-            font-weight: 600;
-            font-size: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(to right, #217CE3, #5B4393);
-            color: white;
-            box-shadow: 0 3px 10px rgba(33, 124, 227, 0.3);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(33, 124, 227, 0.4);
-        }
-        
-        .btn-secondary {
-            background: white;
-            color: #217CE3;
-            border: 2px solid #217CE3;
-        }
-        
-        .btn-secondary:hover {
-            background: #217CE3;
-            color: white;
-        }
-        
-        /* No results message */
-        .no-results {
-            text-align: center;
-            padding: 3rem;
-            color: #666;
-            font-size: 1.2rem;
-        }
-        
-        /* Financing Section */
-        .financing-section {
-            background-color: #f8f9fa;
-            padding: 3rem 1.5rem;
-            margin-top: 2rem;
-            border-radius: 10px;
-        }
-        
-        .financing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-        
-        .financing-item {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease;
-        }
-        
-        .financing-item:hover {
-            transform: translateY(-5px);
-        }
-        
-        .financing-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #5B4393;
-        }
-        
-        .financing-item h4 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.3rem;
-            margin-bottom: 0.8rem;
-            color: #1A1C36;
-        }
-        
-        .financing-item p {
-            margin-bottom: 1rem;
-        }
-        
-        .financing-details {
-            background-color: #f0f2f5;
-            padding: 1rem;
-            border-radius: 5px;
-            margin-top: 1rem;
-        }
-        
-        .financing-details h5 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            margin-bottom: 0.5rem;
-            color: #5B4393;
-        }
-        
-        .financing-details ul {
-            list-style-type: none;
-            padding-left: 0;
-        }
-        
-        .financing-details li {
-            padding: 0.3rem 0;
-            position: relative;
-            padding-left: 1.2rem;
-        }
-        
-        .financing-details li:before {
-            content: '•';
-            position: absolute;
-            left: 0;
-            color: #217CE3;
-            font-weight: bold;
-        }
-        
-        /* Footer */
-        footer {
-            background-color: #1A1C36;
-            color: white;
-            padding: 2.5rem 0 1.5rem;
-            margin-top: 3rem;
-        }
-        
-        .footer-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            padding: 0 1.5rem;
-        }
-        
-        .footer-section h4 {
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.2rem;
-            margin-bottom: 1.2rem;
-            color: #217CE3;
-        }
-        
-        .footer-section p, .footer-section a {
-            color: #CCCCCC;
-            margin-bottom: 0.7rem;
-            display: block;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-        
-        .footer-section a:hover {
-            color: #217CE3;
-        }
-        
-        .footer-contact i {
-            width: 20px;
-            margin-right: 10px;
-            text-align: center;
-        }
-        
-        .copyright {
-            text-align: center;
-            margin-top: 2.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #333;
-            color: #999;
-            font-size: 0.9rem;
-        }
-        
-        /* WhatsApp Button */
-        .whatsapp-button {
-            position: fixed;
-            bottom: 1.5rem;
-            right: 1.5rem;
-            background-color: #25D366;
-            color: white;
-            width: 55px;
-            height: 55px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 3px 12px rgba(37, 211, 102, 0.4);
-            z-index: 100;
-            transition: transform 0.3s ease;
-            animation: pulse 2s infinite;
-            text-decoration: none;
-        }
-        
-        .whatsapp-button:hover {
-            transform: scale(1.05);
-        }
-        
-        @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
-            70% { box-shadow: 0 0 0 12px rgba(37, 211, 102, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .header-container {
-                flex-direction: column;
-                padding: 0 1rem;
-            }
-            
-            .logo-container {
-                width: 130px;
-                margin-bottom: 0.5rem;
-            }
-            
-            nav {
-                width: 100%;
-                display: none;
-            }
-            
-            nav.active {
-                display: block;
-            }
-            
-            nav ul {
-                flex-direction: column;
-                width: 100%;
-                text-align: center;
-            }
-            
-            nav li {
-                margin: 0.5rem 0;
-            }
-            
-            .mobile-menu-btn {
-                display: block;
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-            }
-            
-            .hero-section {
-                height: 35vh;
-                min-height: 250px;
-            }
-            
-            .hero-content h1 {
-                font-size: 2rem;
-            }
-            
-            .hero-content p {
-                font-size: 1rem;
-            }
-            
-            .main-content {
-                padding: 2rem 1rem;
-            }
-            
-            .section-title {
-                font-size: 1.7rem;
-            }
-            
-            .courses-grid {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-            
-            .tabs-container {
-                flex-direction: column;
-                align-items: center;
-            }
-            
-            .search-container {
-                flex-direction: column;
-            }
-            
-            .search-input {
-                border-radius: 25px;
-                margin-bottom: 0.5rem;
-            }
-            
-            .search-btn {
-                border-radius: 25px;
-                padding: 0.8rem;
-            }
-            
-            .financing-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .footer-container {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero-section {
-                height: 30vh;
-                min-height: 200px;
-            }
-            
-            .hero-content h1 {
-                font-size: 1.7rem;
-            }
-            
-            .hero-content p {
-                font-size: 0.9rem;
-            }
-            
-            .section-title {
-                font-size: 1.5rem;
-            }
-            
-            .course-header h3 {
-                font-size: 1.3rem;
-            }
-            
-            .btn {
-                padding: 0.6rem 1.2rem;
-                font-size: 0.9rem;
-            }
-        }
-        
-        /* Hidden sections by default */
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .subcategory-content {
-            display: none;
-        }
-        
-        .subcategory-content.active {
-            display: block;
-        }
-                /* Guía Rápida por Necesidad */
-        .quick-guide-section {
-            margin: 3rem 0;
-            padding: 2.5rem 1.5rem;
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-        
-        .needs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-        
-        .need-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        
-        .need-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-        }
-        
-        .need-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        
-        .need-icon {
-            background: #5B4393;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 1rem;
-        }
-        
-        .need-card h4 {
-            font-family: 'Quicksand', sans-serif;
-            color: #1A1C36;
-            font-size: 1.2rem;
-        }
-        
-        .need-card p {
-            margin-bottom: 1rem;
-            color: #555;
-            font-size: 0.95rem;
-        }
-        
-        .course-links .btn {
-            display: block;
-            width: 100%;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-        
-    </style>
+  <meta charset="UTF-8">
+  <title>Catálogo de Formación - Cursos y Recursos</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body{ font-family: 'Montserrat', sans-serif; }
+
+    /* Guía rápida (simple) */
+    .quick-simple{ margin: 2.5rem 0; padding: 2rem 1.5rem; background: #f7f8fb; border: 1px solid #e9ecf3; border-radius: 14px; }
+    .quick-simple__head{ text-align: center; margin-bottom: 1.25rem; }
+    .quick-simple__title{ font-family: 'Quicksand', sans-serif; font-size: 1.6rem; margin: 0 0 .25rem 0; }
+    .quick-simple__subtitle{ margin: 0; color: #555; }
+    .quick-simple__grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+
+    .qcard{ background: #fff; border: 1px solid #eef1f6; border-radius: 12px; padding: 1rem; box-shadow: 0 8px 22px rgba(16,24,40,.06); }
+    .qcard__top{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; }
+    .qcard__label{ display:flex; align-items:center; gap:.6rem; font-weight: 700; color:#1A1C36; }
+    .qcard__label i{ width: 34px; height: 34px; display:inline-flex; align-items:center; justify-content:center; border-radius: 10px; background: #eef4ff; color:#217CE3; }
+    .qcard__desc{ margin:.75rem 0 1rem 0; color:#555; font-size:.95rem; }
+    .qcard__actions{ display:flex; flex-direction:column; gap:.5rem; }
+
+    .qbtn{ display:block; width:100%; padding:.7rem .9rem; border-radius: 12px; text-decoration:none; font-weight: 700; text-align:center; border: 1px solid transparent; }
+    .qbtn--primary{ background: #217CE3; color:#fff; }
+    .qbtn--ghost{ background: #fff; color:#217CE3; border-color:#cfe0ff; }
+
+    .qcheck{ display:flex; align-items:center; cursor:pointer; }
+    .qcheck input{ display:none; }
+    .qcheck__ui{ width:22px; height:22px; border-radius: 6px; border: 2px solid #cbd5e1; background:#fff; position:relative; }
+    .qcheck input:checked + .qcheck__ui{ border-color:#217CE3; background:#217CE3; }
+    .qcheck input:checked + .qcheck__ui::after{ content:"✓"; position:absolute; top:50%; left:50%; transform:translate(-50%,-55%); color:#fff; font-weight:900; }
+
+    @media (max-width: 480px){ .quick-simple{ padding: 1.5rem 1rem; } }
+
+    /* Cards */
+    .course-card2{
+      background:#fff; border-radius:14px; overflow:hidden;
+      box-shadow: 0 10px 24px rgba(16,24,40,.08);
+      border:1px solid rgba(16,24,40,.06);
+      display:flex; flex-direction:column;
+      transition: transform .2s ease, box-shadow .2s ease;
+    }
+    .course-card2:hover{ transform: translateY(-4px); box-shadow: 0 14px 32px rgba(16,24,40,.12); }
+
+    .course-card2__head{ padding:16px 16px 14px; position:relative; }
+    .card-head-free{ background: linear-gradient(135deg, rgba(33,124,227,.20), rgba(91,67,147,.22)); }
+    .card-head-pay{ background: linear-gradient(135deg, rgba(91,67,147,.18), rgba(33,124,227,.12)); }
+    .card-head-fin{ background: linear-gradient(135deg, rgba(25,28,54,.10), rgba(33,124,227,.10)); }
+
+    .course-ico{
+      width:40px; height:40px; border-radius:12px;
+      display:flex; align-items:center; justify-content:center;
+      background: rgba(255,255,255,.75);
+      border: 1px solid rgba(16,24,40,.08);
+      color:#217CE3; flex: 0 0 40px;
+    }
+
+    .badge-free{ background:#217CE3; }
+    .badge-pay{ background:#1A1C36; }
+    .badge-fin{ background:#5B4393; }
+
+    .course-card2__body{ padding:16px; display:flex; flex-direction:column; flex:1; }
+
+    .course-meta{ list-style:none; padding:0; margin:0 0 12px; display:grid; gap:10px; }
+    .course-meta li{ display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:#f8f9fb; border:1px solid rgba(16,24,40,.06); }
+    .course-meta span{ color:#667085; font-size:.85rem; }
+    .course-meta strong{ color:#1A1C36; font-weight:700; font-size:.9rem; text-align:right; }
+
+    .course-check2{ position:absolute; top:12px; right:12px; cursor:pointer; z-index:5; }
+    .course-check2 input{ display:none; }
+    .course-check2 .check-ui{
+      width:22px; height:22px; border-radius:7px;
+      background: rgba(255,255,255,.6);
+      border: 2px solid rgba(255,255,255,.85);
+      display:inline-block; position:relative;
+      box-shadow: 0 6px 14px rgba(16,24,40,.08);
+    }
+    .course-check2 input:checked + .check-ui{ background:#fff; border-color:#fff; }
+    .course-check2 input:checked + .check-ui::after{
+      content:"✓"; position:absolute; top:50%; left:50%;
+      transform:translate(-50%,-55%);
+      color:#217CE3; font-weight:900; font-size:14px;
+    }
+
+    .section-pill{ border-radius:999px; padding:.65rem 1.1rem; font-weight:700; }
+    .subpill .nav-link{ border-radius:999px; font-weight:700; }
+
+    @media (max-width: 576px){
+      .course-meta li{ flex-direction:column; align-items:flex-start; }
+      .course-meta strong{ text-align:left; }
+    }
+  </style>
 </head>
 <body>
-  
-  <div class="background-container"></div>
 
-    <header class="shadow-sm">
-    <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
-      <div class="container-fluid px-2 px-sm-3 px-lg-4">
-        
-        <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
-        </a>
+<div class="background-container"></div>
 
-        
-        <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
-                aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-      
-        <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav ms-auto align-items-lg-center">
-            <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
-            <li class="nav-item"><a class="nav-link active" href="cursos.php">Cursos</a></li>
-            <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
-            <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
-            <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
-            
-            <?php if(isset($_SESSION['usuario_id'])): ?>
-            <li class="nav-item user-profile-menu">
-              <button class="user-toggle" aria-expanded="false">
-                <i class="fas fa-user-circle"></i>
-                <span>Hola, <?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
-                <i class="fas fa-chevron-down small"></i>
-              </button>
-              <div class="user-dropdown">
-                <div class="user-info">
-                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
-                  <?php if(isset($_SESSION['usuario_correo'])): ?>
-                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
-                  <?php endif; ?>
-                </div>
-                <?php if (!empty($isAdmin)): ?>
-                <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
-                    <i class="fas fa-chart-line"></i> Panel Admin
-                </a>
-                <a href="admin_catalogo.php" class="admin-btn">
-                 <i class="fas fa-tags"></i> Editar Catálogo
-                </a>
-                <?php endif; ?>
-                <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
-                  <i class="fas fa-history"></i> Historial de Compras
-                </a>
-                <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
-                </a>
-              </div>
-            </li>
-            <?php else: ?>
-                <li class="nav-item"><a class="nav-link btn btn-primary btn-cta" href="index.php" onclick="localStorage.setItem('openModal', 'true'); window.location.href='index.php'; return false;">Registrarse / Iniciar Sesión</a></li>
-            <?php endif; ?>
-          </ul>
-        </div>
-      </div>
-    </nav>
-  </header>
-    
-    <section class="contracts-hero" id="inicio">
-        <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
-        <div class="container" data-aos="fade-up">
-            <div class="contracts-hero-content text-center">
-                <h1 class="contracts-main-title">Catálogo de <span class="highlight-gradient">Formación</span></h1>
-                <p class="contracts-subtitle" style="margin: 0 auto;">Accede a todos nuestros cursos gratuitos, de paga y opciones de financiamiento para impulsar tu desarrollo profesional.</p>
-            </div>
-        </div>
-    </section>
-    
-    <div class="history-container">
-    
-    <section class="main-content">
-        <h2 class="section-title">Acceso a todos los recursos</h2>
-        <p class="section-description">Selecciona una categoría para ver los cursos y recursos disponibles.</p>
-        
-        <!-- Nueva sección de búsqueda y filtros -->
-        <div class="search-filter-section">
-            <div class="search-container">
-                <input type="text" class="search-input" placeholder="Buscar cursos por nombre, categoría o institución...">
-                <button class="search-btn"><i class="fas fa-search"></i></button>
-            </div>
-            <div class="filter-container">
-                <button class="filter-btn active" data-filter="all">Todos</button>
-                <button class="filter-btn" data-filter="emprendimiento">Emprendimiento</button>
-                <button class="filter-btn" data-filter="tecnologia">Tecnología</button>
-                <button class="filter-btn" data-filter="diseno">Diseño</button>
-                <button class="filter-btn" data-filter="educacion">Educación</button>
-                <button class="filter-btn" data-filter="innovacion">Innovación</button>
-                <button class="filter-btn" data-filter="marketing">Marketing</button>
-                <button class="filter-btn" data-filter="productividad">Productividad</button>
-                <button class="filter-btn" data-filter="ecommerce">E-commerce</button>
-                <button class="filter-btn" data-filter="certificacion">Certificación</button>
-                <button class="filter-btn" data-filter="finanzas">Finanzas</button>
-                <button class="filter-btn" data-filter="formacion">Formación</button>
-                <button class="filter-btn" data-filter="idiomas">Idiomas</button>
-            </div>
-
-        </div>
-        
-        <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <button class="tab-btn active" data-tab="gratuitos">Cursos Gratuitos</button>
-            <button class="tab-btn" data-tab="paga">Cursos de Paga</button>
-            <button class="tab-btn" data-tab="financiamiento">Financiamiento</button>
-        </div>
-        
-         <!-- Cursos Gratuitos -->
-        <div id="gratuitos" class="tab-content active">
-            <h3 class="section-title">Cursos Gratuitos</h3>
-            
-            <!-- Subcategory Tabs para Cursos Gratuitos -->
-            <div class="subcategory-tabs">
-                <button class="subcategory-btn active" data-subcategory="digital-gratuito">Digitales</button>
-                <button class="subcategory-btn" data-subcategory="presencial-gratuito">Presenciales</button>
-            </div>
-              <!-- Guía Rápida por Necesidad - NUEVA SECCIÓN -->
-        <div class="quick-guide-section">
-            <h3 class="section-title">Guía Rápida por Necesidad</h3>
-            <p class="section-description">Encuentra el curso perfecto según tu prioridad inmediata</p>
-            
-            <div class="needs-grid">
-                
-                <!-- Necesidad 1: Formalizar Negocio -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #5B4393;">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <h4>Formalizar tu Negocio</h4>
-                    </div>
-                    <p>El 88.9% de diseñadores tiene debilidades en gestión financiera</p>
-                    <div class="course-links">
-                        <a href="https://emprendimiento.condusef.gob.mx/" class="btn btn-primary" target="_blank">CONDUSEF - Haz de tu idea un negocio</a>
-                        <a href="https://www.condusef.gob.mx/" class="btn btn-secondary" target="_blank">Diplomado Educación Financiera</a>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 2: Conseguir Clientes -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #217CE3;">
-                            <i class="fas fa-users"></i>
-                        </div>
-                        <h4>Conseguir Clientes</h4>
-                    </div>
-                    <p>El 66.7% necesita mejorar posicionamiento digital</p>
-                    <div class="course-links">
-                        <a href="https://capacitateparaelempleo.org/" class="btn btn-primary" target="_blank">Marketing Digital</a>
-                        <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Contenidos para Promocionar</a>
-                        <a href="https://becas.inroads.org.mx/" class="btn btn-secondary" target="_blank">Certificado Marketing Digital (Beca)</a>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 3: Mejorar Habilidades Técnicas -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #28a745;">
-                            <i class="fas fa-tools"></i>
-                        </div>
-                        <h4>Mejorar Habilidades Técnicas</h4>
-                    </div>
-                    <p>Domina las herramientas profesionales de diseño</p>
-                    <div class="course-links">
-                        <a href="https://capacitateparaelempleo.org/" class="btn btn-primary" target="_blank">Diseño Gráfico Digital (Gratis)</a>
-                        <a href="https://edutin.com/curso-de-canva" class="btn btn-primary" target="_blank">Curso de Canva (Gratis)</a>
-                        <a href="https://www.domestika.org/es/" class="btn btn-secondary" target="_blank">Domestika - Adobe Creative Suite</a>
-                        <button class="btn btn-secondary" onclick="navigateToIDEFT()">IDEFT Puerto Vallarta - Presencial</button>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 4: Especializarte en UX/UI -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #dc3545;">
-                            <i class="fas fa-mobile-alt"></i>
-                        </div>
-                        <h4>Especializarte en UX/UI</h4>
-                    </div>
-                    <p>Salarios 40% más altos, trabajo remoto internacional</p>
-                    <div class="course-links">
-                        <a href="https://becas.inroads.org.mx/" class="btn btn-primary" target="_blank">Google Certificado - Diseño UX (Beca)</a>
-                        <a href="https://platzi.com/ruta/ux/" class="btn btn-secondary" target="_blank">Platzi - Ruta Diseño UX (Completo)</a>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 5: Integrar IA en tu Trabajo -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #6f42c1;">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <h4>Integrar IA en tu Trabajo</h4>
-                    </div>
-                    <p>Aumenta tu productividad 300% con herramientas de IA</p>
-                    <div class="course-links">
-                        <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Domina la IA con Gemini</a>
-                        <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Fundamentos de Prompting</a>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 6: Aprender a Vender Online -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #fd7e14;">
-                            <i class="fas fa-shopping-cart"></i>
-                        </div>
-                        <h4>Aprender a Vender Online</h4>
-                    </div>
-                    <p>Vende plantillas, recursos y servicios digitales</p>
-                    <div class="course-links">
-                        <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Comercio Electrónico</a>
-                        <a href="https://becas.inroads.org.mx/" class="btn btn-secondary" target="_blank">Certificado Marketing y E-Commerce (Beca)</a>
-                    </div>
-                </div>
-                
-                <!-- Necesidad 7: Networking y Mentoría -->
-                <div class="need-card">
-                    <div class="need-header">
-                        <div class="need-icon" style="background: #20c997;">
-                            <i class="fas fa-handshake"></i>
-                        </div>
-                        <h4>Networking y Mentoría</h4>
-                    </div>
-                    <p>Conecta con otros emprendedores y mentores</p>
-                    <div class="course-links">
-                        <a href="https://redi.jalisco.gob.mx/" class="btn btn-primary" target="_blank">REDi Puerto Vallarta</a>
-                        <a href="https://www.instagram.com/redipuertovallarta/" class="btn btn-secondary" target="_blank">Instagram: @redipuertovallarta</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Tabs Navigation -->
-        <div class="tabs-container">
-            <button class="tab-btn active" data-tab="gratuitos">Cursos Gratuitos</button>
-            <button class="tab-btn" data-tab="paga">Cursos de Paga</button>
-            <button class="tab-btn" data-tab="financiamiento">Financiamiento</button>
-        </div>
-        
-        <!-- Cursos Gratuitos -->
-        <div id="gratuitos" class="tab-content active">
-            <h3 class="section-title">Cursos Gratuitos</h3>
-            
-            <!-- Subcategory Tabs para Cursos Gratuitos -->
-            <div class="subcategory-tabs">
-                <button class="subcategory-btn active" data-subcategory="digital-gratuito">Digitales</button>
-                <button class="subcategory-btn" data-subcategory="presencial-gratuito">Presenciales</button>
-            </div>
-            
-
-            <!-- Cursos Gratuitos Digitales -->
-            <div id="digital-gratuito" class="subcategory-content active">
-                <div class="courses-grid">
-                    <!-- Curso 1 - Existente -->
-                    <div class="course-card" data-category="emprendimiento">
-                        <div class="course-header">
-                            <h3>Curso de Emprendimiento CONDUSEF</h3>
-                            <span class="course-category">Emprendimiento</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">"Haz de tu idea un negocio" - Aprende los fundamentos del emprendimiento y desarrollo de modelos de negocio.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí</li>
-                                <li>Institución: CONDUSEF + Educación Financiera Citibanamex</li>
-                            </ul>
-                            <a href="https://emprendimiento.condusef.gob.mx/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 2 - Existente -->
-                    <div class="course-card" data-category="tecnologia">
-                        <div class="course-header">
-                            <h3>Google Actívate</h3>
-                            <span class="course-category">Tecnología</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Cursos de Comercio Electrónico, Contenidos para Promocionar tu Empresa, Productividad Personal, Transformación Digital, Programación y Desarrollo de Apps.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí</li>
-                                <li>Institución: Google</li>
-                            </ul>
-                            <a href="https://grow.google/intl/es/courses-and-tools/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 3 - Existente -->
-                    <div class="course-card" data-category="diseno tecnologia">
-                        <div class="course-header">
-                            <h3>Inteligencia Artificial Aplicada al Diseño</h3>
-                            <span class="course-category">Diseño</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Domina la IA con Gemini y Fundamentos de Prompting para aplicaciones en diseño gráfico.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí</li>
-                                <li>Institución: Google</li>
-                            </ul>
-                            <a href="https://grow.google/intl/es/courses-and-tools/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 4 - Existente -->
-                    <div class="course-card" data-category="educacion">
-                        <div class="course-header">
-                            <h3>MéxicoX / AprendeMX</h3>
-                            <span class="course-category">Educación</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Plataforma educativa de la SEP con diversos cursos en línea gratuitos.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: 100% en línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí</li>
-                                <li>Institución: SEP</li>
-                            </ul>
-                            <a href="https://mexicox.gob.mx/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 5 - Existente -->
-                    <div class="course-card" data-category="diseno">
-                        <div class="course-header">
-                            <h3>Curso de Canva</h3>
-                            <span class="course-category">Diseño</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Aprende a crear contenido visual profesional usando la plataforma Canva.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito (certificado opcional de pago)</li>
-                                <li>Certificación: Opcional</li>
-                                <li>Institución: Edutin Academy</li>
-                            </ul>
-                            <a href="https://edutin.com/curso-de-canva" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 6 - Existente -->
-                    <div class="course-card" data-category="innovacion">
-                        <div class="course-header">
-                            <h3>PLAI Jalisco</h3>
-                            <span class="course-category">Innovación</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Plataforma Abierta de Innovación con acceso a través de REDi Puerto Vallarta.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Acceso: REDi Puerto Vallarta</li>
-                                <li>Institución: Gobierno de Jalisco</li>
-                            </ul>
-                            <a href="https://redi.jalisco.gob.mx/" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 7 - Existente -->
-                    <div class="course-card" data-category="educacion emprendimiento">
-                        <div class="course-header">
-                            <h3>Plataformas Públicas</h3>
-                            <span class="course-category">Variados</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Capacítate para el Empleo, Conecta Empleo, OMPI, IMPI, SAT (Cursos Fiscales).</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Enfoque: Empleabilidad, finanzas, propiedad intelectual</li>
-                                <li>Institución: Varias</li>
-                            </ul>
-                            <a href="https://capacitateparaelempleo.org/" class="btn btn-primary" target="_blank">Explorar Plataformas</a>
-                        </div>
-                    </div>
-                    
-                    <!-- NUEVOS CURSOS DIGITALES -->
-                    
-                    <!-- Curso 8 - Nuevo -->
-                    <div class="course-card" data-category="marketing emprendimiento">
-                        <div class="course-header">
-                            <h3>Fundamentos de Marketing Digital</h3>
-                            <span class="course-category">Marketing</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Marketing digital aplicado a servicios creativos. Mejora estrategias de posicionamiento digital y captación de clientes.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí, gratuita</li>
-                                <li>Institución: Capacítate para el Empleo</li>
-                            </ul>
-                            <a href="https://capacitateparaelempleo.org/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 9 - Nuevo -->
-                    <div class="course-card" data-category="tecnologia diseno">
-                        <div class="course-header">
-                            <h3>Domina la IA con Gemini</h3>
-                            <span class="course-category">Inteligencia Artificial</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Inteligencia artificial aplicada al diseño. Aumenta productividad 300% con aplicaciones prácticas.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí, compatible con LinkedIn</li>
-                                <li>Institución: Google Actívate</li>
-                            </ul>
-                            <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 10 - Nuevo -->
-                    <div class="course-card" data-category="tecnologia diseno">
-                        <div class="course-header">
-                            <h3>Fundamentos de Prompting</h3>
-                            <span class="course-category">Inteligencia Artificial</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Crear instrucciones efectivas para herramientas de IA generativa.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí, compatible con LinkedIn</li>
-                                <li>Institución: Google Actívate</li>
-                            </ul>
-                            <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 11 - Nuevo -->
-                    <div class="course-card" data-category="diseno">
-                        <div class="course-header">
-                            <h3>Diseño Gráfico Digital</h3>
-                            <span class="course-category">Diseño</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Herramientas fundamentales de diseño para actualizar habilidades técnicas.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí</li>
-                                <li>Institución: Capacítate para el Empleo</li>
-                            </ul>
-                            <a href="https://capacitateparaelempleo.org/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 12 - Nuevo -->
-                    <div class="course-card" data-category="productividad">
-                        <div class="course-header">
-                            <h3>Productividad Personal</h3>
-                            <span class="course-category">Productividad</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Gestión del tiempo para freelancers que gestionan múltiples proyectos.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Certificación: Sí, acreditada</li>
-                                <li>Institución: Google Actívate</li>
-                            </ul>
-                            <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 13 - Nuevo -->
-                    <div class="course-card" data-category="ecommerce">
-                        <div class="course-header">
-                            <h3>Comercio Electrónico</h3>
-                            <span class="course-category">E-commerce</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Vender servicios y productos digitales online.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Duración: 40 horas (7 módulos)</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Institución: Google Actívate</li>
-                            </ul>
-                            <a href="https://learndigital.withgoogle.com/activate/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 14 - Nuevo -->
-                    <div class="course-card" data-category="certificacion marketing">
-                        <div class="course-header">
-                            <h3>Certificado Marketing Digital y E-Commerce</h3>
-                            <span class="course-category">Certificación Google</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Estrategias profesionales de marketing para aumentar valor percibido.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Duración: 150-200 horas (4 meses)</li>
-                                <li>Costo: GRATUITO con beca</li>
-                                <li>Institución: Google</li>
-                            </ul>
-                            <a href="https://becas.inroads.org.mx/" class="btn btn-primary" target="_blank">Solicitar Beca</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 15 - Nuevo -->
-                    <div class="course-card" data-category="certificacion diseno">
-                        <div class="course-header">
-                            <h3>Certificado en Diseño UX</h3>
-                            <span class="course-category">Certificación Google</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Diseño centrado en el usuario, especialización con alta demanda.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Duración: 150-200 horas</li>
-                                <li>Costo: GRATUITO con beca</li>
-                                <li>Institución: Google</li>
-                            </ul>
-                            <a href="https://becas.inroads.org.mx/" class="btn btn-primary" target="_blank">Solicitar Beca</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 16 - Nuevo -->
-                    <div class="course-card" data-category="certificacion tecnologia">
-                        <div class="course-header">
-                            <h3>Certificado en Análisis de Datos</h3>
-                            <span class="course-category">Certificación Google</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Toma de decisiones basada en datos para optimizar estrategias visuales.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: GRATUITO con beca</li>
-                                <li>Institución: Google</li>
-                            </ul>
-                            <a href="https://becas.inroads.org.mx/" class="btn btn-primary" target="_blank">Solicitar Beca</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 17 - Nuevo -->
-                    <div class="course-card" data-category="finanzas emprendimiento">
-                        <div class="course-header">
-                            <h3>Diplomado en Educación Financiera</h3>
-                            <span class="course-category">Educación Financiera</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Gestión financiera para emprendedores. Aborda debilidades críticas en gestión financiera.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: En línea</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Requisitos: Bachillerato</li>
-                                <li>Institución: CONDUSEF</li>
-                            </ul>
-                            <a href="https://www.condusef.gob.mx/" class="btn btn-primary" target="_blank">Acceder al Curso</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-  <!-- Cursos Gratuitos Presenciales -->
-            <div id="presencial-gratuito" class="subcategory-content">
-                <div class="courses-grid">
-                    <!-- Curso 1 - Existente -->
-                    <div class="course-card" data-category="emprendimiento">
-                        <div class="course-header">
-                            <h3>CANACOPE Servytur Puerto Vallarta</h3>
-                            <span class="course-category">Negocios</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Talleres gratuitos: Identidad Empresarial, Formación Financiera, Liderazgo.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Ubicación: Puerto Vallarta, Jalisco</li>
-                                <li>Institución: Cámara de Comercio</li>
-                            </ul>
-                            <a href="http://www.canacopeservyturpvr.com" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 2 - Existente -->
-                    <div class="course-card" data-category="innovacion">
-                        <div class="course-header">
-                            <h3>REDi Puerto Vallarta</h3>
-                            <span class="course-category">Innovación</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Centro de Innovación y Emprendimiento con servicios gratuitos: coworking, mentorías, talleres, networking.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Costo: Gratuito</li>
-                                <li>Ubicación: Centro Internacional de Convenciones, Puerto Vallarta</li>
-                                <li>Institución: Gobierno de Jalisco</li>
-                            </ul>
-                            <a href="https://redi.jalisco.gob.mx/" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- NUEVOS CURSOS PRESENCIALES -->
-                    
-                    <!-- Curso 3 - Nuevo -->
-                    <div class="course-card" data-category="educacion formacion">
-                        <div class="course-header">
-                            <h3>IDEFT - Instituto de Formación para el Trabajo</h3>
-                            <span class="course-category">Formación Profesional</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">500+ cursos con validez oficial SEP, certificación oficial y convenio con Ayuntamiento.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Ubicación: Centro Puerto Vallarta, Jalisco</li>
-                                <li>Horarios: Matutino, Vespertino, Nocturno, Sabatinos</li>
-                                <li>Contacto: Tel. 322 223 1809</li>
-                            </ul>
-                            <a href="https://www.facebook.com/IDEFTPuertoVallartaJal" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 4 - Nuevo -->
-                    <div class="course-card" data-category="diseno">
-                        <div class="course-header">
-                            <h3>IDEFT - Diseño Gráfico</h3>
-                            <span class="course-category">Diseño</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Software profesional de diseño: Photoshop, Illustrator, InDesign con certificado oficial SEP.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Duración: Variable (1-6 meses)</li>
-                                <li>Costo: Bajo costo (consultar directamente)</li>
-                                <li>Validez: Certificado oficial SEP</li>
-                            </ul>
-                            <a href="https://www.facebook.com/IDEFTPuertoVallartaJal" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 5 - Nuevo -->
-                    <div class="course-card" data-category="marketing">
-                        <div class="course-header">
-                            <h3>IDEFT - Marketing Digital y Redes Sociales</h3>
-                            <span class="course-category">Marketing</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Estrategias digitales para captar clientes y posicionamiento online del diseñador.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Costo: Consultar disponibilidad</li>
-                                <li>Enfoque: Captación de clientes para diseñadores</li>
-                                <li>Institución: IDEFT</li>
-                            </ul>
-                            <a href="https://www.facebook.com/IDEFTPuertoVallartaJal" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                    
-                    <!-- Curso 6 - Nuevo -->
-                    <div class="course-card" data-category="idiomas">
-                        <div class="course-header">
-                            <h3>IDEFT - Inglés para Adultos</h3>
-                            <span class="course-category">Idiomas</span>
-                        </div>
-                        <div class="course-body">
-                            <p class="course-description">Inglés para diseñadores bilingües que acceden a clientes internacionales con mejor pago.</p>
-                            <ul class="course-details">
-                                <li>Modalidad: Presencial</li>
-                                <li>Costo: GRATUITO</li>
-                                <li>Convenio: DIF Puerto Vallarta - UdeG</li>
-                                <li>Beneficio: Acceso a clientes internacionales</li>
-                            </ul>
-                            <a href="https://www.facebook.com/IDEFTPuertoVallartaJal" class="btn btn-primary" target="_blank">Más Información</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Financiamiento -->
-        <div id="financiamiento" class="tab-content">
-            <h3 class="section-title">Recursos de Financiamiento</h3>
-            
-            <div class="financing-section">
-                <div class="financing-grid">
-                    <div class="financing-item">
-                        <div class="financing-icon"><i class="fas fa-landmark"></i></div>
-                        <h4>Programas del SAT para Emprendedores</h4>
-                        <p>Facilidades fiscales y apoyo a la formalización para diseñadores gráficos</p>
-                        <div class="financing-details">
-                            <h5>Beneficios disponibles:</h5>
-                            <ul>
-                                <li>Sociedades por Acciones Simplificadas (SAS) - Crear tu empresa en 24 horas</li>
-                                <li>Régimen Simplificado de Confianza (RESICO) - No pagas impuestos el primer año</li>
-                                <li>Trámite Simplificado de RFC - Gratis y rápido</li>
-                                <li>Capacitación gratuita sobre facturación electrónica</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="financing-item">
-                        <div class="financing-icon"><i class="fas fa-hand-holding-usd"></i></div>
-                        <h4>PROJAL (Promotora del Financiamiento para el Desarrollo de Jalisco)</h4>
-                        <p>Programas de financiamiento estatal para emprendedores de diseño</p>
-                        <div class="financing-details">
-                            <h5>Programas disponibles:</h5>
-                            <ul>
-                                <li>Crédito PyME - De $50,000 hasta $400,000 pesos</li>
-                                <li>Fojal Emprende - Para microemprendedores y pequeños negocios</li>
-                                <li>Crédito Impulsa Mujer - 30% del presupuesto para mujeres emprendedoras</li>
-                                <li>Reto Jalisco - Para emprendimientos tecnológicos y de alto valor</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="financing-item">
-                        <div class="financing-icon"><i class="fas fa-university"></i></div>
-                        <h4>Programas Federales de Financiamiento</h4>
-                        <p>Opciones de financiamiento a nivel nacional para diseñadores</p>
-                        <div class="financing-details">
-                            <h5>Opciones disponibles:</h5>
-                            <ul>
-                                <li>Nacional Financiera (NAFIN) - Avala tu crédito ante bancos</li>
-                                <li>PRONAFIM - Microcréditos para microempresarios</li>
-                                <li>STPS - Fomento al Autoempleo - Mobiliario, maquinaria y equipo</li>
-                                <li>Crédito Joven - Para emprendedores de 18 a 35 años</li>
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <div class="financing-item">
-                        <div class="financing-icon"><i class="fas fa-rocket"></i></div>
-                        <h4>Recursos Específicos para Diseñadores</h4>
-                        <p>Programas especializados para la industria creativa</p>
-                        <div class="financing-details">
-                            <h5>Oportunidades:</h5>
-                            <ul>
-                                <li>Jalisco Crece - Desarrollo Empresarial - Hasta $1 millón</li>
-                                <li>Proyecta Industrias Culturales y Creativas - $20,000 a $250,000</li>
-                                <li>Programa de Cadenas de Proveeduría - Conecta con empresas grandes</li>
-                                <li>REDi Puerto Vallarta - Espacios de coworking y mentorías</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                
-                <div style="text-align: center; margin-top: 2rem;">
-                    <a href="index.php#contacto" class="btn btn-primary">Solicitar Asesoría Personalizada</a>
-                </div>
-            </div>
-        </div>
-    </section>
-    </div> <!-- end history-container -->
-    
-  <footer>
+<header class="shadow-sm">
+  <nav class="navbar navbar-expand-lg bg-white fixed-top">
     <div class="container">
-      <div class="footer-container">
-        <div class="footer-col">
-          <h3>Crece Diseño</h3>
-          <p>Contratos editables listos para descarga en PDF.</p>
-          <div class="social-links social-centered">
-            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
-              target="_blank" rel="noopener" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
-              rel="noopener" aria-label="TikTok">
-              <i class="fab fa-tiktok"></i>
-            </a>
+
+      <a class="navbar-brand" href="index.php">
+        <img src="logo.svg" alt="Crece Diseño" height="40">
+      </a>
+
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="mainNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center">
+
+          <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
+          <li class="nav-item"><a class="nav-link active" href="cursos.php">Cursos</a></li>
+          <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
+          <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
+
+          <?php if(isset($_SESSION['usuario_id'])): ?>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">
+                <i class="fas fa-user-circle"></i>
+                Hola, <?= e($_SESSION['usuario_nombre'] ?? $nombre_usuario) ?>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end">
+                <?php if (!empty($isAdmin)): ?>
+                  <li><a class="dropdown-item" href="admin_catalogo.php">Panel Admin</a></li>
+                <?php endif; ?>
+                <li><a class="dropdown-item" href="analitica.php">Historial</a></li>
+                <li><a class="dropdown-item text-danger" href="config/logout.php">Cerrar Sesión</a></li>
+              </ul>
+            </li>
+          <?php else: ?>
+            <li class="nav-item">
+              <a class="btn btn-primary" href="index.php">Iniciar Sesión</a>
+            </li>
+          <?php endif; ?>
+
+        </ul>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<div class="container my-5 py-5">
+
+  <h1 class="text-center mb-2" data-aos="fade-up">Catálogo de Formación</h1>
+  <p class="text-center text-muted mb-4" data-aos="fade-up" data-aos-delay="100">
+    Cursos gratuitos (digitales y presenciales), cursos de paga y recursos de financiamiento.
+  </p>
+
+  <!-- Tabs principales -->
+  <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="mainTabs" role="tablist" data-aos="fade-up" data-aos-delay="150">
+    <li class="nav-item" role="presentation">
+      <button class="nav-link active section-pill" id="tab-gratuitos" data-bs-toggle="pill" data-bs-target="#pane-gratuitos" type="button" role="tab">Cursos Gratuitos</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link section-pill" id="tab-paga" data-bs-toggle="pill" data-bs-target="#pane-paga" type="button" role="tab">Cursos de Paga</button>
+    </li>
+    <li class="nav-item" role="presentation">
+      <button class="nav-link section-pill" id="tab-fin" data-bs-toggle="pill" data-bs-target="#pane-fin" type="button" role="tab">Financiamiento</button>
+    </li>
+  </ul>
+
+  <div class="tab-content" id="mainTabsContent">
+
+    <!-- GRATUITOS -->
+    <div class="tab-pane fade show active" id="pane-gratuitos" role="tabpanel" aria-labelledby="tab-gratuitos">
+      <ul class="nav nav-pills justify-content-center gap-2 mb-3 subpill" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pane-digital" type="button" role="tab">Digitales</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pane-presencial" type="button" role="tab">Presenciales</button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="pane-digital" role="tabpanel">
+          <div class="row g-4">
+            <?php if (count($gratuitos_digital) > 0): ?>
+              <?php foreach ($gratuitos_digital as $c) { render_course_card($c, 'free'); } ?>
+            <?php else: ?>
+              <div class="col-12 text-center"><p class="text-muted">No hay cursos digitales gratuitos por ahora.</p></div>
+            <?php endif; ?>
           </div>
         </div>
 
-        <div class="footer-col">
-          <h3>Enlaces</h3>
-          <a href="index.php">Inicio</a>
-          <a href="cursos.php">Cursos</a>
-          <a href="contratos.php">Contratos</a>
-          <a href="nosotros.php">Nosotros</a>
-          <a href="index.php#contacto">Contacto</a>
-        </div>
-
-        <div class="footer-col">
-          <h3>Contratos</h3>
-          <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+        <div class="tab-pane fade" id="pane-presencial" role="tabpanel">
+          <div class="row g-4">
+            <?php if (count($gratuitos_presencial) > 0): ?>
+              <?php foreach ($gratuitos_presencial as $c) { render_course_card($c, 'free'); } ?>
+            <?php else: ?>
+              <div class="col-12 text-center"><p class="text-muted">No hay cursos presenciales gratuitos por ahora.</p></div>
+            <?php endif; ?>
+          </div>
         </div>
       </div>
     </div>
-  </footer>
-    
-    <a href="https://wa.me/523221234567" class="whatsapp-button" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
 
-    <script>
-        // Mobile menu toggle
-        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
-            document.getElementById('main-nav').classList.toggle('active');
-        });
-        
-        // Close mobile menu when clicking on a link
-        document.querySelectorAll('nav a').forEach(link => {
-            link.addEventListener('click', function() {
-                document.getElementById('main-nav').classList.remove('active');
-            });
-        });
-        
-        // Tab functionality
-        document.querySelectorAll('.tab-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all buttons and contents
-                document.querySelectorAll('.tab-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Show corresponding content
-                const tabId = this.getAttribute('data-tab');
-                document.getElementById(tabId).classList.add('active');
-                
-                // Reset subcategory to first option when changing main tab
-                const firstSubcategory = document.querySelector(`#${tabId} .subcategory-btn`);
-                if (firstSubcategory) {
-                    firstSubcategory.click();
-                }
-                
-                // Reset search and filters
-                resetSearchAndFilters();
-            });
-        });
-        
-        // Subcategory functionality
-        document.querySelectorAll('.subcategory-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                const parentTab = this.closest('.tab-content').id;
-                
-                // Remove active class from all buttons in this tab
-                document.querySelectorAll(`#${parentTab} .subcategory-btn`).forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Remove active class from all contents in this tab
-                document.querySelectorAll(`#${parentTab} .subcategory-content`).forEach(content => {
-                    content.classList.remove('active');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Show corresponding content
-                const subcategoryId = this.getAttribute('data-subcategory');
-                document.getElementById(subcategoryId).classList.add('active');
-                
-                // Reset search and filters
-                resetSearchAndFilters();
-            });
-        });
-        
-        // Filter functionality
-        document.querySelectorAll('.filter-btn').forEach(button => {
-            button.addEventListener('click', function() {
-                // Remove active class from all filter buttons
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-                
-                // Add active class to clicked button
-                this.classList.add('active');
-                
-                // Apply filter
-                const filter = this.getAttribute('data-filter');
-                filterCourses(filter);
-            });
-        });
-        
-        // Search functionality
-        const searchInput = document.querySelector('.search-input');
-        const searchBtn = document.querySelector('.search-btn');
-        
-        searchInput.addEventListener('input', function() {
-            searchCourses(this.value);
-        });
-        
-        searchBtn.addEventListener('click', function() {
-            searchCourses(searchInput.value);
-        });
-        
-        // Search and filter functions
-        function searchCourses(searchTerm) {
-            const activeTab = document.querySelector('.tab-content.active');
-            const activeSubcategory = activeTab.querySelector('.subcategory-content.active');
-            const courseCards = activeSubcategory.querySelectorAll('.course-card');
-            const filter = document.querySelector('.filter-btn.active').getAttribute('data-filter');
-            
-            courseCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const description = card.querySelector('.course-description').textContent.toLowerCase();
-                const category = card.getAttribute('data-category');
-                
-                const matchesSearch = title.includes(searchTerm.toLowerCase()) || 
-                                     description.includes(searchTerm.toLowerCase());
-                
-                const matchesFilter = filter === 'all' || category.includes(filter);
-                
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Show no results message if needed
-            showNoResultsMessage(activeSubcategory);
-        }
-        
-        function filterCourses(filter) {
-            const activeTab = document.querySelector('.tab-content.active');
-            const activeSubcategory = activeTab.querySelector('.subcategory-content.active');
-            const courseCards = activeSubcategory.querySelectorAll('.course-card');
-            const searchTerm = searchInput.value.toLowerCase();
-            
-            courseCards.forEach(card => {
-                const title = card.querySelector('h3').textContent.toLowerCase();
-                const description = card.querySelector('.course-description').textContent.toLowerCase();
-                const category = card.getAttribute('data-category');
-                
-                const matchesSearch = title.includes(searchTerm) || 
-                                     description.includes(searchTerm);
-                
-                const matchesFilter = filter === 'all' || category.includes(filter);
-                
-                if (matchesSearch && matchesFilter) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-            
-            // Show no results message if needed
-            showNoResultsMessage(activeSubcategory);
-        }
-        
-        function showNoResultsMessage(container) {
-            const visibleCards = container.querySelectorAll('.course-card[style="display: flex"]');
-            let noResultsMsg = container.querySelector('.no-results');
-            
-            if (visibleCards.length === 0) {
-                if (!noResultsMsg) {
-                    noResultsMsg = document.createElement('div');
-                    noResultsMsg.className = 'no-results';
-                    noResultsMsg.textContent = 'No se encontraron cursos que coincidan con tu búsqueda.';
-                    container.appendChild(noResultsMsg);
-                }
-            } else if (noResultsMsg) {
-                noResultsMsg.remove();
-            }
-        }
-        
-        function resetSearchAndFilters() {
-            searchInput.value = '';
-            document.querySelectorAll('.filter-btn').forEach(btn => {
-                btn.classList.remove('active');
-            });
-            document.querySelector('.filter-btn[data-filter="all"]').classList.add('active');
-            
-            const activeTab = document.querySelector('.tab-content.active');
-            const activeSubcategory = activeTab.querySelector('.subcategory-content.active');
-            const courseCards = activeSubcategory.querySelectorAll('.course-card');
-            
-            courseCards.forEach(card => {
-                card.style.display = 'flex';
-            });
-            
-            // Remove no results message if exists
-            const noResultsMsg = activeSubcategory.querySelector('.no-results');
-            if (noResultsMsg) {
-                noResultsMsg.remove();
-            }
-        }
-        
-        // Check for URL hash and activate corresponding tab
-        window.addEventListener('DOMContentLoaded', function() {
-            const hash = window.location.hash;
-            if (hash) {
-                const tabButton = document.querySelector(`.tab-btn[data-tab="${hash.substring(1)}"]`);
-                if (tabButton) {
-                    tabButton.click();
-                }
-            }
-        });
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="scripts.js"></script>
+    <!-- PAGA -->
+    <div class="tab-pane fade" id="pane-paga" role="tabpanel" aria-labelledby="tab-paga">
+
+      <div class="d-flex flex-wrap justify-content-center gap-2 mb-3">
+        <button class="btn btn-outline-secondary btn-sm active js-pay-filter" data-filter="all">Todos</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="diseno">Diseño</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="ux">UX/UI</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="animacion">Animación</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="tecnologia">Tecnología</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="marketing">Marketing</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="finanzas">Finanzas</button>
+        <button class="btn btn-outline-secondary btn-sm js-pay-filter" data-filter="otros">Otros</button>
+      </div>
+
+      <ul class="nav nav-pills justify-content-center gap-2 mb-3 subpill" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" data-bs-toggle="pill" data-bs-target="#pane-pay-digital" type="button" role="tab">Digitales</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" data-bs-toggle="pill" data-bs-target="#pane-pay-presencial" type="button" role="tab">Presenciales</button>
+        </li>
+      </ul>
+
+      <div class="tab-content">
+        <div class="tab-pane fade show active" id="pane-pay-digital" role="tabpanel">
+          <div class="row g-4">
+            <?php if (count($paga_digital) > 0): ?>
+              <?php foreach ($paga_digital as $c) { render_course_card($c, 'pay'); } ?>
+            <?php else: ?>
+              <div class="col-12 text-center"><p class="text-muted">No hay cursos digitales de paga por ahora.</p></div>
+            <?php endif; ?>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="pane-pay-presencial" role="tabpanel">
+          <div class="row g-4">
+            <?php if (count($paga_presencial) > 0): ?>
+              <?php foreach ($paga_presencial as $c) { render_course_card($c, 'pay'); } ?>
+            <?php else: ?>
+              <div class="col-12 text-center"><p class="text-muted">No hay cursos presenciales de paga por ahora.</p></div>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FINANCIAMIENTO -->
+    <div class="tab-pane fade" id="pane-fin" role="tabpanel" aria-labelledby="tab-fin">
+      <div class="row g-4">
+        <?php if (count($financiamiento) > 0): ?>
+          <?php foreach ($financiamiento as $c) { render_course_card($c, 'fin'); } ?>
+        <?php else: ?>
+          <div class="col-12 text-center"><p class="text-muted">No hay recursos de financiamiento por ahora.</p></div>
+        <?php endif; ?>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
+<script>
+  AOS.init({ duration: 800, once: true });
+
+  // Filtro simple para pestaña Paga (solo UI)
+  function applyPayFilter(filter){
+    const pane = document.getElementById('pane-paga');
+    if (!pane) return;
+
+    pane.querySelectorAll('.course-card2').forEach(card => {
+      const cat = card.dataset.category || 'otros';
+      const col = card.closest('.col-12');
+      if (!col) return;
+      const show = (filter === 'all') || (cat === filter);
+      col.classList.toggle('d-none', !show);
+    });
+  }
+
+  document.querySelectorAll('.js-pay-filter').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.js-pay-filter').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      applyPayFilter(btn.dataset.filter || 'all');
+    });
+  });
+
+  // Cuando cambias de sub-tab en Paga, re-aplica el filtro actual
+  document.getElementById('pane-paga')?.addEventListener('shown.bs.tab', () => {
+    const active = document.querySelector('.js-pay-filter.active');
+    applyPayFilter(active?.dataset.filter || 'all');
+  });
+</script>
+
 </body>
 </html>
