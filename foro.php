@@ -14,16 +14,15 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="../styles.css">
-    
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="contratos.css">
+    <link rel="stylesheet" href="foro.css">
 </head>
 <body>
    
-    <div class="background-container"></div> 
-
-  
-   <header class="shadow-sm">
-    <header class="shadow-sm">
+  <!-- HEADER -->
+  <div class="background-container"></div> 
+  <header class="shadow-sm">
     <nav class="navbar navbar-expand-lg bg-white-95 fixed-top custom-navbar" id="mainNavbar">
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
         
@@ -31,21 +30,19 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
           <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
-        
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
                 aria-controls="mainNav" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
 
-      
         <div class="collapse navbar-collapse" id="mainNav">
           <ul class="navbar-nav ms-auto align-items-lg-center">
             <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
             <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
             <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
-            <li class="nav-item"><a class="nav-link active" href="nosotros.php">Nosotros</a></li>
+            <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
-            <li class="nav-item"><a class="nav-link" href="foro.php">Foro</a></li>
+            <li class="nav-item"><a class="nav-link active" href="foro.php">Foro</a></li>
             
             <?php if(isset($_SESSION['usuario_id'])): ?>
             <li class="nav-item user-profile-menu">
@@ -62,36 +59,44 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
                   <?php endif; ?>
                 </div>
                 <?php if (!empty($isAdmin)): ?>
-                <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
-                  <i class="fas fa-chart-line"></i> Panel Admin
+                  <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                    <i class="fas fa-chart-line"></i> Panel Admin
+                  </a>
+                  <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo
                 </a>
-                <a href="admin_catalogo.php" class="admin-btn">
-                 <i class="fas fa-tags"></i> Editar Catálogo 
-                </a>
-              <?php endif; ?>
+                <?php endif; ?>
                 <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-history"></i> Historial de Compras
                 </a>
                 <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
                 </a>
               </div>
             </li>
+            <?php else: ?>
+            <li class="nav-item ms-lg-2">
+              <button class="btn btn-primary btn-cta" onclick="showRegisterModal()">
+                Registrarse / Iniciar Sesión
+              </button>
+            </li>
             <?php endif; ?>
-            
           </ul>
         </div>
+
       </div>
     </nav>
   </header>
 
     <!-- Hero Section -->
-    <section class="hero" id="inicio">
-        <div class="banner-container"><img src="../recursos/patron1.svg" alt="Banner Patron"></div>
+    <section class="contracts-hero" id="inicio">
+        <div class="banner-container"><img src="patron1.svg" alt="Banner Patron"></div>
         <div class="container">
-            <div class="hero-content">
-                <h1>Foro de Comunicación</h1>
-                <p>Espacio para compartir información, anuncios y comunicaciones importantes sobre nuestros cursos y actividades.</p>
+            <div class="contracts-hero-content" data-aos="fade-up" data-aos-duration="800">
+                <h1 class="contracts-main-title">Foro de <span class="highlight-gradient">Comunicación</span> <i class="fa-solid fa-comments title-icon"></i></h1>
+                <p class="contracts-subtitle">
+                    Espacio para compartir información, anuncios y comunicaciones importantes sobre nuestros cursos y actividades.
+                </p>
             </div>
         </div>
     </section>
@@ -149,13 +154,12 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
                         <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
-                <div class="footer-col">
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
                     <h3>Enlaces Rápidos</h3>
-                    <a href="../index.html">Inicio</a>
-                    <a href="cursos.html">Cursos</a>
-                    <a href="../index.html#nosotros">Nosotros</a>
-                    <a href="foro.html">Foro</a>
-                    <a href="../html/usuario.html">Mi Perfil</a>
+                    <a href="index.php">Inicio</a>
+                    <a href="cursos.php">Cursos</a>
+                    <a href="nosotros.php">Nosotros</a>
+                    <a href="foro.php">Foro</a>
                 </div>
                 <div class="footer-col">
                     <h3>Cursos</h3>
