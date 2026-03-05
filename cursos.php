@@ -143,9 +143,9 @@ function render_course_card(array $c, string $tone = 'free'): void {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
 
   <!-- CSS principal -->
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="assets/css/styles.css">
   <!-- CSS de contratos para reutilizar estilos -->
-  <link rel="stylesheet" href="contratos.css">
+  <link rel="stylesheet" href="assets/css/contratos.css">
 
   <style>
     body{ font-family: 'Montserrat', sans-serif; }
@@ -335,7 +335,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
 
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+          <img src="assets/img/logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
@@ -405,7 +405,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
   <!-- HERO -->
   <section class="contracts-hero" id="inicio">
     <div class="banner-container">
-      <img src="patron1.svg" alt="Patrón de fondo" />
+      <img src="assets/img/patron1.svg" alt="Patrón de fondo" />
     </div>
 
     <div class="container">
@@ -692,8 +692,8 @@ function render_course_card(array $c, string $tone = 'free'): void {
         <div class="footer-col">
           <h3>Contratos</h3>
           <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+          <a href="templates/contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="templates/contratoCESIONDEDERECHOS.HTML">Cesión de derechos</a>
         </div>
       </div>
     </div>
@@ -745,7 +745,7 @@ document.addEventListener('change', async (e) => {
   body.set('checked', '1');
 
   try {
-    const r = await fetch('save_courses.php', {
+    const r = await fetch('api/save_courses.php', {
       method: 'POST',
       headers: {'Content-Type': 'application/x-www-form-urlencoded'},
       body
@@ -892,6 +892,6 @@ document.addEventListener('change', async (e) => {
 
     window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
   </script>
-  <script src="scripts.js"></script>
+  <script src="assets/js/scripts.js"></script>
 </body>
 </html>

@@ -24,8 +24,8 @@ require_once __DIR__ . '/config/admin_flag.php';
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
 
   
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="contratos.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/contratos.css" />
 </head>
 <body>
   
@@ -37,7 +37,7 @@ require_once __DIR__ . '/config/admin_flag.php';
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
         
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+          <img src="assets/img/logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
         
@@ -105,7 +105,7 @@ require_once __DIR__ . '/config/admin_flag.php';
  
   <section class="contracts-hero" id="inicio">
     <div class="banner-container">
-      <img src="patron1.svg" alt="Patrón de fondo" />
+      <img src="assets/img/patron1.svg" alt="Patrón de fondo" />
     </div>
 
     <div class="container">
@@ -135,7 +135,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         </div>
         <div class="col-lg-6" data-aos="fade-left" data-aos-duration="800" data-aos-delay="200">
           <div class="about-image">
-            <img src="ramita.svg" alt="Equipo Crece Diseño" class="img-fluid rounded-3 shadow" />
+            <img src="assets/img/ramita.svg" alt="Equipo Crece Diseño" class="img-fluid rounded-3 shadow" />
           </div>
         </div>
       </div>
@@ -213,7 +213,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
-              <img src="nl.jpg" alt="Noeliz Lopez" />
+              <img src="assets/img/nl.jpg" alt="Noeliz Lopez" />
             </div>
             <div class="member-info">
               <h4>Noeliz Lopez</h4>
@@ -225,7 +225,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
-              <img src="mn.jpg" alt="Marco A. Nava" />
+              <img src="assets/img/mn.jpg" alt="Marco A. Nava" />
             </div>
             <div class="member-info">
               <h4>Marco A. Nava</h4>
@@ -237,7 +237,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
-              <img src="gv.jpg" alt="Geronimo Vicencio" />
+              <img src="assets/img/gv.jpg" alt="Geronimo Vicencio" />
             </div>
             <div class="member-info">
               <h4>Geronimo Vicencio</h4>
@@ -249,7 +249,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
-              <img src="jb.jpg" alt="Josue Becerra R." />
+              <img src="assets/img/jb.jpg" alt="Josue Becerra R." />
             </div>
             <div class="member-info">
               <h4>Josue Becerra R.</h4>
@@ -336,8 +336,8 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="footer-col">
           <h3>Contratos</h3>
           <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+          <a href="templates/contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="templates/contratoCESIONDEDERECHOS.HTML">Cesión de derechos</a>
         </div>
       </div>
     </div>
@@ -358,6 +358,6 @@ require_once __DIR__ . '/config/admin_flag.php';
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
  >
-  <script src="scripts.js"></script>
+  <script src="assets/js/scripts.js"></script>
 </body>
 </html>

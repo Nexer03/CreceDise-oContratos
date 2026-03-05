@@ -14,9 +14,9 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
 
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="contratos.css">
-    <link rel="stylesheet" href="foro.css">
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/contratos.css">
+    <link rel="stylesheet" href="assets/css/foro.css">
 </head>
 <body>
    
@@ -27,7 +27,7 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
         
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+          <img src="assets/img/logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
@@ -40,9 +40,10 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
             <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
             <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
             <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
+            <li class="nav-item"><a class="nav-link active" href="foro.php">Foro</a></li>
             <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
-            <li class="nav-item"><a class="nav-link active" href="foro.php">Foro</a></li>
+            
             
             <?php if(isset($_SESSION['usuario_id'])): ?>
             <li class="nav-item user-profile-menu">
@@ -90,7 +91,7 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
 
     <!-- Hero Section -->
     <section class="contracts-hero" id="inicio">
-        <div class="banner-container"><img src="patron1.svg" alt="Banner Patron"></div>
+        <div class="banner-container"><img src="assets/img/patron1.svg" alt="Banner Patron"></div>
         <div class="container">
             <div class="contracts-hero-content" data-aos="fade-up" data-aos-duration="800">
                 <h1 class="contracts-main-title">Foro de <span class="highlight-gradient">Comunicación</span> <i class="fa-solid fa-comments title-icon"></i></h1>

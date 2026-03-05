@@ -17,8 +17,8 @@ require_once __DIR__ . '/config/admin_flag.php';
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet"/>
-    <link rel="stylesheet" href="styles.css" />
-    <link rel="stylesheet" href="contratos.css" />
+    <link rel="stylesheet" href="assets/css/styles.css" />
+    <link rel="stylesheet" href="assets/css/contratos.css" />
     <style>
         /* Estilos existentes se mantienen igual */
         * {
@@ -686,7 +686,7 @@ require_once __DIR__ . '/config/admin_flag.php';
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
         
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+          <img src="assets/img/logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
         
@@ -744,7 +744,7 @@ require_once __DIR__ . '/config/admin_flag.php';
   </header>
     
     <section class="contracts-hero" id="inicio">
-        <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
+        <div class="banner-container"><img src="assets/img/patron1.svg" alt="Patrón de fondo" /></div>
         <div class="container" data-aos="fade-up">
             <div class="contracts-hero-content text-center">
                 <h1 class="contracts-main-title">Catálogo de <span class="highlight-gradient">Formación</span></h1>
@@ -1469,8 +1469,8 @@ require_once __DIR__ . '/config/admin_flag.php';
         <div class="footer-col">
           <h3>Contratos</h3>
           <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+          <a href="templates/contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="templates/contratoCESIONDEDERECHOS.HTML">Cesión de derechos</a>
         </div>
       </div>
     </div>
@@ -1552,6 +1552,6 @@ require_once __DIR__ . '/config/admin_flag.php';
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="scripts.js"></script>
+    <script src="assets/js/scripts.js"></script>
 </body>
 </html>

@@ -66,8 +66,8 @@ try {
   <link href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css" rel="stylesheet" />
 
   <!-- CSS principal -->
-  <link rel="stylesheet" href="styles.css" />
-  <link rel="stylesheet" href="contratos.css" />
+  <link rel="stylesheet" href="assets/css/styles.css" />
+  <link rel="stylesheet" href="assets/css/contratos.css" />
   
   <style>
       body {
@@ -236,7 +236,7 @@ try {
       <div class="container-fluid px-2 px-sm-3 px-lg-4">
 
         <a class="navbar-brand d-flex align-items-center me-auto brand-left" href="index.php">
-          <img src="logo.svg" alt="Crece Diseño" class="brand-logo" />
+          <img src="assets/img/logo.svg" alt="Crece Diseño" class="brand-logo" />
         </a>
 
         <button class="navbar-toggler ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav"
@@ -296,7 +296,7 @@ try {
 
   <!-- LISTADO DE COMPRAS -->
   <section class="contracts-hero" id="inicio">
-    <div class="banner-container"><img src="patron1.svg" alt="Patrón de fondo" /></div>
+    <div class="banner-container"><img src="assets/img/patron1.svg" alt="Patrón de fondo" /></div>
     <div class="container">
       <div class="contracts-hero-content center-block" data-aos="fade-up" data-aos-duration="800">
         <h1 class="contracts-main-title">Tus Contratos <span class="highlight-gradient">Adquiridos</span> <i class="fa-solid fa-receipt title-icon"></i></h1>
@@ -435,8 +435,8 @@ try {
         <div class="footer-col">
           <h3>Contratos</h3>
           <a href="contratos.php">Listado</a>
-          <a href="contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="contrato%20CESIONDEDERECHOS.html">Cesión de derechos</a>
+          <a href="templates/contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
+          <a href="templates/contratoCESIONDEDERECHOS.HTML">Cesión de derechos</a>
         </div>
       </div>
     </div>
