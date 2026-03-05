@@ -116,6 +116,38 @@ try {
     $topUser = null;
 }
 
+// Cursos más seleccionados del mes
+$topCoursesMonth = [];
+try {
+    // Intenta buscar por fecha (asumiendo columna updated_at o created_at)
+    $stmtCourses = $pdo->query("
+        SELECT c.title, COUNT(uc.course_id) as total 
+        FROM user_courses uc 
+        JOIN courses c ON c.id = uc.course_id 
+        WHERE (YEAR(uc.updated_at) = YEAR(CURDATE()) AND MONTH(uc.updated_at) = MONTH(CURDATE()))
+           OR (YEAR(uc.created_at) = YEAR(CURDATE()) AND MONTH(uc.created_at) = MONTH(CURDATE()))
+        GROUP BY c.id, c.title 
+        ORDER BY total DESC 
+        LIMIT 5
+    ");
+    $topCoursesMonth = $stmtCourses->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Fallback general sin filtro de fecha si la tabla no tiene los campos esperados
+    try {
+        $stmtCourses = $pdo->query("
+            SELECT c.title, COUNT(uc.course_id) as total 
+            FROM user_courses uc 
+            JOIN courses c ON c.id = uc.course_id 
+            GROUP BY c.id, c.title 
+            ORDER BY total DESC 
+            LIMIT 5
+        ");
+        $topCoursesMonth = $stmtCourses->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e2) {
+        $topCoursesMonth = [];
+    }
+}
+
 // PAYMENTS (global or by user/search)
 $payWhere = "";
 $payParams = [];
@@ -446,6 +478,39 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
               </div>
           </div>
 
+          <!-- TOP CURSOS CHART -->
+          <div class="table-card mb-4" data-aos="fade-up" data-aos-delay="100">
+              <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+                  <div>
+                      <div class="section-title mb-0">Cursos con más demanda por el usuario (Últimos 30 días) <i class="fas fa-fire text-danger ms-1"></i></div>
+                      <div class="text-muted small">Top 5 cursos más seleccionados recientemente.</div>
+                  </div>
+              </div>
+              <?php if (empty($topCoursesMonth)): ?>
+                  <div class="text-center text-muted py-5 rounded bg-light border border-light">
+                      <i class="fas fa-chart-bar fs-1 mb-2 text-secondary opacity-50"></i><br>
+                      Aún no hay datos de cursos seleccionados para mostrar gráfica.
+                  </div>
+              <?php else: ?>
+                  <div style="position: relative; height: 300px; width: 100%;">
+                      <canvas id="topCursosChart"></canvas>
+                  </div>
+                  <?php
+                  $chartLabels = [];
+                  $chartData = [];
+                  foreach ($topCoursesMonth as $tc) {
+                      $lbl = mb_strimwidth(trim($tc['title']), 0, 45, "...");
+                      $chartLabels[] = $lbl;
+                      $chartData[] = (int)$tc['total'];
+                  }
+                  ?>
+                  <script>
+                  const topCursosLabels = <?php echo json_encode($chartLabels); ?>;
+                  const topCursosData = <?php echo json_encode($chartData); ?>;
+                  </script>
+              <?php endif; ?>
+          </div>
+
           <!-- USERS -->
           <div class="table-card mb-4" data-aos="fade-up" data-aos-delay="120">
               <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
@@ -717,6 +782,7 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="scripts.js"></script>
   <script>
@@ -758,6 +824,54 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
       }
     }, 100);
     <?php endif; ?>
+
+    // Initialize Chart.js for Top Courses
+    if (document.getElementById('topCursosChart') && typeof topCursosLabels !== 'undefined' && topCursosLabels.length > 0) {
+      const ctxChart = document.getElementById('topCursosChart').getContext('2d');
+      new Chart(ctxChart, {
+        type: 'bar', // Puede cambiarse a 'doughnut' o 'pie'
+        data: {
+          labels: topCursosLabels,
+          datasets: [{
+            label: 'Selecciones de Usuario',
+            data: topCursosData,
+            backgroundColor: 'rgba(33, 124, 227, 0.85)',
+            borderColor: '#217CE3',
+            borderWidth: 1,
+            borderRadius: 8,
+            barPercentage: 0.6,
+            hoverBackgroundColor: '#1A1C36'
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: { stepSize: 1 }
+            },
+            x: {
+              grid: { display: false }
+            }
+          },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+                backgroundColor: 'rgba(26, 28, 54, 0.9)',
+                titleFont: { family: 'Quicksand', size: 14 },
+                bodyFont: { family: 'Montserrat', size: 13 },
+                padding: 12,
+                cornerRadius: 8,
+                callbacks: {
+                    title: function(context) { return context[0].label; },
+                    label: function(context) { return ' Usuarios: ' + context.raw; }
+                }
+            }
+          }
+        }
+      });
+    }
   });
   </script>
 </body>
