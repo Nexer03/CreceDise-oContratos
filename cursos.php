@@ -83,7 +83,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
   // Para filtros (solo UI)
   $catKey = category_key($c['category'] ?? '');
 
-  echo "\n<div class=\"col-12 col-md-6 col-lg-4\">\n";
+  echo "\n<div class=\"col-12 col-md-6 col-lg-4 course-item\">\n";
   echo "  <div class=\"course-card2 h-100\" data-category=\"{$catKey}\">\n";
   echo "    <div class=\"course-card2__head {$headerClass}\">\n";
   echo "      <label class=\"course-check2\" title=\"Guardar (más tarde)\">\n";
@@ -103,7 +103,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
 
   echo "    <div class=\"course-card2__body\">\n";
   if ($desc !== '') {
-    echo "      <p class=\"text-muted mb-3\">{$desc}</p>\n";
+    echo "      <p class=\"mb-3\" style=\"color: #4b5563; font-size: 0.95rem; font-weight: 500; line-height: 1.5;\">{$desc}</p>\n";
   }
 
   echo "      <ul class=\"course-meta\">\n";
@@ -157,16 +157,34 @@ function render_course_card(array $c, string $tone = 'free'): void {
     .quick-simple__subtitle{ margin: 0; color: #555; }
     .quick-simple__grid{ display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
 
-    .qcard{ background: #fff; border: 1px solid #eef1f6; border-radius: 12px; padding: 1rem; box-shadow: 0 8px 22px rgba(16,24,40,.06); }
-    .qcard__top{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; }
-    .qcard__label{ display:flex; align-items:center; gap:.6rem; font-weight: 700; color:#1A1C36; }
-    .qcard__label i{ width: 34px; height: 34px; display:inline-flex; align-items:center; justify-content:center; border-radius: 10px; background: #eef4ff; color:#217CE3; }
-    .qcard__desc{ margin:.75rem 0 1rem 0; color:#555; font-size:.95rem; }
-    .qcard__actions{ display:flex; flex-direction:column; gap:.5rem; }
+    .qcard{ 
+      background: #fff; border-radius: 14px; padding: 16px; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+      border: 1px solid rgba(0,0,0,0.08); 
+      display: flex; flex-direction: column; 
+      transition: transform .3s ease, box-shadow .3s ease; 
+      position: relative;
+    }
+    .qcard:hover{ transform: translateY(-5px); box-shadow: 0 15px 40px rgba(0,0,0,0.15); border-color: var(--bright-blue); }
+    
+    .qcard__top{ display:flex; align-items:flex-start; justify-content:flex-start; gap:12px; margin-bottom: 8px; }
+    .qcard__label{ display:flex; align-items:center; gap:12px; font-weight: 700; color:#1A1C36; }
+    .qcard__label i{ 
+      width: 40px; height: 40px; border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,1);
+      border: 1px solid rgba(0,0,0,.08);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      font-size: 1.1rem;
+    }
+    .qcard__desc{ margin: 0 0 16px 0; color:#667085; font-size:.9rem; line-height: 1.4; }
+    .qcard__actions{ display:flex; flex-direction:column; gap:10px; margin-top: auto; padding-top: 15px; border-top: 1px solid rgba(0,0,0,0.05); }
 
-    .qbtn{ display:block; width:100%; padding:.7rem .9rem; border-radius: 12px; text-decoration:none; font-weight: 700; text-align:center; border: 1px solid transparent; }
+    .qbtn{ display:block; width:100%; padding: 8px 12px; border-radius: 8px; text-decoration:none; font-family: 'Montserrat', sans-serif; font-size: 0.9rem; text-align:center; border: 1px solid transparent; font-weight: 600; transition: all 0.2s; }
     .qbtn--primary{ background: #217CE3; color:#fff; }
-    .qbtn--ghost{ background: #fff; color:#217CE3; border-color:#cfe0ff; }
+    .qbtn--primary:hover{ background: #185ba5; color:#fff; transform: translateY(-2px); }
+    .qbtn--ghost{ background: #fff; color:#217CE3; border-color: #ddd; }
+    .qbtn--ghost:hover{ background: #f8f9fb; border-color: #217CE3; transform: translateY(-2px); }
 
     .qcheck{ display:flex; align-items:center; cursor:pointer; }
     .qcheck input{ display:none; }
@@ -397,9 +415,137 @@ function render_course_card(array $c, string $tone = 'free'): void {
     </div>
   </section>
 
-  <!-- LISTADO DE CURSOS -->
-  <section class="contracts-list">
+  <!-- GUÍA RÁPIDA -->
+  <section class="contracts-list" style="padding-top: 3rem; padding-bottom: 0;">
     <div class="container">
+      <div class="row mb-5 text-center">
+        <div class="col-12" data-aos="fade-up">
+          <h2 style="color: var(--dark-purple); font-family: 'Quicksand', sans-serif; font-weight: 700;">Guía Rápida por Necesidad</h2>
+          <div style="width: 60px; height: 3px; background: var(--bright-blue); margin: 10px auto; border-radius: 2px;"></div>
+          <p class="mt-3" style="color: #4b5563; font-size: 1.1rem; font-weight: 500;">Encuentra el curso perfecto según tu prioridad inmediata</p>
+        </div>
+      </div>
+      
+      <div class="row g-4 justify-content-center" style="margin-bottom: 3rem;">
+        
+        <!-- Tarjeta 1 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="0">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-building" style="background: rgba(91,67,147,0.1); color: var(--dark-purple);"></i> Formalizar tu Negocio</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">El 88.9% de diseñadores tiene debilidades en gestión financiera</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('CONDUSEF')">CONDUSEF - Haz de tu idea un negocio</button>
+              <button class="qbtn qbtn--ghost w-100" style="color: var(--dark-purple); border-color: rgba(91,67,147,0.3);" onclick="searchCourse('Educación')">Diplomado Educación Financiera</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 2 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="50">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-users-viewfinder"></i> Conseguir Clientes</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">El 66.7% necesita mejorar posicionamiento digital</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" onclick="searchCourse('Marketing Digital')">Marketing Digital</button>
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Contenidos para Promocionar')">Contenidos para Promocionar</button>
+              <button class="qbtn qbtn--ghost w-100" onclick="searchCourse('Certificado Marketing Digital')">Certificado Marketing Digital (Beca)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 3 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-tools" style="background: rgba(40,167,69,0.1); color: #28a745;"></i> Mejorar Habilidades Técnicas</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">Domina las herramientas profesionales de diseño</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Diseño Gráfico Digital')">Diseño Gráfico Digital (Gratis)</button>
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Canva')">Curso de Canva (Gratis)</button>
+              <button class="qbtn qbtn--ghost w-100" onclick="searchCourse('Adobe Creative Suite')">Domestika - Adobe Creative Suite</button>
+              <button class="qbtn qbtn--ghost w-100" onclick="searchCourse('IDEFT')">IDEFT Puerto Vallarta - Presencial</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 4 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="150">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-mobile-screen" style="background: rgba(220,53,69,0.1); color: #dc3545;"></i> Especializarte en UX/UI</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">Salarios 40% más altos, trabajo remoto internacional</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Diseño UX')">Google Certificado - Diseño UX (Beca)</button>
+              <button class="qbtn qbtn--ghost w-100" onclick="searchCourse('Ruta Diseño UX')">Platzi - Ruta Diseño UX (Completo)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 5 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-robot" style="background: rgba(91,67,147,0.1); color: var(--dark-purple);"></i> Integrar IA en tu Trabajo</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">Aumenta tu productividad 300% con herramientas de IA</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" onclick="searchCourse('Gemini')">Domina la IA con Gemini</button>
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Prompting')">Fundamentos de Prompting</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 6 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="250">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-cart-shopping" style="background: rgba(253,126,20,0.1); color: #fd7e14;"></i> Aprender a Vender Online</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">Vende plantillas, recursos y servicios digitales</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" style="background: var(--dark-purple);" onclick="searchCourse('Comercio Electrónico')">Comercio Electrónico</button>
+              <button class="qbtn qbtn--ghost w-100" onclick="searchCourse('E-Commerce')">Certificado Marketing y E-Commerce (Beca)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tarjeta 7 -->
+        <div class="col-12 col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+          <div class="qcard h-100 d-flex flex-column">
+            <div class="qcard__top">
+              <div class="qcard__label"><i class="fas fa-handshake" style="background: rgba(32,201,151,0.1); color: #20c997;"></i> Networking y Mentoría</div>
+            </div>
+            <p class="qcard__desc flex-grow-1">Conecta con otros emprendedores y mentores</p>
+            <div class="qcard__actions mt-auto">
+              <button class="qbtn qbtn--primary w-100" onclick="searchCourse('REDi')">REDi Puerto Vallarta</button>
+              <a href="https://www.instagram.com/redipuertovallarta" target="_blank" class="qbtn qbtn--ghost w-100 d-block mt-2">Instagram: @redipuertovallarta</a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Separador sutil opcional -->
+    <div style="height: 1px; background: rgba(0,0,0,0.05); margin: 1rem auto 3rem auto; width: 80%; max-width: 1000px;"></div>
+
+    <div class="container" id="catalogo">
+      
+      <!-- Buscador -->
+      <div class="row mb-4 justify-content-center" id="buscador-section" data-aos="fade-up" data-aos-delay="100">
+        <div class="col-12 col-md-8 col-lg-6">
+          <div class="input-group shadow-sm" style="border-radius: 999px; overflow: hidden; border: 1px solid rgba(0,0,0,0.1); background: #fff;">
+            <span class="input-group-text bg-white border-0 text-muted ps-4" style="background: #fff; border-right: none;"><i class="fas fa-search"></i></span>
+            <input type="text" id="courseSearchInput" class="form-control border-0 py-3 ps-2" placeholder="Buscar cursos por nombre o institución..." style="box-shadow: none; font-family: 'Montserrat', sans-serif;">
+          </div>
+        </div>
+      </div>
 
       <!-- Tabs principales -->
       <ul class="nav nav-pills justify-content-center gap-2 mb-4" id="mainTabs" role="tablist" data-aos="fade-up" data-aos-delay="150">
@@ -703,6 +849,44 @@ document.addEventListener('change', async (e) => {
   </div>
 
   <script>
+    function searchCourse(query) {
+      const searchInput = document.getElementById('courseSearchInput');
+      if(searchInput) {
+          searchInput.value = query;
+          // Trigger input event to filter
+          searchInput.dispatchEvent(new Event('input'));
+          // Scroll to the catalog
+          const catalogo = document.getElementById('catalogo');
+          if(catalogo) {
+              const yOffset = -100; // offset to not hide under header
+              const y = catalogo.getBoundingClientRect().top + window.pageYOffset + yOffset;
+              window.scrollTo({top: y, behavior: 'smooth'});
+          }
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchInput = document.getElementById('courseSearchInput');
+        if(searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const term = e.target.value.toLowerCase().trim();
+                const items = document.querySelectorAll('.course-item');
+                
+                // If filtering logic is needed globally regardless of tabs
+                // Normally tabs hide elements via Bootstrap, but Javascript can filter within them
+                items.forEach(item => {
+                    const title = item.querySelector('h5')?.innerText.toLowerCase() || '';
+                    const provider = item.querySelector('.course-meta strong')?.innerText.toLowerCase() || '';
+                    if(term === '' || title.includes(term) || provider.includes(term)) {
+                        item.classList.remove('d-none');
+                    } else {
+                        item.classList.add('d-none');
+                    }
+                });
+            });
+        }
+    });
+
     window.isLoggedIn = <?php echo isset($_SESSION['usuario_id']) ? 'true' : 'false'; ?>;
   </script>
   <script src="scripts.js"></script>
