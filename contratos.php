@@ -92,6 +92,9 @@ if (isset($_SESSION['usuario_id'])) {
                   <a href="admin_catalogo.php" class="admin-btn">
                  <i class="fas fa-tags"></i> Editar Catálogo
                 </a>
+                  <a href="admin_cursos.php" class="admin-btn">
+                 <i class="fas fa-book-open"></i> Editar Cursos
+                </a>
                 <?php endif; ?>
                 <a href="mi_perfil.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-user"></i> Mi Perfil

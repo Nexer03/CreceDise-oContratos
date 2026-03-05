@@ -362,6 +362,9 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
                 <a href="admin_catalogo.php" class="admin-btn">
                  <i class="fas fa-tags"></i> Editar Catálogo 
                 </a>
+                <a href="admin_cursos.php" class="admin-btn">
+                 <i class="fas fa-book-open"></i> Editar Cursos
+                </a>
               <?php endif; ?>
                 <a href="analitica.php" class="history-btn">
                   <i class="fas fa-history"></i> Historial de Compras
