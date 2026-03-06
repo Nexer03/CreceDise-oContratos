@@ -81,22 +81,5 @@ return [
     'url' => '',
     'images' => 4
   ],
-  'preuba_1' => [
-    'price' => '200.00',
-    'title' => 'PRUEBA 2',
-    'description' => 'PREUBA',
-    'icon' => 'fa-solid fa-file-contract',
-    'tags' => 'servicios all',
-    'url' => 'descargar.php?product=entrega_express',
-    'images' => 4
-  ],
-  'preuba_2' => [
-    'price' => '987.00',
-    'title' => 'estapureba',
-    'description' => 'asassaassassa',
-    'icon' => 'fa-solid fa-file-contract',
-    'tags' => 'servicios all',
-    'url' => 'descargar.php?product=entrega_express',
-    'images' => 4
-  ],
+  
 ];

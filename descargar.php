@@ -36,15 +36,15 @@ if (!$stmt->fetch()) {
 
 /* 2) Mapa producto -> archivo REAL */
 $files = [
-  'prestacion_servicios'   => 'contratoPRESTACIONDESERVICIOS.html',
-  'entrega_express'        => 'contratoPRESTACIONSERVICIOSEX.html', // OJO: este nombre es raro, pero existe
-  'licencia_temporal'      => 'contratoLICENCIATEMPORAL.HTML',
-  'branding_diseno'        => 'contratoBRANDING.HTML',
-  'freelance'              => 'contratoFRELANCE.HTML',
-  'colaboracion'           => 'contratoCOLABORACIONES.HTML',
-  'obra_por_encargo'       => 'contratoOBRAPORENCARGO.HTML',
-  'cesion_derechos'        => 'contratoCESIONDEDERECHOS.HTML',
-  'terminacion_anticipada' => 'contratoTERMINACION.HTML',
+  'prestacion_servicios'   => 'templates/contratoPRESTACIONDESERVICIOS.html',
+  'entrega_express'        => 'templates/contratoPRESTACIONSERVICIOSEX.html', 
+  'licencia_temporal'      => 'templates/contratoLICENCIATEMPORAL.HTML',
+  'branding_diseno'        => 'templates/contratoBRANDING.HTML',
+  'freelance'              => 'templates/contratoFRELANCE.HTML',
+  'colaboracion'           => 'templates/contratoCOLABORACIONES.HTML',
+  'obra_por_encargo'       => 'templates/contratoOBRAPORENCARGO.HTML',
+  'cesion_derechos'        => 'templates/contratoCESIONDEDERECHOS.HTML',
+  'terminacion_anticipada' => 'templates/contratoTERMINACION.HTML',
 ];
 
 if (!isset($files[$product])) {
