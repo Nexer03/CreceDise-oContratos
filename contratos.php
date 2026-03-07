@@ -8,9 +8,36 @@ $catalog = require __DIR__ . '/config/catalog.php';
 
 $comprados = [];
 if (isset($_SESSION['usuario_id'])) {
-  $stmt = $pdo->prepare("SELECT product FROM payments WHERE usuario_id=? AND status='COMPLETED'");
+  $stmt = $pdo->prepare("
+    SELECT DISTINCT product
+    FROM payments
+    WHERE usuario_id = ?
+      AND status = 'COMPLETED'
+      AND access_status = 'active'
+      AND access_expires_at IS NOT NULL
+      AND access_expires_at > NOW()
+  ");
   $stmt->execute([$_SESSION['usuario_id']]);
   $comprados = $stmt->fetchAll(PDO::FETCH_COLUMN);
+}
+
+$accesos = [];
+if (isset($_SESSION['usuario_id'])) {
+  $stmt = $pdo->prepare("
+    SELECT product, MAX(access_expires_at) AS access_expires_at
+    FROM payments
+    WHERE usuario_id = ?
+      AND status = 'COMPLETED'
+      AND access_status = 'active'
+      AND access_expires_at IS NOT NULL
+      AND access_expires_at > NOW()
+    GROUP BY product
+  ");
+  $stmt->execute([$_SESSION['usuario_id']]);
+
+  foreach ($stmt->fetchAll(PDO::FETCH_ASSOC) as $row) {
+    $accesos[$row['product']] = $row['access_expires_at'];
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -216,8 +243,12 @@ if (isset($_SESSION['usuario_id'])) {
               <div class="contract-actions">
                 <?php if(isset($_SESSION['usuario_id'])): ?>
                   <?php $descargaUrl = !empty($item['url']) ? $item['url'] : "descargar.php?product=" . urlencode($key); ?>
-                  <?php if(in_array($key, $comprados)): ?>
+                  <?php if(isset($accesos[$key])): ?>
                     <a class="btn btn-primary btn-cta w-100" href="<?php echo htmlspecialchars($descargaUrl); ?>" <?php if(!empty($item['url'])) echo 'target="_blank" rel="noopener noreferrer"'; ?>>Abrir contrato</a>
+                    <small class="text-muted d-block mt-2 text-center">
+                      Disponible hasta:
+                      <?php echo date('d/m/Y H:i', strtotime($accesos[$key])); ?>
+                    </small>
                   <?php else: ?>
                     <div class="paypal-btn" data-product="<?php echo htmlspecialchars($key); ?>"></div>
                   <?php endif; ?>

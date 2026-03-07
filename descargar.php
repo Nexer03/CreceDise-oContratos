@@ -16,14 +16,32 @@ if (!$product || !preg_match('/^[a-z0-9_]+$/', $product)) {
 }
 
 /* 1) Validar compra */
+/* 1) Validar compra vigente */
 $stmt = $pdo->prepare("
-  SELECT id
+  SELECT id, access_expires_at
   FROM payments
   WHERE usuario_id = :usuario_id
     AND product = :product
     AND status = 'COMPLETED'
+    AND access_status = 'active'
+    AND access_expires_at IS NOT NULL
+    AND access_expires_at > NOW()
+  ORDER BY access_expires_at DESC
   LIMIT 1
 ");
+$stmt->execute([
+  ':usuario_id' => $usuarioId,
+  ':product' => $product
+]);
+
+$compra = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$compra) {
+  http_response_code(403);
+  die("Tu acceso a este contrato no está disponible o ya venció");
+}
+
+
 $stmt->execute([
   ':usuario_id' => $usuarioId,
   ':product' => $product
