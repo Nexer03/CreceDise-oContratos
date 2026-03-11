@@ -332,10 +332,10 @@ require_once __DIR__ . '/config/admin_flag.php';
         </div>
 
         <div class="footer-col">
-          <h3>Contratos</h3>
-          <a href="contratos.php">Listado</a>
-          <a href="templates/contratoPRESTACIONDESERVICIOS.html">Prestación de servicios</a>
-          <a href="templates/contratoCESIONDEDERECHOS.HTML">Cesión de derechos</a>
+          <h3>Contacto</h3>
+          <p>contacto@crecediseño.com</p>
+          <p>+52 322 123 4567</p>
+          <p>Puerto Vallarta, Jalisco</p>
         </div>
       </div>
     </div>
