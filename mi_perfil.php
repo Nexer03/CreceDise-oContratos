@@ -249,17 +249,20 @@ function category_key(?string $cat): string {
               </button>
               <div class="user-dropdown">
                 <div class="user-info">
-                  <span class="user-name"><?= e($_SESSION['usuario_nombre']) ?></span>
+                  <span class="user-name"><?php echo htmlspecialchars($_SESSION['usuario_nombre']); ?></span>
                   <?php if(isset($_SESSION['usuario_correo'])): ?>
-                    <span class="user-email"><?= e($_SESSION['usuario_correo']) ?></span>
+                    <span class="user-email"><?php echo htmlspecialchars($_SESSION['usuario_correo']); ?></span>
                   <?php endif; ?>
                 </div>
                 <?php if (!empty($isAdmin)): ?>
-                  <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
-                    <i class="fas fa-chart-line"></i> Panel Admin
-                  </a>
-                  <a href="admin_catalogo.php" class="admin-btn">
-                 <i class="fas fa-tags"></i> Editar Catálogo
+                <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-chart-line"></i> Panel Admin
+                </a>
+                <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo 
+                </a>
+                <a href="admin_cursos.php" class="admin-btn">
+                 <i class="fas fa-book-open"></i> Editar Cursos
                 </a>
                 <?php endif; ?>
                 <a href="mi_perfil.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
@@ -269,7 +272,7 @@ function category_key(?string $cat): string {
                   <i class="fas fa-history"></i> Historial de Compras
                 </a>
                 <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a>
               </div>
             </li>
@@ -398,41 +401,42 @@ function category_key(?string $cat): string {
 
   <!-- Footer -->
   <footer>
-    <div class="container">
-      <div class="footer-container">
-        <div class="footer-col">
-          <h3>Crece Diseño</h3>
-          <p>Catálogo de vinculación y contratos.</p>
-          <div class="social-links social-centered">
-            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link"
-              target="_blank" rel="noopener" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank"
-              rel="noopener" aria-label="TikTok">
-              <i class="fab fa-tiktok"></i>
-            </a>
-          </div>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>Crece Diseño</h3>
+                    <p>Catálogo de Formación para diseñadores gráficos en Puerto Vallarta.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/crecediseño" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Enlaces Rápidos</h3>
+                    <a href="index.php">Inicio</a>
+                    <a href="cursos.php">Cursos</a>
+                    <a href="nosotros.php">Nosotros</a>
+                    <a href="foro.php">Foro</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Cursos</h3>
+                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="#">Certificaciones</a>
+                    <a href="#">Talleres</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <p>contacto@crecediseño.com</p>
+                    <p>+52 322 123 4567</p>
+                    <p>Puerto Vallarta, Jalisco</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Crece Diseño. Todos los derechos reservados.</p>
+            </div>
         </div>
-
-        <div class="footer-col">
-          <h3>Enlaces</h3>
-          <a href="index.php">Inicio</a>
-          <a href="cursos.php">Cursos</a>
-          <a href="contratos.php">Contratos</a>
-          <a href="nosotros.php">Nosotros</a>
-          <a href="index.php#contacto">Contacto</a>
-        </div>
-
-        <div class="footer-col">
-          <h3>Contacto</h3>
-          <p>contacto@crecediseño.com</p>
-          <p>+52 322 123 4567</p>
-          <p>Puerto Vallarta, Jalisco</p>
-        </div>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>

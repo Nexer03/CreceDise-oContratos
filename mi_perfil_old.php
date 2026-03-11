@@ -1370,47 +1370,42 @@ footer > .container{ position:relative; z-index:1; }
 
   <!-- Footer igual a index -->
   <footer>
-    <div class="container">
-      <div class="footer-container">
-        <div class="footer-col">
-          <h3>Crece Diseño</h3>
-          <p>Catálogo de Formación para diseñadores gráficos en Puerto Vallarta.</p>
-          <div class="social-links social-centered">
-            <a href="https://www.instagram.com/crece_diseno?igsh=MWRtNHlvaGs4dmt0dA==" class="social-link" target="_blank" rel="noopener" aria-label="Instagram">
-              <i class="fab fa-instagram"></i>
-            </a>
-            <a href="https://www.tiktok.com/@mambeturouch?_r=1&_t=ZS-918cYzJJefC" class="social-link" target="_blank" rel="noopener" aria-label="TikTok">
-              <i class="fab fa-tiktok"></i>
-            </a>
-          </div>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>Crece Diseño</h3>
+                    <p>Catálogo de Formación para diseñadores gráficos en Puerto Vallarta.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/crecediseño" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Enlaces Rápidos</h3>
+                    <a href="index.php">Inicio</a>
+                    <a href="cursos.php">Cursos</a>
+                    <a href="nosotros.php">Nosotros</a>
+                    <a href="foro.php">Foro</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Cursos</h3>
+                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="#">Certificaciones</a>
+                    <a href="#">Talleres</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <p>contacto@crecediseño.com</p>
+                    <p>+52 322 123 4567</p>
+                    <p>Puerto Vallarta, Jalisco</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Crece Diseño. Todos los derechos reservados.</p>
+            </div>
         </div>
-        <div class="footer-col">
-          <h3>Enlaces Rápidos</h3>
-          <a href="../index.html">Inicio</a>
-          <a href="../html/cursos.html">Cursos</a>
-          <a href="../html/nosotros.html">Nosotros</a>
-          <a href="../html/foro.php">Foro</a>
-          <a href="../html/usuario.html">Mi Perfil</a>
-        </div>
-        <div class="footer-col">
-          <h3>Cursos</h3>
-          <a href="html/cursos.html#gratuitos">Cursos Gratuitos</a>
-          <a href="html/cursos.html#paga">Cursos de Paga</a>
-          <a href="#">Certificaciones</a>
-          <a href="#">Talleres</a>
-        </div>
-        <div class="footer-col">
-          <h3>Contacto</h3>
-          <p>contacto@crecediseño.com</p>
-          <p>+52 322 123 4567</p>
-          <p>Puerto Vallarta, Jalisco</p>
-        </div>
-      </div>
-      <div class="copyright">
-        <p>&copy; 2025 Crece Diseño. Todos los derechos reservados.</p>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
 
   <!-- Botón WhatsApp igual a index -->

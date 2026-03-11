@@ -1,5 +1,9 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/config.php';
+require_once __DIR__ . '/config/database.php';
+require_once __DIR__ . '/config/admin_flag.php';
+
 $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
 ?>
 
@@ -60,26 +64,26 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
                   <?php endif; ?>
                 </div>
                 <?php if (!empty($isAdmin)): ?>
-                  <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
-                    <i class="fas fa-chart-line"></i> Panel Admin
-                  </a>
-                  <a href="admin_catalogo.php" class="admin-btn">
-                 <i class="fas fa-tags"></i> Editar Catálogo
+                <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-chart-line"></i> Panel Admin
+                </a>
+                <a href="admin_catalogo.php" class="admin-btn">
+                 <i class="fas fa-tags"></i> Editar Catálogo 
+                </a>
+                <a href="admin_cursos.php" class="admin-btn">
+                 <i class="fas fa-book-open"></i> Editar Cursos
                 </a>
                 <?php endif; ?>
+                <a href="mi_perfil.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-user"></i> Mi Perfil
+                </a>
                 <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-history"></i> Historial de Compras
                 </a>
                 <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a>
               </div>
-            </li>
-            <?php else: ?>
-            <li class="nav-item ms-lg-2">
-              <button class="btn btn-primary btn-cta" onclick="showRegisterModal()">
-                Registrarse / Iniciar Sesión
-              </button>
             </li>
             <?php endif; ?>
           </ul>

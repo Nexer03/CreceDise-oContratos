@@ -208,21 +208,24 @@ try {
                   <?php endif; ?>
                 </div>
                 <?php if (!empty($isAdmin)): ?>
-                <a href="admin_analitica.php" class="admin-btn">
+                <a href="admin_analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-chart-line"></i> Panel Admin
                 </a>
                 <a href="admin_catalogo.php" class="admin-btn">
                  <i class="fas fa-tags"></i> Editar Catálogo 
                 </a>
-                <a href="admin_cursos.php" class="admin-btn active">
+                <a href="admin_cursos.php" class="admin-btn">
                  <i class="fas fa-book-open"></i> Editar Cursos
                 </a>
-              <?php endif; ?>
-                <a href="analitica.php" class="history-btn">
+                <?php endif; ?>
+                <a href="mi_perfil.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
+                  <i class="fas fa-user"></i> Mi Perfil
+                </a>
+                <a href="analitica.php" class="dropdown-item mb-1" style="text-decoration: none; color: var(--dark-blue); font-weight: 600; font-size: 0.95rem; display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 6px; transition: background 0.2s;">
                   <i class="fas fa-history"></i> Historial de Compras
                 </a>
                 <a href="config/logout.php" class="logout-btn">
-                  <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                  <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a>
               </div>
             </li>
@@ -480,30 +483,42 @@ try {
 
   <!-- Footer -->
   <footer>
-    <div class="container">
-      <div class="footer-container">
-        <div class="footer-col">
-          <h3>Crece Diseño</h3>
-          <p>Potenciando la industria creativa a través de la formalidad legal.</p>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>Crece Diseño</h3>
+                    <p>Catálogo de Formación para diseñadores gráficos en Puerto Vallarta.</p>
+                    <div class="social-links">
+                        <a href="https://instagram.com/crecediseño" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                        <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                    <h3>Enlaces Rápidos</h3>
+                    <a href="index.php">Inicio</a>
+                    <a href="cursos.php">Cursos</a>
+                    <a href="nosotros.php">Nosotros</a>
+                    <a href="foro.php">Foro</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Cursos</h3>
+                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="#">Certificaciones</a>
+                    <a href="#">Talleres</a>
+                </div>
+                <div class="footer-col">
+                    <h3>Contacto</h3>
+                    <p>contacto@crecediseño.com</p>
+                    <p>+52 322 123 4567</p>
+                    <p>Puerto Vallarta, Jalisco</p>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Crece Diseño. Todos los derechos reservados.</p>
+            </div>
         </div>
-        <div class="footer-col">
-          <h4>Navegación</h4>
-          <ul>
-            <li><a href="index.php">Inicio</a></li>
-            <li><a href="cursos.php">Cursos</a></li>
-            <li><a href="contratos.php">Contratos</a></li>
-          </ul>
-        </div>
-        <div class="footer-col contact-col">
-          <h4>Contáctanos</h4>
-          <ul>
-            <li><i class="fa-solid fa-envelope"></i> admin@crecediseno.com</li>
-            <li><i class="fa-solid fa-phone"></i> +52 (000) 000-0000</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
+    </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
