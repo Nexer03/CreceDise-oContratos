@@ -521,7 +521,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                         <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
-                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                <div class="footer-col">
                     <h3>Enlaces Rápidos</h3>
                     <a href="index.php">Inicio</a>
                     <a href="cursos.php">Cursos</a>

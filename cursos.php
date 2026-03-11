@@ -413,7 +413,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
   </section>
 
   <!-- GUÍA RÁPIDA -->
-  <section class="contracts-list" style="padding-top: 3rem; padding-bottom: 0;">
+  <section class="contracts-list" style="padding-top: 3rem; padding-bottom: 5rem;">
     <div class="container">
       <div class="row mb-5 text-center">
         <div class="col-12" data-aos="fade-up">
@@ -667,7 +667,7 @@ function render_course_card(array $c, string $tone = 'free'): void {
                         <a href="https://tiktok.com/@crecediseño" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                     </div>
                 </div>
-                <div class="footer-col" data-aos="fade-up" data-aos-delay="100">
+                <div class="footer-col">
                     <h3>Enlaces Rápidos</h3>
                     <a href="index.php">Inicio</a>
                     <a href="cursos.php">Cursos</a>
