@@ -421,7 +421,7 @@ $nombre_usuario = $_SESSION['usuario_nombre'] ?? 'Usuario';
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-    <script src="/scripts.js"></script>
+    <script src="assets/js/scripts.js"></script>
 
 </body>
 </html>
