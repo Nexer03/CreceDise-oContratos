@@ -99,4 +99,13 @@ return [
     'url' => 'descargar.php?product=entrega_express',
     'images' => 4
   ],
+  'prueba_3' => [
+    'price' => '120.00',
+    'title' => 'prueba3',
+    'description' => 'rrr',
+    'icon' => 'fa-solid fa-file-signature',
+    'tags' => 'servicios all',
+    'url' => 'descargar.php?product=entrega_express',
+    'images' => 3
+  ],
 ];

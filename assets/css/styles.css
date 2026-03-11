@@ -971,6 +971,10 @@ footer>.container {
     text-align: center
   }
 
+  .social-links {
+    justify-content: center;
+  }
+
   .footer-col h3::after {
     left: 50%;
     transform: translateX(-50%);
