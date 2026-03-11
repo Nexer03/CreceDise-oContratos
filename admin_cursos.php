@@ -503,10 +503,9 @@ try {
                 </div>
                 <div class="footer-col">
                     <h3>Cursos</h3>
-                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
-                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.php#paga">Cursos de Paga</a>
                     <a href="#">Certificaciones</a>
-                    <a href="#">Talleres</a>
                 </div>
                 <div class="footer-col">
                     <h3>Contacto</h3>

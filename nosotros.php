@@ -29,6 +29,71 @@ require_once __DIR__ . '/config/admin_flag.php';
 </head>
 <body>
   
+  <div class="register-modal" id="registerModal" role="dialog" aria-modal="true" aria-labelledby="registerTitle" aria-hidden="true">
+    <div class="register-content">
+      <button class="register-close" id="registerClose" aria-label="Cerrar">&times;</button>
+      
+      <!-- Registration Form Container -->
+      <div id="registerFormContainer">
+        <div class="register-header">
+          <h2 id="registerTitle">Regístrate para recibir información</h2>
+          <p>Completa tus datos para acceder a nuestro catálogo completo</p>
+        </div>
+        <form action="config/register.php" method="POST">
+              <div class="form-group">
+                <label>Nombre completo</label>
+                <input type="text" name="nombre" class="form-control" placeholder="Tu nombre" required />
+              </div>
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Número Telefónico</label>
+                <input type="tel" name="telefono" class="form-control" placeholder="+52 322 123 4567" />
+              </div>
+              <div class="form-group">
+                <label>Ciudad</label>
+                <input type="text" name="ciudad" class="form-control" placeholder="Puerto Vallarta" />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Registrarse</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('login')">¿Ya tienes cuenta? Iniciar Sesión</button>
+        </div>
+        <div class="register-footer">
+          <p>Al registrarte aceptas nuestra <a href="#" rel="noopener">Política de Privacidad</a></p>
+        </div>
+      </div>
+
+      <!-- Login Form Container (Initially Hidden) -->
+      <div id="loginFormContainer" style="display: none;">
+        <div class="register-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Bienvenido de nuevo</p>
+        </div>
+        <form action="config/login.php" method="POST">
+              <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" name="correo" class="form-control" placeholder="ejemplo@correo.com" required />
+              </div>
+              <div class="form-group">
+                <label>Contraseña</label>
+                <input type="password" name="password" class="form-control" placeholder="********" required />
+              </div>
+              <button type="submit" class="register-btn">Iniciar Sesión</button>
+        </form>
+        <div class="text-center mt-3">
+            <button type="button" class="register-btn" style="background-color: transparent; color: var(--bright-blue); border: 2px solid var(--bright-blue);" onclick="toggleForms('register')">¿No tienes cuenta? Registrarse</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="background-container"></div>
 
  
@@ -92,6 +157,12 @@ require_once __DIR__ . '/config/admin_flag.php';
                   <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
                 </a>
               </div>
+            </li>
+            <?php else: ?>
+            <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+              <button class="btn btn-outline-primary px-4" style="border-radius: 25px; font-weight: 600; border-width: 2px;" onclick="showRegisterModal(); toggleForms('login');">
+                <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+              </button>
             </li>
             <?php endif; ?>
           </ul>
@@ -324,10 +395,9 @@ require_once __DIR__ . '/config/admin_flag.php';
                 </div>
                 <div class="footer-col">
                     <h3>Cursos</h3>
-                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
-                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.php#paga">Cursos de Paga</a>
                     <a href="#">Certificaciones</a>
-                    <a href="#">Talleres</a>
                 </div>
                 <div class="footer-col">
                     <h3>Contacto</h3>

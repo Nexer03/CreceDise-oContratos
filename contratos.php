@@ -134,6 +134,12 @@ if (isset($_SESSION['usuario_id'])) {
                 </a>
               </div>
             </li>
+            <?php else: ?>
+            <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+              <button class="btn btn-outline-primary px-4" style="border-radius: 25px; font-weight: 600; border-width: 2px;" onclick="showRegisterModal(); toggleForms('login');">
+                <i class="fas fa-sign-in-alt me-1"></i> Iniciar Sesión
+              </button>
+            </li>
             <?php endif; ?>
           </ul>
         </div>
@@ -288,10 +294,9 @@ if (isset($_SESSION['usuario_id'])) {
                 </div>
                 <div class="footer-col">
                     <h3>Cursos</h3>
-                    <a href="cursos.html#gratuitos">Cursos Gratuitos</a>
-                    <a href="cursos.html#paga">Cursos de Paga</a>
+                    <a href="cursos.php#gratuitos">Cursos Gratuitos</a>
+                    <a href="cursos.php#paga">Cursos de Paga</a>
                     <a href="#">Certificaciones</a>
-                    <a href="#">Talleres</a>
                 </div>
                 <div class="footer-col">
                     <h3>Contacto</h3>
