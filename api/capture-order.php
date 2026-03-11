@@ -36,11 +36,25 @@ if (!$product || !isset($catalog[$product])) {
 /* ================= EMAIL FUNCTION ================= */
 function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): string {
   $brand = 'Crece Diseño';
-  $badge = $forUser ? ' Comprobante' : ' Pago COMPLETADO';
+  $badge = $forUser ? 'Comprobante' : 'Pago COMPLETADO';
   $subtitle = $forUser ? 'Comprobante de compra' : 'Notificación de pago';
   $headline = $forUser ? '¡Gracias por tu compra!' : 'Nuevo pago completado';
+
+  $supportEmail = getenv('SUPPORT_EMAIL') ?: '';
+  $supportWhatsapp = getenv('SUPPORT_WHATSAPP') ?: '';
+
+  $productRaw = (string)($pay['product'] ?? '');
+  $productName = ucwords(str_replace('_', ' ', $productRaw));
+
+  $payer = (string)($pay['payer_email'] ?? '');
+  $createdAtRaw = (string)($pay['created_at'] ?? '');
+  $expiresAtRaw = (string)($pay['access_expires_at'] ?? '');
+
+  $fechaCompra = $createdAtRaw !== '' ? date('d/m/Y H:i', strtotime($createdAtRaw)) : 'No disponible';
+  $fechaVigencia = $expiresAtRaw !== '' ? date('d/m/Y H:i', strtotime($expiresAtRaw)) : 'No disponible';
+
   $hint = $forUser
-    ? 'Guarda este correo como comprobante. Si necesitas ayuda, responde a este correo o contáctanos.'
+    ? 'Tu pago fue procesado correctamente. Este correo funciona como comprobante de compra.'
     : 'Se registró un pago exitoso en el catálogo.';
 
   $maybeUserRow = '';
@@ -57,8 +71,34 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
 
   $nextSteps = '';
   if ($forUser) {
-    $nombre = (string)($userInfo['nombre'] ?? '');
+    $nombre = trim((string)($userInfo['nombre'] ?? ''));
     $saludo = $nombre !== '' ? ('Hola ' . htmlspecialchars($nombre) . ',') : 'Hola,';
+
+    $contactBlocks = '';
+
+    if ($supportEmail !== '') {
+      $contactBlocks .= "
+        <div style=\"margin-top:8px;\">
+          <b>Correo:</b> ".htmlspecialchars($supportEmail)."
+        </div>
+      ";
+    }
+
+    if ($supportWhatsapp !== '') {
+      $contactBlocks .= "
+        <div style=\"margin-top:8px;\">
+          <b>WhatsApp:</b> ".htmlspecialchars($supportWhatsapp)."
+        </div>
+      ";
+    }
+
+    if ($contactBlocks === '') {
+      $contactBlocks = "
+        <div style=\"margin-top:8px;\">
+          <b>Medio de contacto:</b> pendiente por definir
+        </div>
+      ";
+    }
 
     $nextSteps = "
       <tr>
@@ -67,13 +107,25 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
                  style=\"background:#ffffff;border:1px solid rgba(0,0,0,0.06);border-radius:14px;overflow:hidden;\">
             <tr>
               <td style=\"padding:14px 16px;font-family:Montserrat, Arial, sans-serif;color:#1A1C36;\">
-                <div style=\"font-size:12px;letter-spacing:0.3px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;\">Qué sigue</div>
-                <div style=\"font-size:14px;line-height:1.7;opacity:0.88;\">
-                  <div style=\"margin-bottom:8px;\">$saludo</div>
-                  <ul style=\"margin:0;padding-left:18px;\">
-                    <li>Accede a tu cuenta para ver tu compra / contenido.</li>
-                    <li>Si pagaste y no ves acceso en unos minutos, contáctanos con tu <b>Order ID</b>.</li>
-                  </ul>
+                <div style=\"font-size:12px;letter-spacing:0.3px;text-transform:uppercase;opacity:0.7;margin-bottom:6px;\">Información importante</div>
+                <div style=\"font-size:14px;line-height:1.7;opacity:0.92;\">
+                  <div style=\"margin-bottom:10px;\">$saludo</div>
+
+                  <div style=\"margin-bottom:10px;\">
+                    Tu contrato <b>".htmlspecialchars($productName)."</b> estará disponible hasta el
+                    <b>".htmlspecialchars($fechaVigencia)."</b>.
+                  </div>
+
+                  <div style=\"margin-bottom:10px;\">
+                    Es importante que este contrato sea llenado con la asesoría de un <b>abogado</b>,
+                    para asegurarte de usarlo correctamente según tu caso.
+                  </div>
+
+                  <div style=\"margin-bottom:10px;\">
+                    Para recibir orientación, deberás contactar por alguno de los siguientes medios:
+                  </div>
+
+                  $contactBlocks
                 </div>
               </td>
             </tr>
@@ -83,9 +135,7 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
     ";
   }
 
-  $payer = (string)($pay['payer_email'] ?? '');
-
-  return '
+  $html = '
 <!doctype html>
 <html lang="es">
 <head>
@@ -98,10 +148,8 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
     <tr>
       <td align="center">
 
-        <!-- Container -->
         <table role="presentation" width="600" cellpadding="0" cellspacing="0" style="width:600px;max-width:600px;background:#ffffff;border-radius:16px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,0.10);">
 
-          <!-- Header (gradient) -->
           <tr>
             <td style="padding:22px 24px;background:#5B4393;background-image:linear-gradient(135deg,#667eea 0%,#764ba2 50%,#5B4393 100%);">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
@@ -120,7 +168,6 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
             </td>
           </tr>
 
-          <!-- Body -->
           <tr>
             <td style="padding:22px 24px 8px 24px;">
               <div style="font-family:Quicksand, Arial, sans-serif;font-size:18px;font-weight:700;color:#1A1C36;margin:0 0 6px 0;">
@@ -132,7 +179,6 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
             </td>
           </tr>
 
-          <!-- Summary card -->
           <tr>
             <td style="padding:0 24px 18px 24px;">
               <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
@@ -147,7 +193,7 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
                       <tr>
                         <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);width:38%;opacity:0.85;"><b>Producto</b></td>
                         <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);">
-                          '.htmlspecialchars((string)($pay['product'] ?? '')).'
+                          '.htmlspecialchars($productName).'
                         </td>
                       </tr>
                       <tr>
@@ -172,11 +218,23 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
                       </tr>
                       '.$maybeUserRow.'
                       <tr>
-                        <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);opacity:0.85;"><b>Fecha</b></td>
+                        <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);opacity:0.85;"><b>Fecha de compra</b></td>
                         <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);">
-                          '.htmlspecialchars((string)($pay['created_at'] ?? '')).'
+                          '.htmlspecialchars($fechaCompra).'
                         </td>
-                      </tr>
+                      </tr>';
+
+  if ($forUser) {
+    $html .= '
+                      <tr>
+                        <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);opacity:0.85;"><b>Válido hasta</b></td>
+                        <td style="padding:8px 0;border-top:1px solid rgba(0,0,0,0.06);">
+                          '.htmlspecialchars($fechaVigencia).'
+                        </td>
+                      </tr>';
+  }
+
+  $html .= '
                     </table>
 
                   </td>
@@ -187,25 +245,33 @@ function buildPaymentEmailHtml(array $pay, array $userInfo, bool $forUser): stri
 
           '.$nextSteps.'
 
-          <!-- Footer -->
           <tr>
             <td style="padding:16px 24px;background:#ffffff;border-top:1px solid rgba(0,0,0,0.06);">
               <div style="font-family:Montserrat, Arial, sans-serif;font-size:12px;color:#1A1C36;opacity:0.65;line-height:1.5;">
-                Este correo fue generado automáticamente por '.$brand.'.<br>
-                <span style="opacity:0.8;">No respondas a este mensaje.</span>
+                Este correo fue generado automáticamente por '.$brand.'.<br>';
+
+  if ($forUser) {
+    $html .= '
+                <span style="opacity:0.8;">Conserva este correo como comprobante de compra.</span>';
+  } else {
+    $html .= '
+                <span style="opacity:0.8;">Notificación interna del sistema.</span>';
+  }
+
+  $html .= '
               </div>
             </td>
           </tr>
 
         </table>
-        <!-- /Container -->
 
       </td>
     </tr>
   </table>
 </body>
-</html>
-';
+</html>';
+
+  return $html;
 }
 
 function sendAdminPaymentEmail(array $pay): void {
@@ -220,6 +286,8 @@ function sendAdminPaymentEmail(array $pay): void {
   if ($host === '' || $user === '' || $pass === '') return;
 
   $mail = new PHPMailer(true);
+  $mail->CharSet = 'UTF-8';
+  $mail->Encoding = 'base64';
   $mail->isSMTP();
   $mail->Host = $host;
   $mail->SMTPAuth = true;
@@ -235,7 +303,6 @@ function sendAdminPaymentEmail(array $pay): void {
   $mail->isHTML(true);
   $mail->Subject = "Pago COMPLETADO: {$pay['product']} - {$pay['amount']} {$pay['currency']}";
   $mail->Body = buildPaymentEmailHtml($pay, ['nombre' => ''], false);
-
   $mail->AltBody =
     "Pago COMPLETADO | Producto: {$pay['product']} | Monto: {$pay['amount']} {$pay['currency']} | Order: {$pay['order_id']} | Payer: {$pay['payer_email']} | Usuario: {$pay['usuario_id']} | Fecha: {$pay['created_at']}";
 
@@ -250,10 +317,12 @@ function sendUserReceiptEmail(array $pay, array $userInfo): void {
 
   if ($host === '' || $user === '' || $pass === '') return;
 
-  $to = (string)($userInfo['correo'] ?? '');
-  if ($to === '' || !filter_var($to, FILTER_VALIDATE_EMAIL)) return;
+  $webEmail = trim((string)($userInfo['correo'] ?? ''));
+  $paypalEmail = trim((string)($pay['payer_email'] ?? ''));
 
   $mail = new PHPMailer(true);
+  $mail->CharSet = 'UTF-8';
+  $mail->Encoding = 'base64';
   $mail->isSMTP();
   $mail->Host = $host;
   $mail->SMTPAuth = true;
@@ -264,9 +333,27 @@ function sendUserReceiptEmail(array $pay, array $userInfo): void {
 
   $fromName = getenv('SMTP_FROM_NAME') ?: 'Crece Diseño';
   $mail->setFrom($user, $fromName);
-  $mail->addAddress($to);
 
-  // Mejor entregabilidad / soporte
+  $added = [];
+
+  if ($webEmail !== '' && filter_var($webEmail, FILTER_VALIDATE_EMAIL)) {
+    $mail->addAddress($webEmail);
+    $added[strtolower($webEmail)] = true;
+  }
+
+  if (
+    $paypalEmail !== '' &&
+    filter_var($paypalEmail, FILTER_VALIDATE_EMAIL) &&
+    !isset($added[strtolower($paypalEmail)])
+  ) {
+    $mail->addAddress($paypalEmail);
+    $added[strtolower($paypalEmail)] = true;
+  }
+
+  if (empty($added)) {
+    return;
+  }
+
   $support = getenv('SUPPORT_EMAIL') ?: $user;
   if (filter_var($support, FILTER_VALIDATE_EMAIL)) {
     $mail->addReplyTo($support, $fromName . ' Soporte');
@@ -275,7 +362,6 @@ function sendUserReceiptEmail(array $pay, array $userInfo): void {
   $mail->isHTML(true);
   $mail->Subject = "Comprobante: {$pay['product']} - {$pay['amount']} {$pay['currency']}";
   $mail->Body = buildPaymentEmailHtml($pay, $userInfo, true);
-
   $mail->AltBody =
     "Comprobante | Producto: {$pay['product']} | Monto: {$pay['amount']} {$pay['currency']} | Order: {$pay['order_id']} | Fecha: {$pay['created_at']}";
 
@@ -288,7 +374,7 @@ function resolveUserInfo(PDO $pdo, array $payRow): array {
 
   $st = $pdo->prepare("
     SELECT
-      COALESCE(NULLIF(TRIM(p.payer_email), ''), u.correo) AS correo,
+      u.correo AS correo,
       u.nombre AS nombre
     FROM payments p
     JOIN usuarios u ON u.id = p.usuario_id
@@ -394,8 +480,34 @@ $payerEmail = $orderJson['payer']['email_address'] ?? null;
 
 try {
   $stmt = $pdo->prepare("
-    INSERT INTO payments (usuario_id, order_id, payer_email, amount, currency, status, product, admin_notified)
-    VALUES (:usuario_id, :order_id, :payer_email, :amount, :currency, :status, :product, 0)
+    INSERT INTO payments (
+      usuario_id,
+      order_id,
+      payer_email,
+      amount,
+      currency,
+      status,
+      product,
+      created_at,
+      access_expires_at,
+      access_status,
+      admin_notified,
+      user_notified
+    )
+    VALUES (
+      :usuario_id,
+      :order_id,
+      :payer_email,
+      :amount,
+      :currency,
+      :status,
+      :product,
+      NOW(),
+      DATE_ADD(NOW(), INTERVAL 7 DAY),
+      'active',
+      0,
+      0
+    )
   ");
 
   $stmt->execute([
@@ -439,10 +551,9 @@ if ($payRow && (int)$payRow['admin_notified'] === 0) {
 /* ================= NOTIFICAR USUARIO ================= */
 if ($payRow && (int)$payRow['user_notified'] === 0) {
   try {
-    // Evita mandar “comprobantes” incompletos
     if (!empty($payRow['amount']) && !empty($payRow['currency']) && !empty($payRow['product'])) {
       $userInfo = resolveUserInfo($pdo, $payRow);
-      if (!empty($userInfo['correo'])) {
+      if (!empty($payRow['payer_email']) || !empty($userInfo['correo'])) {
         sendUserReceiptEmail($payRow, $userInfo);
 
         $upd = $pdo->prepare("UPDATE payments SET user_notified = 1 WHERE id = :id");
