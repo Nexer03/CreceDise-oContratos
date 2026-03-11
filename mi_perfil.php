@@ -171,6 +171,11 @@ function category_key(?string $cat): string {
 
         .course-card2__body{ padding:16px; display:flex; flex-direction:column; flex:1; }
 
+        .course-meta{ list-style:none; padding:0; margin:0 0 12px; display:grid; gap:10px; }
+        .course-meta li{ display:flex; justify-content:space-between; gap:10px; padding:10px 12px; border-radius:12px; background:#f8f9fb; border:1px solid rgba(0,0,0,.06); }
+        .course-meta span{ color:#667085; font-size:.85rem; display:flex; align-items:center; }
+        .course-meta strong{ color:#1A1C36; font-weight:700; font-size:.9rem; text-align:right; }
+
         .course-controls {
             display: flex;
             gap: 10px;
