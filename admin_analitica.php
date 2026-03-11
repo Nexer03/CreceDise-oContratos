@@ -370,6 +370,7 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
             <li class="nav-item"><a class="nav-link" href="index.php">Inicio</a></li>
             <li class="nav-item"><a class="nav-link" href="cursos.php">Cursos</a></li>
             <li class="nav-item"><a class="nav-link" href="contratos.php">Contratos</a></li>
+            <li class="nav-item"><a class="nav-link" href="foro.php">Foro</a></li>
             <li class="nav-item"><a class="nav-link" href="nosotros.php">Nosotros</a></li>
             <li class="nav-item"><a class="nav-link" href="index.php#contacto">Contacto</a></li>
             
