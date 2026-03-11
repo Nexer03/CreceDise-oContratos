@@ -27,6 +27,7 @@ require_once __DIR__ . '/config/admin_flag.php';
   
   <link rel="stylesheet" href="assets/css/styles.css" />
   <link rel="stylesheet" href="assets/css/contratos.css" />
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
 </head>
 <body>
   <script>
