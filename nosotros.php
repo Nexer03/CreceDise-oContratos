@@ -208,7 +208,7 @@ require_once __DIR__ . '/config/admin_flag.php';
         </div>
       </div>
       <div class="row g-4 team-gallery">
-        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800">
+        <div class="col-6 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
               <img src="assets/img/nl.jpg" alt="Noeliz Lopez" />
@@ -220,7 +220,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+        <div class="col-6 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
               <img src="assets/img/mn.jpg" alt="Marco A. Nava" />
@@ -232,7 +232,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+        <div class="col-6 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
               <img src="assets/img/gv.jpg" alt="Geronimo Vicencio" />
@@ -244,7 +244,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
+        <div class="col-6 col-sm-6 col-lg-3" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
           <div class="team-member h-100 text-center">
             <div class="member-image mx-auto">
               <img src="assets/img/jb.jpg" alt="Josue Becerra R." />

@@ -6,6 +6,13 @@
   padding-bottom: 48px;
 }
 
+@media (max-width: 991px) {
+  .contracts-hero {
+    padding-top: 140px;
+    padding-bottom: 30px;
+  }
+}
+
 .contracts-hero .banner-container {
   position: absolute;
   inset: 0;
@@ -34,6 +41,13 @@
   color: var(--white);
   text-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   letter-spacing: -0.5px;
+}
+
+@media (max-width: 768px) {
+  .contracts-main-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+  }
 }
 
 .highlight-gradient {
@@ -83,6 +97,13 @@
   justify-content: center;
   align-items: center;
   gap: 12px;
+}
+
+@media (max-width: 768px) {
+  .contracts-subtitle {
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
 }
 
 .highlight-step {
@@ -220,6 +241,14 @@
   z-index: 1;
 }
 
+@media (max-width: 768px) {
+
+  .contracts-list,
+  .history-container {
+    padding: 40px 0 50px;
+  }
+}
+
 .contract-card {
   background: rgba(255, 255, 255, 0.92);
   border: 1px solid rgba(0, 0, 0, 0.08);
@@ -229,6 +258,13 @@
   transition: all .3s ease;
   display: flex;
   flex-direction: column;
+}
+
+@media (max-width: 768px) {
+  .contract-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
 }
 
 .contract-card:hover {
@@ -254,12 +290,35 @@
   flex: 0 0 auto;
 }
 
+@media (max-width: 768px) {
+  .contract-icon {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+  }
+}
+
 .contract-card h3 {
   font-family: "Quicksand", sans-serif;
   font-weight: 700;
   font-size: 1.1rem;
   margin: 0 0 4px 0;
   color: var(--dark-purple);
+}
+
+@media (max-width: 768px) {
+  .contract-card h3 {
+    font-size: 1rem;
+  }
+
+  .contract-card p {
+    font-size: 0.9rem;
+  }
+
+  .pill {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+  }
 }
 
 .contract-card p {

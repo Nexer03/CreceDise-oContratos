@@ -223,7 +223,7 @@ require_once __DIR__ . '/config/admin_flag.php';
   <section class="about-section" id="nosotros">
     <div class="container">
       <div class="row g-4 team-gallery" data-aos="fade-up" data-aos-duration="800">
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-sm-6 col-lg-3">
           <div class="team-member h-100">
             <div class="member-image"><img src="assets/img/nl.jpg" alt="Noeliz Lopez" /></div>
             <div class="member-info">
@@ -232,7 +232,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-sm-6 col-lg-3">
           <div class="team-member h-100">
             <div class="member-image"><img src="assets/img/mn.jpg" alt="Marco A. Nava" /></div>
             <div class="member-info">
@@ -241,7 +241,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-sm-6 col-lg-3">
           <div class="team-member h-100">
             <div class="member-image"><img src="assets/img/gv.jpg" alt="Geronimo Vicencio" /></div>
             <div class="member-info">
@@ -250,7 +250,7 @@ require_once __DIR__ . '/config/admin_flag.php';
             </div>
           </div>
         </div>
-        <div class="col-12 col-sm-6 col-lg-3">
+        <div class="col-6 col-sm-6 col-lg-3">
           <div class="team-member h-100">
             <div class="member-image"><img src="assets/img/jb.jpg" alt="Josue Becerra R." /></div>
             <div class="member-info">

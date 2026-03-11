@@ -321,8 +321,17 @@ function render_course_card(array $c, string $tone = 'free'): void {
     }
 
     @media (max-width: 576px){
-      .course-meta li{ flex-direction:column; align-items:flex-start; }
+      .course-meta li{ flex-direction:column; align-items:flex-start; padding: 6px 10px; }
       .course-meta strong{ text-align:left; }
+      
+      .qcard { padding: 12px; }
+      .qcard__label i { width: 32px; height: 32px; font-size: 0.9rem; }
+      
+      .course-card2__head { padding: 12px 12px 10px; }
+      .course-card2__body { padding: 12px; }
+      .course-ico { width: 32px; height: 32px; flex: 0 0 32px; font-size: 0.9rem; }
+      
+      .filter-chip, .section-pill { padding: 6px 12px !important; font-size: 0.85rem !important; }
     }
   </style>
 </head>

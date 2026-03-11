@@ -216,6 +216,16 @@ function category_key(?string $cat): string {
             color: white;
             transform: scale(1.05);
         }
+
+        @media (max-width: 576px) {
+            .course-meta li { flex-direction: column; align-items: flex-start; padding: 6px 10px; }
+            .course-meta strong { text-align: left; }
+            .course-card2__head { padding: 12px 12px 10px; }
+            .course-card2__body { padding: 12px; }
+            .course-ico { width: 32px; height: 32px; flex: 0 0 32px; font-size: 0.9rem; }
+            .btn-delete-course { width: 36px; height: 36px; }
+            .status-select { font-size: 0.85rem; padding: 6px 10px; }
+        }
     </style>
 </head>
 <body>

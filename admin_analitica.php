@@ -296,6 +296,20 @@ function renderPagination(int $total, int $perPage, int $currentPage, string $pa
           padding: 30px;
           border: 1px solid rgba(0, 0, 0, 0.05);
       }
+      
+      @media (max-width: 768px) {
+          .history-container {
+              padding: 40px 0 50px;
+          }
+          .table-card {
+              padding: 15px;
+              border-radius: 14px;
+          }
+          .kpi-grid .kpi {
+              padding: 12px 14px;
+          }
+          .kpi .value { font-size: 1.3rem; }
+      }
       .btn-back {
           background-color: var(--dark-blue);
           color: white;

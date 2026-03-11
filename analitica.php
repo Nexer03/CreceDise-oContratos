@@ -89,6 +89,16 @@ try {
           padding: 30px;
           border: 1px solid rgba(0, 0, 0, 0.05);
       }
+      
+      @media (max-width: 768px) {
+          .history-container {
+              padding: 40px 0 50px;
+          }
+          .table-card {
+              padding: 15px;
+              border-radius: 14px;
+          }
+      }
       .status-badge {
           padding: 5px 12px;
           border-radius: 20px;
